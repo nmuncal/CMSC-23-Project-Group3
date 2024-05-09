@@ -4,7 +4,7 @@
 
 ## Clone the Repository:
 ```bash
-git clone <token+repository_url>
+git clone https://<token>@github.com/aobalitaan/CMSC-23-Project-Group3.git
 ```
 
 ## Setup FlutterBase and Dependencies:
