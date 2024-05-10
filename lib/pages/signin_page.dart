@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:cmsc_23_project_group3/styles.dart';    // Uses the styles class to make reusable widgets/components
 
@@ -115,10 +117,19 @@ class _SignInPageState extends State<SignInPage> {
             setState(() {
               _obscureText = !_obscureText;
             });
+            _autohideTimer();
           },
         ),
       ),
     );
+  }
+
+  void _autohideTimer() {
+    Timer(const Duration(seconds: 5), () {
+      setState(() {
+        _obscureText = true; // Hide the password after 5 seconds
+      });
+    });
   }
 
   // Indicates whether buttons should show a circular loading
