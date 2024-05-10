@@ -1,3 +1,4 @@
+import 'package:cmsc_23_project_group3/styles.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -30,12 +31,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'cmsc-23-project',
+      title: "iKaloob",
       initialRoute: '/',
       routes: {
         '/': (context) => const HomePage(),
       },
       theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Styles.mainBlue),
         textTheme: GoogleFonts.montserratTextTheme(Theme.of(context).textTheme),
       ),
     );

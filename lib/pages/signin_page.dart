@@ -71,13 +71,12 @@ class _SignInPageState extends State<SignInPage> {
 
           // Logo area
           SizedBox(
-            height: 75,
-            child: Image.asset('lib/assets/logo.png')
+            height: 150,
+            child: Image.asset('lib/assets/ico_logo.png')
           ),
-          
+          const SizedBox(height: 15),
 
           // Textfields/Buttons
-          const SizedBox(height: 30),
           emailField(),
           const SizedBox(height: 15),
           passwordField(),

@@ -64,7 +64,8 @@ flutter:
   assets:
     - lib/assets/bg_login.png
     - lib/assets/ico_google.png
-    - lib/assets/logo.png
+    - lib/assets/ico_logo.png
+    - lib/assets/ico_app.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:
