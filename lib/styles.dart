@@ -1,10 +1,16 @@
+// This class contains the color palette and other styling components of the app
+// Also contains reusable builder/styles for common components 
+// (Styling for TextFormFields, Gradient Button, Icon Button)
+
 import 'package:flutter/material.dart';
 
 class Styles{
-  static Color gray = const Color(0xFFF4F4F4);
   static Color mainBlue = const Color(0xFF405F7D);
-  static Color darkerGray = const Color(0xFFAFAFAF);
   static Color lightestBlue = const Color(0xFF86AACD);
+
+  static Color gray = const Color(0xFFF4F4F4);
+  static Color darkerGray = const Color(0xFFAFAFAF);
+  
   static BorderRadius rounded = BorderRadius.circular(20);
   
 
