@@ -8,7 +8,7 @@ class Styles{
   static BorderRadius rounded = BorderRadius.circular(20);
   
 
-  static InputDecoration textFieldStyle (hintText) => InputDecoration(
+  static InputDecoration textFieldStyle (hintText) => InputDecoration(    // Style for text form field 
       hintText: hintText,
       hintStyle: TextStyle(color: darkerGray),
       filled: true,
@@ -26,7 +26,7 @@ class Styles{
       ),
   );
 
-  static Widget gradientButtonBuilder(String buttonText, {bool isPressed = false}) {
+  static Widget gradientButtonBuilder(String buttonText, {bool isPressed = false}) {    // Makes a gradient button
     return AnimatedContainer(
       alignment: Alignment.center,
       duration: const Duration(milliseconds: 1000),
@@ -35,7 +35,7 @@ class Styles{
         borderRadius: BorderRadius.circular(20),
         gradient: isPressed
             ? LinearGradient(
-                colors: [mainBlue, lightestBlue], // Swap colors for animation
+                colors: [mainBlue, lightestBlue], 
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               )
@@ -70,7 +70,7 @@ class Styles{
     );
   }
 
-  static Widget iconButtonBuilder(String imagePath, {bool isPressed = false}) {
+  static Widget iconButtonBuilder(String imagePath, {bool isPressed = false}) {   // Makes an icon button
     return AnimatedContainer(
       alignment: Alignment.center,
       duration: const Duration(milliseconds: 1000),

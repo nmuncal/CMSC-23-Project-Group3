@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:cmsc_23_project_group3/styles.dart';
+import 'package:cmsc_23_project_group3/styles.dart';    // Uses the styles class to make reusable widgets/components
 
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
@@ -12,10 +12,10 @@ class _SignInPageState extends State<SignInPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
+      body: Stack(      // Places them in a stack so that the white container sits on top of the background image
         children: [
           Container(
-            decoration: const BoxDecoration(
+            decoration: const BoxDecoration(      // Background image on the top of the screen
               image: DecorationImage(
                 image: AssetImage('lib/assets/bg_login.png'),
                 fit: BoxFit.cover,
@@ -24,13 +24,13 @@ class _SignInPageState extends State<SignInPage> {
           ),
           Align(
             alignment: Alignment.bottomCenter,
-            child: SingleChildScrollView(
+            child: SingleChildScrollView(       // White rounded rectangle where the fields are placed
               child: Column(
                 children: [
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 30),
                     alignment: Alignment.center,
-                    height: MediaQuery.of(context).size.height * 0.75, // Adjust the height as needed
+                    height: MediaQuery.of(context).size.height * 0.75,
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: const BorderRadius.only(
@@ -39,14 +39,14 @@ class _SignInPageState extends State<SignInPage> {
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.10), // Fixed opacity usage
+                          color: Colors.black.withOpacity(0.10), 
                           spreadRadius: 10,
                           blurRadius: 15,
-                          offset: const Offset(0, 5), // Vertical shadow position
+                          offset: const Offset(0, 5), 
                         )
                       ],
                     ),
-                    child: signInField(), // Updated method name to follow Dart naming conventions
+                    child: signInField(),     // Contains the Sign In fields
                   ),
                 ],
               ),
@@ -61,36 +61,32 @@ class _SignInPageState extends State<SignInPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   Widget signInField() {
-    return Form(
+    return Form(      // SIGN IN FORM
       key: _formKey, 
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
 
+          // Logo area
           SizedBox(
             height: 75,
             child: Image.asset('lib/assets/logo.png')
           ),
           
 
-          const SizedBox(height: 50),
-
+          // Textfields/Buttons
+          const SizedBox(height: 30),
           emailField(),
-
           const SizedBox(height: 15),
-          
           passwordField(),
-
           const SizedBox(height: 15),
-
           signInButton(),
-
           const SizedBox(height: 15),
 
+
+          // Google SignIn area, and Sign Up
           googleSignInButton(),
-
           const SizedBox(height: 15),
-
           textToSignUp()
         ],
       )
@@ -99,7 +95,7 @@ class _SignInPageState extends State<SignInPage> {
 
   Widget emailField() {
     return TextFormField(
-      decoration: Styles.textFieldStyle('Email'),
+      decoration: Styles.textFieldStyle('Email'),   // Use the builder from styles.dart
     );
   }
 
@@ -109,13 +105,13 @@ class _SignInPageState extends State<SignInPage> {
   Widget passwordField() {
     return TextFormField(
       obscureText: _obscureText,
-      decoration: Styles.textFieldStyle('Password').copyWith(
+      decoration: Styles.textFieldStyle('Password').copyWith(  
         suffixIcon: IconButton(
           icon: Icon(
             _obscureText ? Icons.visibility_outlined : Icons.visibility_off_outlined,
             color: Styles.darkerGray,
           ),
-          onPressed: () {
+          onPressed: () {       // Hiding and showing password
             setState(() {
               _obscureText = !_obscureText;
             });
@@ -125,23 +121,23 @@ class _SignInPageState extends State<SignInPage> {
     );
   }
 
-
+  // Indicates whether buttons should show a circular loading
   bool _signInPressed = false;
   bool _googleSignInPressed = false;
 
-  void resetSignInLoading() {
+  void resetSignInLoading() {   // Turns back button to initial state (non-loading)
     setState(() {
-          _signInPressed = false;
-          _googleSignInPressed = false;
+      _signInPressed = false;
+      _googleSignInPressed = false;
     });
   }  
   
   Widget signInButton() {
     return GestureDetector(
-      child: Styles.gradientButtonBuilder('Sign In', isPressed: _signInPressed),
+      child: Styles.gradientButtonBuilder('Sign In', isPressed: _signInPressed),  // Use gradientButtonBuilder from styles.dart
       onTap: () {
         setState(() {
-          _googleSignInPressed = false;
+          _googleSignInPressed = false;   // After pressing, sign in button shows a circular loading indicator
           _signInPressed = true;
         });
 
@@ -156,7 +152,7 @@ class _SignInPageState extends State<SignInPage> {
       child: Styles.iconButtonBuilder('lib/assets/ico_google.png', isPressed: _googleSignInPressed),
       onTap: () {
         setState(() {
-          _signInPressed = false;
+          _signInPressed = false;   // After pressing, google button shows a circular loading indicator
           _googleSignInPressed = true;
         });
 
