@@ -6,6 +6,8 @@ import 'providers/auth_provider.dart';
 import 'firebase_options.dart';
 import 'pages/home_page.dart';
 
+import 'package:google_fonts/google_fonts.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -29,13 +31,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'SimpleTodo',
+      title: 'cmsc-23-project',
       initialRoute: '/',
       routes: {
         '/': (context) => const HomePage(),
       },
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        textTheme: GoogleFonts.montserratTextTheme(Theme.of(context).textTheme),
       ),
     );
   }
