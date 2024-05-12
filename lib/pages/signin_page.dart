@@ -1,6 +1,9 @@
 import 'dart:async';
 
 import 'package:cmsc_23_project_group3/pages/signup_page.dart';
+import 'package:cmsc_23_project_group3/pages/views/admin_view.dart';
+import 'package:cmsc_23_project_group3/pages/views/donor_view.dart';
+import 'package:cmsc_23_project_group3/pages/views/organization_view.dart';
 import 'package:flutter/material.dart';
 import 'package:cmsc_23_project_group3/styles.dart';    // Uses the styles class to make reusable widgets/components
 
@@ -154,6 +157,10 @@ class _SignInPageState extends State<SignInPage> {
         });
 
         // SIGN IN LOGIC
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const OrganizationView()));
 
       }
     );
