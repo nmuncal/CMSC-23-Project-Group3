@@ -67,13 +67,13 @@ class _DonorViewState extends State<DonorView> {
         ),
       ),
       body: PageView(
-        children: _pages,
         controller: _pageController,
         onPageChanged: (index){
           setState(() {
             _currPageIndex = index;
           });
         },
+        children: _pages,
       )
     );
   }

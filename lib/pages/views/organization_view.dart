@@ -72,11 +72,13 @@ class _OrganizationViewState extends State<OrganizationView> {
         ),
       ),
       body: PageView(
-        children: _pages,
         controller: _pageController,
         onPageChanged: (index){
-          _currPageIndex = index;
+          setState(() {
+            _currPageIndex = index;
+          });
         },
+        children: _pages,
       )
     );
   }
