@@ -100,7 +100,7 @@ class Styles{
               width: 20,
               height: 20,
               child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(color ?? Styles.mainBlue), // Assuming darkerGray is defined somewhere
+                valueColor: AlwaysStoppedAnimation<Color>(color ?? Styles.mainBlue),
                 strokeWidth: 2.0,
               ),
             )

@@ -87,7 +87,7 @@ class _SignInPageState extends State<SignInPage> {
 
 
           // Google SignIn area, and Sign Up
-          googleSignInButton(),
+          //googleSignInButton(),
           const SizedBox(height: 15),
           textToSignUp()
         ],
