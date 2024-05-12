@@ -19,6 +19,8 @@ class OrganizationView extends StatefulWidget {
 
 class _OrganizationViewState extends State<OrganizationView> {
   int _currPageIndex = 0;
+  var _pages = [OrganizationHome(), OrganizationDonations(), OrganizationDrives(), OrganizationProfile()];
+  var _pageController = PageController();
 
   @override
   Widget build(BuildContext context) {
@@ -40,10 +42,13 @@ class _OrganizationViewState extends State<OrganizationView> {
           activeColor: Styles.mainBlue,
           backgroundColor: Colors.white,
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+          selectedIndex: _currPageIndex,
           onTabChange: (index) {
             setState(() {
               _currPageIndex = index;
-              print(index);
+              _pageController.animateToPage(_currPageIndex, 
+                duration: Duration(milliseconds: 250), 
+                curve: Curves.linear);
             });
           },
           tabs: const [
@@ -66,14 +71,13 @@ class _OrganizationViewState extends State<OrganizationView> {
           ]
         ),
       ),
-      body: pageHandler()
+      body: PageView(
+        children: _pages,
+        controller: _pageController,
+        onPageChanged: (index){
+          _currPageIndex = index;
+        },
+      )
     );
-  }
-
-  Widget pageHandler(){
-    if (_currPageIndex == 0) return OrganizationHome();
-    else if (_currPageIndex == 1) return OrganizationDonations();
-    else if (_currPageIndex == 2) return OrganizationDrives();
-    return OrganizationProfile();
   }
 }

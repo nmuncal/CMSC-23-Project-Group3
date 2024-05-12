@@ -1,3 +1,6 @@
+// NOTHING TO EDIT HERE
+// Routes the user's view to different pages
+
 import 'package:cmsc_23_project_group3/pages/views/admin/admin_donors.dart';
 import 'package:cmsc_23_project_group3/pages/views/admin/admin_organizations.dart';
 import 'package:cmsc_23_project_group3/pages/views/admin/admin_pending.dart';
@@ -16,6 +19,8 @@ class AdminView extends StatefulWidget {
 
 class _AdminViewState extends State<AdminView> {
   int _currPageIndex = 0;
+  var _pages = [AdminOrganizations(), AdminPending(), AdminDonors(), AdminProfile()];
+  var _pageController = PageController();
 
   @override
   Widget build(BuildContext context) {
@@ -37,10 +42,13 @@ class _AdminViewState extends State<AdminView> {
           activeColor: Styles.mainBlue,
           backgroundColor: Colors.white,
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+          selectedIndex: _currPageIndex,
           onTabChange: (index) {
             setState(() {
               _currPageIndex = index;
-              print(index);
+              _pageController.animateToPage(_currPageIndex, 
+                duration: Duration(milliseconds: 250), 
+                curve: Curves.linear);
             });
           },
           tabs: const [
@@ -63,14 +71,15 @@ class _AdminViewState extends State<AdminView> {
           ]
         ),
       ),
-      body: pageHandler()
+      body: PageView(
+        children: _pages,
+        controller: _pageController,
+        onPageChanged: (index){
+          setState(() {
+            _currPageIndex = index;
+          });
+        },
+      )
     );
-  }
-
-  Widget pageHandler(){
-    if (_currPageIndex == 0) return AdminOrganizations();
-    else if (_currPageIndex == 1) return AdminPending();
-    else if (_currPageIndex == 2) return AdminDonors();
-    return AdminProfile();
   }
 }

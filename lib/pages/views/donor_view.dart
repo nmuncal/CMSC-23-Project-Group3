@@ -18,6 +18,8 @@ class DonorView extends StatefulWidget {
 
 class _DonorViewState extends State<DonorView> {
   int _currPageIndex = 0;
+  var _pages = [DonorHome(), DonorDonations(), DonorProfile()];
+  var _pageController = PageController();
 
   @override
   Widget build(BuildContext context) {
@@ -39,10 +41,13 @@ class _DonorViewState extends State<DonorView> {
           activeColor: Styles.mainBlue,
           backgroundColor: Colors.white,
           padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+          selectedIndex: _currPageIndex,
           onTabChange: (index) {
             setState(() {
               _currPageIndex = index;
-              print(index);
+              _pageController.animateToPage(_currPageIndex, 
+                duration: Duration(milliseconds: 250), 
+                curve: Curves.linear);
             });
           },
           tabs: const [
@@ -61,13 +66,15 @@ class _DonorViewState extends State<DonorView> {
           ]
         ),
       ),
-      body: pageHandler()
+      body: PageView(
+        children: _pages,
+        controller: _pageController,
+        onPageChanged: (index){
+          setState(() {
+            _currPageIndex = index;
+          });
+        },
+      )
     );
-  }
-
-  Widget pageHandler(){
-    if (_currPageIndex == 0) return DonorHome();
-    else if (_currPageIndex == 1) return DonorDonations();
-    return DonorProfile();
   }
 }
