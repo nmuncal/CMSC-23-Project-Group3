@@ -1,3 +1,6 @@
+// NOTHING TO EDIT HERE
+// Routes the organization's view to different pages
+
 import 'package:cmsc_23_project_group3/pages/views/organization/organization_donations.dart';
 import 'package:cmsc_23_project_group3/pages/views/organization/organization_drives.dart';
 import 'package:cmsc_23_project_group3/pages/views/organization/organization_home.dart';

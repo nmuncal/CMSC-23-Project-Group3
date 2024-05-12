@@ -1,6 +1,10 @@
+// NOTHING TO EDIT HERE
+// Routes the donor's view to different pages
+
 import 'package:cmsc_23_project_group3/pages/views/donor/donor_donations.dart';
 import 'package:cmsc_23_project_group3/pages/views/donor/donor_home.dart';
 import 'package:cmsc_23_project_group3/pages/views/donor/donor_profile.dart';
+
 import 'package:cmsc_23_project_group3/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
