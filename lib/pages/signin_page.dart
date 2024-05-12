@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cmsc_23_project_group3/pages/signup_page.dart';
 import 'package:flutter/material.dart';
 import 'package:cmsc_23_project_group3/styles.dart';    // Uses the styles class to make reusable widgets/components
 
@@ -159,7 +160,12 @@ class _SignInPageState extends State<SignInPage> {
   
   Widget googleSignInButton() {
     return GestureDetector(
-      child: Styles.iconButtonBuilder('lib/assets/ico_google.png', isPressed: _googleSignInPressed),
+      child: Styles.iconButtonBuilder(
+          'lib/assets/ico_google.png', 
+          null, 
+          Styles.mainBlue, 
+          isPressed: _googleSignInPressed
+        ),
       onTap: () {
         setState(() {
           _signInPressed = false;   // After pressing, google button shows a circular loading indicator
@@ -178,7 +184,10 @@ class _SignInPageState extends State<SignInPage> {
       onPressed: () {
         resetSignInLoading();
 
-        // Push Sign Up Page
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const SignUpPage()));
 
       },  
     );

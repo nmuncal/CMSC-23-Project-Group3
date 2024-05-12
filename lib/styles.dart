@@ -2,7 +2,10 @@
 // Also contains reusable builder/styles for common components 
 // (Styling for TextFormFields, Gradient Button, Icon Button)
 
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 class Styles{
   static Color mainBlue = const Color(0xFF405F7D);
@@ -76,14 +79,20 @@ class Styles{
     );
   }
 
-  static Widget iconButtonBuilder(String imagePath, {bool isPressed = false}) {   // Makes an icon button
+  static Widget iconButtonBuilder(
+    String? imagePath,
+    Icon? icon, 
+    Color? color,
+    {bool isPressed = false,
+  }) {
     return AnimatedContainer(
       alignment: Alignment.center,
       duration: const Duration(milliseconds: 1000),
       width: double.infinity,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
-        color: gray
+        border: Border.all(color: color ?? Styles.mainBlue, width: 1),
+        color: Colors.white,
       ),
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
       child: isPressed
@@ -91,14 +100,16 @@ class Styles{
               width: 20,
               height: 20,
               child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(darkerGray),
+                valueColor: AlwaysStoppedAnimation<Color>(color ?? Styles.mainBlue), // Assuming darkerGray is defined somewhere
                 strokeWidth: 2.0,
               ),
             )
-          : SizedBox(
-            height: 20,
-            child: Image.asset(imagePath)
-          )
+          : (imagePath != null
+              ? Image.asset(
+                  imagePath,
+                  height: 20,
+                )
+              : icon),
     );
   }
   
