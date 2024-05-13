@@ -2,10 +2,8 @@
 // Also contains reusable builder/styles for common components 
 // (Styling for TextFormFields, Gradient Button, Icon Button)
 
-import 'dart:ffi';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class Styles{
   static Color mainBlue = const Color(0xFF405F7D);

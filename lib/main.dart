@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: "iKaloob",
+      title: "tayo",
       initialRoute: '/',
       routes: {
         '/': (context) => const HomePage(),
