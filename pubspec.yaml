@@ -39,6 +39,8 @@ dependencies:
   firebase_core: ^2.31.0
   google_fonts: ^6.2.1
   google_nav_bar: ^5.0.6
+  flutter_native_splash: ^2.4.0
+  flutter_launcher_icons: ^0.13.1
 
 dev_dependencies:
   flutter_test:
@@ -67,7 +69,16 @@ flutter:
     - lib/assets/ico_google.png
     - lib/assets/ico_logo.png
     - lib/assets/ico_app.png
+    - lib/assets/ico_splash.png
 
+flutter_native_splash:
+  color: '#405F7D'
+  image: lib/assets/ico_splash.png
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "lib/assets/ico_app.png"
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg
