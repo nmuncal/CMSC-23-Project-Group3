@@ -24,7 +24,20 @@ class _DonorViewState extends State<DonorView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: Container(
+      bottomNavigationBar: navBar,
+      body: PageView(
+        controller: _pageController,
+        onPageChanged: (index){
+          setState(() {
+            _currPageIndex = index;
+          });
+        },
+        children: _pages,
+      )
+    );
+  }
+
+  Widget get navBar => Container(
         decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(
@@ -46,7 +59,7 @@ class _DonorViewState extends State<DonorView> {
             setState(() {
               _currPageIndex = index;
               _pageController.animateToPage(_currPageIndex, 
-                duration: Duration(milliseconds: 250), 
+                duration: const Duration(milliseconds: 250), 
                 curve: Curves.linear);
             });
           },
@@ -65,16 +78,5 @@ class _DonorViewState extends State<DonorView> {
             ),
           ]
         ),
-      ),
-      body: PageView(
-        controller: _pageController,
-        onPageChanged: (index){
-          setState(() {
-            _currPageIndex = index;
-          });
-        },
-        children: _pages,
-      )
-    );
-  }
+      );
 }
