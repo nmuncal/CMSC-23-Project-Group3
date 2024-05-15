@@ -20,43 +20,10 @@ class _SignInPageState extends State<SignInPage> {
     return Scaffold(
       body: Stack(      // Places them in a stack so that the white container sits on top of the background image
         children: [
-          Container(
-            decoration: const BoxDecoration(      // Background image on the top of the screen
-              image: DecorationImage(
-                image: AssetImage('lib/assets/bg_login.png'),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
+          bgImg,
           Align(
             alignment: Alignment.bottomCenter,
-            child: SingleChildScrollView(       // White rounded rectangle where the fields are placed
-              child: Column(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 30),
-                    alignment: Alignment.center,
-                    height: MediaQuery.of(context).size.height * 0.75,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(50),
-                        topRight: Radius.circular(50),
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.10), 
-                          spreadRadius: 10,
-                          blurRadius: 15,
-                          offset: const Offset(0, 5), 
-                        )
-                      ],
-                    ),
-                    child: signInField(),     // Contains the Sign In fields
-                  ),
-                ],
-              ),
-            ),
+            child: authFormField,
           ),
         ],
       ),
@@ -65,6 +32,44 @@ class _SignInPageState extends State<SignInPage> {
 
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+    Widget get bgImg => Container(                            // Background image on the top of the screen
+    decoration: const BoxDecoration(      
+      image: DecorationImage(
+        image: AssetImage('lib/assets/bg_login.png'),
+        fit: BoxFit.cover,
+      ),
+    ),
+  );
+
+  Widget get authFormField => SingleChildScrollView(       // White rounded rectangle where the fields are placed
+    child: Column(
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 30),
+          alignment: Alignment.center,
+          height: MediaQuery.of(context).size.height * 0.75,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(50),
+              topRight: Radius.circular(50),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.10), 
+                spreadRadius: 10,
+                blurRadius: 15,
+                offset: const Offset(0, 5), 
+              )
+            ],
+          ),
+          child: signInField(),     // Contains the Sign In fields
+        ),
+      ],
+    ),
+  );
+  
 
   Widget signInField() {
     return Form(      // SIGN IN FORM
@@ -104,7 +109,6 @@ class _SignInPageState extends State<SignInPage> {
       decoration: Styles.textFieldStyle('Email'),   // Use the builder from styles.dart
     );
   }
-
 
   bool _obscureText = true;
 
@@ -160,8 +164,9 @@ class _SignInPageState extends State<SignInPage> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const OrganizationView()));
-
+            //builder: (context) => const OrganizationView()));
+            //builder: (context) => const AdminView()));
+            builder: (context) => const DonorView()));
       }
     );
   }

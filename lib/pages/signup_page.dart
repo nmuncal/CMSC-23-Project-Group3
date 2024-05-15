@@ -15,31 +15,34 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        scrolledUnderElevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          color: Styles.mainBlue, 
-        ),
-        title: Text(
-          "Join Now",
-          style: TextStyle(
-            color: Styles.mainBlue, 
-            fontSize: 36,
-            fontWeight: FontWeight.bold
-          ),
-        ),
-        backgroundColor: Colors.white,
-      ),
+      appBar: _buildAppBar(context),
       body: signUpBody() 
     );
   }
 
-
   int accountType = 0;  //  0 - Donor, 1 - Organization, 2 - Admin
+
+  AppBar _buildAppBar(BuildContext context) {
+    return AppBar(
+      scrolledUnderElevation: 0,
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back),
+        onPressed: () {
+          Navigator.pop(context);
+        },
+        color: Styles.mainBlue,
+      ),
+      title: Text(
+        "Join Now",
+        style: TextStyle(
+          color: Styles.mainBlue,
+          fontSize: 36,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      backgroundColor: Colors.white,
+    );
+  }
 
   Widget signUpBody(){
     return SingleChildScrollView(
