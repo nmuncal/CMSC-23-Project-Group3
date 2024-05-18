@@ -1,3 +1,4 @@
+import 'package:cmsc_23_project_group3/providers/storage_provider.dart';
 import 'package:cmsc_23_project_group3/styles.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +20,7 @@ Future<void> main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: ((context) => UserAuthProvider())),
+        ChangeNotifierProvider(create: ((context) => UserStorageProvider())),
       ],
       child: const MyApp(),
     ),
