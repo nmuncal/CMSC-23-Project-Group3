@@ -1,7 +1,11 @@
 import 'dart:async';
-
+import 'dart:io';
+import 'package:cmsc_23_project_group3/providers/auth_provider.dart';
+import 'package:cmsc_23_project_group3/providers/storage_provider.dart';
 import 'package:cmsc_23_project_group3/styles.dart';
 import 'package:flutter/material.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:provider/provider.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -11,112 +15,117 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
+  final storageProvider = UserStorageProvider();
+  final _formKey = GlobalKey<FormState>();
+  late List<File> files = [];
+
+  String? email;
+  String? password;
+  String? username;
+  String? name;
+  String? contactNo;
+  String? address;
+  String? secondaryAddress;
+
+  int accountType = 0; // 0 - Donor, 1 - Organization, 2 - Admin
+  bool _obscureText = true;
+  bool secondaryAddressEnabled = false;
+  bool _signUpPressed = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _buildAppBar(context),
-      body: signUpBody() 
-    );
-  }
-
-  int accountType = 0;  //  0 - Donor, 1 - Organization, 2 - Admin
-
-  AppBar _buildAppBar(BuildContext context) {
-    return AppBar(
-      scrolledUnderElevation: 0,
-      leading: IconButton(
-        icon: const Icon(Icons.arrow_back),
-        onPressed: () {
-          Navigator.pop(context);
-        },
-        color: Styles.mainBlue,
-      ),
-      title: Text(
-        "Join Now",
-        style: TextStyle(
-          color: Styles.mainBlue,
-          fontSize: 36,
-          fontWeight: FontWeight.bold,
+        appBar: AppBar(
+          scrolledUnderElevation: 0,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            color: Styles.mainBlue,
+          ),
+          title: Text(
+            "Join Now",
+            style: TextStyle(
+                color: Styles.mainBlue,
+                fontSize: 36,
+                fontWeight: FontWeight.bold),
+          ),
+          backgroundColor: Colors.white,
         ),
-      ),
-      backgroundColor: Colors.white,
-    );
+        body: signUpBody());
   }
 
-  Widget signUpBody(){
+  Widget signUpBody() {
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 30),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 15),
-          registerType(),
-          
-          const SizedBox(height: 15),
-          Text("Basic Information", style: TextStyle(color: Styles.mainBlue)),
-          basicInformation(),
-
-          const SizedBox(height: 15),
-          Text("Contact Details", style: TextStyle(color: Styles.mainBlue)),
-          contactDetails(),
-
-          accountType == 1 ? proofOfLegitimacy() : Container(),
-
-          const SizedBox(height: 20),
-          signUpButton(),
-          const SizedBox(height: 15),
-        ],
-      )
+      child: Form(
+        key: _formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 15),
+            registerType(),
+            const SizedBox(height: 15),
+            Text("Basic Information", style: TextStyle(color: Styles.mainBlue)),
+            basicInformation(),
+            const SizedBox(height: 15),
+            Text("Contact Details", style: TextStyle(color: Styles.mainBlue)),
+            contactDetails(),
+            accountType == 1 ? proofOfLegitimacy() : Container(),
+            const SizedBox(height: 20),
+            signUpButton(),
+            const SizedBox(height: 15),
+          ],
+        ),
+      ),
     );
   }
 
-  Widget registerType(){
+  Widget registerType() {
     return Column(
       children: [
-        Text("What are you registering for?", style: TextStyle(color: Styles.mainBlue)),
+        Text("What are you registering for?",
+            style: TextStyle(color: Styles.mainBlue)),
         const SizedBox(height: 10),
-        toggleSwitch()          
+        toggleSwitch()
       ],
     );
   }
 
   Widget toggleSwitch() {
-    return LayoutBuilder( // Use LayoutBuilder to get parent container size
+    return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
             color: Styles.gray, // Background color for the unselected state
           ),
-
           child: Stack(
             children: [
-
               AnimatedPositioned(
-                duration: const Duration(milliseconds: 300), // Animation duration
+                duration:
+                    const Duration(milliseconds: 300), // Animation duration
                 width: constraints.maxWidth / 2,
-                top:0,
+                top: 0,
                 bottom: 0,
                 left: accountType == 0 ? 0 : constraints.maxWidth / 2,
                 child: Container(
                   decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                            colors: [Styles.lightestBlue, Styles.mainBlue],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
+                    gradient: LinearGradient(
+                      colors: [Styles.lightestBlue, Styles.mainBlue],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
                     borderRadius: BorderRadius.circular(20),
                   ),
                 ),
               ),
-            
               toggleText()
-
             ],
           ),
         );
-      }
+      },
     );
   }
 
@@ -136,15 +145,13 @@ class _SignUpPageState extends State<SignUpPage> {
             },
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 20),
-              child:Center(
-              child: Text(
-                "Donor",
-                style: TextStyle(
-                  color: accountType == 0 ? Colors.white : Styles.mainBlue
-                )
-                
+              child: Center(
+                child: Text("Donor",
+                    style: TextStyle(
+                        color:
+                            accountType == 0 ? Colors.white : Styles.mainBlue)),
               ),
-            )),
+            ),
           ),
         ),
         Expanded(
@@ -158,22 +165,20 @@ class _SignUpPageState extends State<SignUpPage> {
             },
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 20),
-              child:Center(
-              child: Text(
-                "Organization",
-                style: TextStyle(
-                  color: accountType == 1 ? Colors.white : Styles.mainBlue
-                )
-                
+              child: Center(
+                child: Text("Organization",
+                    style: TextStyle(
+                        color:
+                            accountType == 1 ? Colors.white : Styles.mainBlue)),
               ),
-            )),
+            ),
           ),
         ),
       ],
     );
   }
 
-  Widget basicInformation(){
+  Widget basicInformation() {
     return Column(
       children: [
         const SizedBox(height: 10),
@@ -183,36 +188,57 @@ class _SignUpPageState extends State<SignUpPage> {
         const SizedBox(height: 10),
         usernameField(),
         const SizedBox(height: 10),
-        passwordField(), 
-        const SizedBox(height: 10),         
+        passwordField(),
+        const SizedBox(height: 10),
       ],
     );
   }
 
   Widget emailField() {
     return TextFormField(
-      decoration: Styles.textFieldStyle('Email'),   // Use the builder from styles.dart
+      decoration:
+          Styles.textFieldStyle('Email'), // Use the builder from styles.dart
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Please enter your email';
+        }
+        return null;
+      },
+      onSaved: (value) {
+        email = value!;
+      },
     );
   }
 
   Widget usernameField() {
     return TextFormField(
-      decoration: Styles.textFieldStyle('Username'),   // Use the builder from styles.dart
+      decoration:
+          Styles.textFieldStyle('Username'), // Use the builder from styles.dart
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Please enter your username';
+        }
+        return null;
+      },
+      onSaved: (value) {
+        username = value!;
+      },
     );
   }
-
-  bool _obscureText = true;
 
   Widget passwordField() {
     return TextFormField(
       obscureText: _obscureText,
-      decoration: Styles.textFieldStyle('Password').copyWith(  
+      decoration: Styles.textFieldStyle('Password').copyWith(
         suffixIcon: IconButton(
           icon: Icon(
-            _obscureText ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+            _obscureText
+                ? Icons.visibility_outlined
+                : Icons.visibility_off_outlined,
             color: Styles.darkerGray,
           ),
-          onPressed: () {       // Hiding and showing password
+          onPressed: () {
+            // Hiding and showing password
             setState(() {
               _obscureText = !_obscureText;
             });
@@ -220,6 +246,15 @@ class _SignUpPageState extends State<SignUpPage> {
           },
         ),
       ),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Please enter your password';
+        }
+        return null;
+      },
+      onSaved: (value) {
+        password = value!;
+      },
     );
   }
 
@@ -233,12 +268,22 @@ class _SignUpPageState extends State<SignUpPage> {
 
   Widget nameField() {
     return TextFormField(
-      decoration: Styles.textFieldStyle(accountType == 0 ? 'Name': 'Name of Organization'),   // Use the builder from styles.dart
+      decoration: Styles.textFieldStyle(accountType == 0
+          ? 'Name'
+          : 'Name of Organization'), // Use the builder from styles.dart
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Please enter your name';
+        }
+        return null;
+      },
+      onSaved: (value) {
+        name = value!;
+      },
     );
   }
 
-  bool secondaryAddressEnabled = false;
-  Widget contactDetails(){
+  Widget contactDetails() {
     return Column(
       children: [
         const SizedBox(height: 10),
@@ -246,59 +291,75 @@ class _SignUpPageState extends State<SignUpPage> {
         const SizedBox(height: 10),
         addressField(),
         const SizedBox(height: 10),
-
         secondaryAddressEnabled
-          ? secondaryAddressField() 
-          : addSecondaryAddressButton(),
-
+            ? secondaryAddressField()
+            : addSecondaryAddressButton(),
       ],
     );
   }
 
   Widget contactNoField() {
     return TextFormField(
-      decoration: Styles.textFieldStyle('Contact No.'),   // Use the builder from styles.dart
+      decoration: Styles.textFieldStyle('Contact No.'),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Please enter your contact number';
+        }
+        return null;
+      },
+      onSaved: (value) {
+        contactNo = value!;
+      },
     );
   }
 
   Widget addressField() {
     return TextFormField(
-      decoration: Styles.textFieldStyle('Main Address'),   // Use the builder from styles.dart
+      decoration: Styles.textFieldStyle('Main Address'),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Please enter your address';
+        }
+        return null;
+      },
+      onSaved: (value) {
+        address = value!;
+      },
     );
   }
 
   Widget secondaryAddressField() {
     return TextFormField(
-      decoration: Styles.textFieldStyle('Secondary Address').copyWith(  
+      decoration: Styles.textFieldStyle('Secondary Address').copyWith(
         suffixIcon: IconButton(
           icon: Icon(Icons.remove_circle_outline, color: Styles.darkerGray),
-          onPressed: () {       // Hiding and showing password
+          onPressed: () {
+            // Hiding and showing password
             setState(() {
               secondaryAddressEnabled = false;
             });
           },
         ),
       ),
+      onSaved: (value) {
+        secondaryAddress = value!;
+      },
     );
   }
 
- 
   Widget addSecondaryAddressButton() {
     return GestureDetector(
       child: Styles.iconButtonBuilder(
-        null, 
-        Icon(Icons.add, color: Styles.mainBlue), 
-        Styles.mainBlue
-      ),
+          null, Icon(Icons.add, color: Styles.mainBlue), Styles.mainBlue),
       onTap: () {
         setState(() {
           secondaryAddressEnabled = true;
         });
-      }
+      },
     );
   }
 
-  Widget proofOfLegitimacy(){
+  Widget proofOfLegitimacy() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -313,30 +374,79 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget addProof() {
     return GestureDetector(
       child: Styles.iconButtonBuilder(
-        null, 
-        Icon(Icons.arrow_upward_rounded, color: Styles.mainBlue), 
-        Styles.mainBlue
-      ),
-      onTap: () {
-        setState(() {
-
-        });
-      }
+          null,
+          Icon(Icons.arrow_upward_rounded, color: Styles.mainBlue),
+          Styles.mainBlue),
+      onTap: () async {
+        final filesResult = await FilePicker.platform.pickFiles(
+          allowMultiple: true,
+        );
+        if (filesResult != null && filesResult.files.isNotEmpty) {
+          files = filesResult.files.map((file) => File(file.path!)).toList();
+          setState(() {});
+        }
+      },
     );
   }
 
-  bool _signUpPressed = false;
   Widget signUpButton() {
     return GestureDetector(
-      child: Styles.gradientButtonBuilder('Sign Up', isPressed: _signUpPressed),  // Use gradientButtonBuilder from styles.dart
-      onTap: () {
-        setState(() {
-          _signUpPressed = true;
-        });
-
-        // SIGN UP LOGIC
-
-      }
+      child: Styles.gradientButtonBuilder('Sign Up', isPressed: _signUpPressed),
+      onTap: () async {
+        if (_formKey.currentState!.validate()) {
+          _formKey.currentState!.save();
+          setState(() {
+            _signUpPressed = true;
+          });
+          await _handleSignUp();
+          setState(() {
+            _signUpPressed = false;
+          });
+        }
+      },
     );
   }
+
+  Future<void> _handleSignUp() async {
+  try {
+    final userAuthProvider = context.read<UserAuthProvider>();
+    final userStorageProvider = context.read<UserStorageProvider>();
+
+    // Attempt sign-up
+    String? uid = await userAuthProvider.signUp(
+      email!,
+      password!,
+      username!,
+      name!,
+      contactNo!,
+      secondaryAddress!.isEmpty ? [address!] : [address!, secondaryAddress!],
+      accountType,
+      false,
+    );
+
+    // Check if UID is not null and not an error message
+    if (uid != null && !uid.contains("Error")) {
+      // Proceed with file upload only if the account type is 1 and files are not empty
+      if (accountType == 1 && files.isNotEmpty) {
+        await userStorageProvider.uploadMultipleFiles(files, "$uid/proofOfLegitimacy");
+      }
+
+      // If all operations were successful, navigate back
+      if (mounted) {
+        Navigator.pop(context);
+      }
+    } else {
+      // Handle sign-up failure or error message (e.g., display an error message to the user)
+      print("Sign-up failed: $uid");
+      // Optionally, you can show an error message to the user
+      // You can use a SnackBar or showDialog to display an error message
+    }
+  } catch (error) {
+    // Handle any errors that occur during sign up
+    print("Error during sign up: $error");
+    // Optionally, you can show an error message to the user
+    // You can use a SnackBar or showDialog to display an error message
+  }
+}
+
 }

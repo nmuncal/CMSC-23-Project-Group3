@@ -41,6 +41,10 @@ dependencies:
   google_nav_bar: ^5.0.6
   flutter_native_splash: ^2.4.0
   flutter_launcher_icons: ^0.13.1
+  cloud_firestore: ^4.17.3
+  firebase_storage: ^11.7.5
+  firebase_auth: ^4.19.5
+  file_picker: ^8.0.3
 
 dev_dependencies:
   flutter_test:
