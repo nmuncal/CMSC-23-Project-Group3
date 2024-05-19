@@ -328,25 +328,24 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
-Widget secondaryAddressField() {
-  return TextFormField(
-    decoration: Styles.textFieldStyle('Secondary Address').copyWith(
-      suffixIcon: IconButton(
-        icon: Icon(Icons.remove_circle_outline, color: Styles.darkerGray),
-        onPressed: () {
-          // Hiding and showing password
-          setState(() {
-            secondaryAddressEnabled = false;
-          });
-        }, 
+  Widget secondaryAddressField() {
+    return TextFormField(
+      decoration: Styles.textFieldStyle('Secondary Address').copyWith(
+        suffixIcon: IconButton(
+          icon: Icon(Icons.remove_circle_outline, color: Styles.darkerGray),
+          onPressed: () {
+            // Hiding and showing password
+            setState(() {
+              secondaryAddressEnabled = false;
+            });
+          },
+        ),
       ),
-    ),
-    onSaved: (value) {
-      secondaryAddress = null;
-    },
-  );
-}
-
+      onSaved: (value) {
+        secondaryAddress = value!;
+      },
+    );
+  }
 
   Widget addSecondaryAddressButton() {
     return GestureDetector(
@@ -357,8 +356,7 @@ Widget secondaryAddressField() {
           secondaryAddressEnabled = true;
         });
       },
-    ); 
-    
+    );
   }
 
   Widget proofOfLegitimacy() {
