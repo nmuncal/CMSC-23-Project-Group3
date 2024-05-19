@@ -14,4 +14,3 @@ flutterfire configure --project=cmsc-23-project-group3
 flutter pub get
 ```
 
-tst
