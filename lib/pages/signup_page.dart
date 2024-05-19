@@ -25,7 +25,7 @@ class _SignUpPageState extends State<SignUpPage> {
   String? name;
   String? contactNo;
   String? address;
-  String? secondaryAddress;
+  String? secondaryAddress = '';
 
   int accountType = 0; // 0 - Donor, 1 - Organization, 2 - Admin
   bool _obscureText = true;
@@ -328,24 +328,25 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
-  Widget secondaryAddressField() {
-    return TextFormField(
-      decoration: Styles.textFieldStyle('Secondary Address').copyWith(
-        suffixIcon: IconButton(
-          icon: Icon(Icons.remove_circle_outline, color: Styles.darkerGray),
-          onPressed: () {
-            // Hiding and showing password
-            setState(() {
-              secondaryAddressEnabled = false;
-            });
-          },
-        ),
+Widget secondaryAddressField() {
+  return TextFormField(
+    decoration: Styles.textFieldStyle('Secondary Address').copyWith(
+      suffixIcon: IconButton(
+        icon: Icon(Icons.remove_circle_outline, color: Styles.darkerGray),
+        onPressed: () {
+          // Hiding and showing password
+          setState(() {
+            secondaryAddressEnabled = false;
+          });
+        }, 
       ),
-      onSaved: (value) {
-        secondaryAddress = value!;
-      },
-    );
-  }
+    ),
+    onSaved: (value) {
+      secondaryAddress = null;
+    },
+  );
+}
+
 
   Widget addSecondaryAddressButton() {
     return GestureDetector(
@@ -356,7 +357,8 @@ class _SignUpPageState extends State<SignUpPage> {
           secondaryAddressEnabled = true;
         });
       },
-    );
+    ); 
+    
   }
 
   Widget proofOfLegitimacy() {
