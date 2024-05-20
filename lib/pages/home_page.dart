@@ -66,7 +66,7 @@ class _HomePageState extends State<HomePage> {
           return const SignInPage();
         } else {
           // User is logged in, use the fetched accountType
-
+          getAccountType();
           switch (accountType) {
             case 0:
               return const DonorView();

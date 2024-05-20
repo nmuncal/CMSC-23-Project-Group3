@@ -20,6 +20,8 @@ class _SignInPageState extends State<SignInPage> {
   String? email;
   String? password;
 
+  bool errorSignIn = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -94,7 +96,9 @@ class _SignInPageState extends State<SignInPage> {
             const SizedBox(height: 15),
             passwordField(),
             const SizedBox(height: 15),
+
             signInButton(),
+            errorSignIn ? const Text("Invalid Credentials!", style:TextStyle(color: Colors.red)) : Container(),
             const SizedBox(height: 15),
 
             // Google SignIn area, and Sign Up
@@ -171,25 +175,32 @@ class _SignInPageState extends State<SignInPage> {
     });
   }
 
+
   Widget signInButton() {
     return GestureDetector(
       child: Styles.gradientButtonBuilder('Sign In',
           isPressed:
               _signInPressed), // Use gradientButtonBuilder from styles.dart
       onTap: () async {
-        setState(() {
-          _googleSignInPressed =
-              false; // After pressing, sign in button shows a circular loading indicator
-          _signInPressed = true;
-        });
         if (_formKey.currentState!.validate()) {
+          setState(() {
+            _googleSignInPressed =
+                false; // After pressing, sign in button shows a circular loading indicator
+            _signInPressed = true;
+          });
+
           _formKey.currentState!.save();
           String? message = await context
               .read<UserAuthProvider>()
               .authService
               .signIn(email!, password!);
 
-     
+          if (message != ""){
+            setState(() {
+              resetSignInLoading();
+              errorSignIn = true;
+            });
+          }
           print(message);
 
         }
