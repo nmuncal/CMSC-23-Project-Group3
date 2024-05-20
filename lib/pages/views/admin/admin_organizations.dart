@@ -66,7 +66,7 @@ class _DonorHomeState extends State<AdminOrganizations> {
 
   AppBar _buildAppBar(BuildContext context) {
     return AppBar(
-      title: const Text('Donors'),
+      title: const Text('Organizations'),
       automaticallyImplyLeading: false, // This removes the back button
     );
   }
