@@ -66,8 +66,8 @@ class _HomePageState extends State<HomePage> {
           return const SignInPage();
         } else {
           // User is logged in, use the fetched accountType
+          getAccountType();
           print(accountType);
-
           if (accountType == 1 && approvalStatus == true){
             return const OrganizationView();
           } else if (accountType == 2){
