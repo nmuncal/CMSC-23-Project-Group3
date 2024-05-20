@@ -22,6 +22,7 @@ class AppUser {
     required this.accountType,
     required this.isApproved,
 
+    // additional fields for organizations
     this.tags = '',
     this.isOpen = true,
     this.desc = ''
