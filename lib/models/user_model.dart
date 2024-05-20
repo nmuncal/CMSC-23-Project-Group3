@@ -9,6 +9,10 @@ class AppUser {
   final int accountType;
   final bool isApproved;
 
+  final String tags;
+  final bool isOpen;
+  final String desc;
+
   AppUser({
     required this.email,
     required this.username,
@@ -17,6 +21,10 @@ class AppUser {
     required this.address,
     required this.accountType,
     required this.isApproved,
+
+    this.tags = '',
+    this.isOpen = true,
+    this.desc = ''
   });
 
   factory AppUser.fromJson(Map<String, dynamic> json) {
@@ -28,6 +36,10 @@ class AppUser {
       address: List<String>.from(json['address']),
       accountType: json['accountType'],
       isApproved: json['isApproved'],
+
+      tags: json['tags'],
+      isOpen: json['isOpen'],
+      desc: json['desc']
     );
   }
 
@@ -45,6 +57,10 @@ class AppUser {
       'address': address,
       'accountType': accountType,
       'isApproved': isApproved,
+
+      'tags': tags,
+      'isOpen': isOpen,
+      'desc': desc
     };
   }
 }

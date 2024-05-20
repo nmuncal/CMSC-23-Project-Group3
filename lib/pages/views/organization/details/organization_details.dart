@@ -25,6 +25,7 @@ class Organization {
 
 class _OrganizationDetailsState extends State<OrganizationDetails> {
 
+  // THIS WILL USE THE MODIFIED APPUSER MODEL
   final Organization mockOrg = Organization(
     name: "Organization Name",
     tags: "sample tags",
