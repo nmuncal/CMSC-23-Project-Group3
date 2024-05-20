@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '/providers/main_provider.dart';
+import '/models/user_model.dart';
 import 'company_detail.dart';
 
 class DonorHome extends StatefulWidget {
@@ -9,30 +12,49 @@ class DonorHome extends StatefulWidget {
 }
 
 class _DonorHomeState extends State<DonorHome> {
-  // Define a list of companies
-  final List<String> companies = [
-    'Company A',
-    'Company B',
-    'Company C',
-    'Company D',
-  ];
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<UserProvider>(context, listen: false).fetchOrganizations();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _buildAppBar(context),
-      body: ListView.builder(
-        itemCount: companies.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(companies[index]),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => CompanyDetailPage(companyName: companies[index]),
-                ),
-              );
+      body: Consumer<UserProvider>(
+        builder: (context, userProvider, child) {
+          return StreamBuilder<List<AppUser>>(
+            stream: userProvider.uStream,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                return const Center(child: Text('No donors found'));
+              } else {
+                final donors = snapshot.data!;
+                return ListView.builder(
+                  itemCount: donors.length,
+                  itemBuilder: (context, index) {
+                    final donor = donors[index];
+                    return ListTile(
+                      title: Text(donor.name), // Assuming `AppUser` has a `name` field
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CompanyDetailPage(companyName: donor.name),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                );
+              }
             },
           );
         },

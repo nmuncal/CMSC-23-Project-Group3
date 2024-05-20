@@ -49,4 +49,4 @@ class AppUser {
   }
 }
 
-enum accountType { donor, organization }
+enum accountType { donor, organization, admin }

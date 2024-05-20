@@ -1,45 +1,73 @@
+import 'package:cmsc_23_project_group3/pages/views/admin/details/org_details.dart';
 import 'package:flutter/material.dart';
-import 'details/org_details.dart';
+import 'package:provider/provider.dart';
+import '/providers/main_provider.dart';
+import '/models/user_model.dart';
+import 'details/donor_details.dart';
 
 class AdminOrganizations extends StatefulWidget {
   const AdminOrganizations({super.key});
 
   @override
-  State<AdminOrganizations> createState() => _AdminOrganizationsState();
+  State<AdminOrganizations> createState() => _DonorHomeState();
 }
 
-class _AdminOrganizationsState extends State<AdminOrganizations> {
-  // Define a list of organizations
-  final List<String> organizations = [
-    'Organization A',
-    'Organization B',
-    'Organization C',
-    'Organization D',
-  ];
+class _DonorHomeState extends State<AdminOrganizations> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<UserProvider>(context, listen: false).fetchOrganizations();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Organizations'),
-      ),
-      body: ListView.builder(
-        itemCount: organizations.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(organizations[index]),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => OrganizationDetailPage(organizationName: organizations[index]),
-                ),
-              );
+      appBar: _buildAppBar(context),
+      body: Consumer<UserProvider>(
+        builder: (context, userProvider, child) {
+          return StreamBuilder<List<AppUser>>(
+            stream: userProvider.uStream,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                return const Center(child: Text('No donors found'));
+              } else {
+                final donors = snapshot.data!;
+                return ListView.builder(
+                  itemCount: donors.length,
+                  itemBuilder: (context, index) {
+                    final donor = donors[index];
+                    return ListTile(
+                      title: Text(donor.name),
+                                            onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => OrganizationDetailPage(organizationName: donor.name),
+                          ),
+                        );
+                      },
+                       // Assuming `AppUser` has a `name` field
+                    );
+                  },
+                );
+              }
             },
           );
         },
       ),
     );
   }
-}
 
+  AppBar _buildAppBar(BuildContext context) {
+    return AppBar(
+      title: const Text('Donors'),
+      automaticallyImplyLeading: false, // This removes the back button
+    );
+  }
+}
