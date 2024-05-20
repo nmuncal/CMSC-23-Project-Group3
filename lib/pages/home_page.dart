@@ -30,7 +30,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> getAccountType() async {
     try {
-      final userAuthProvider = context.read<UserAuthProvider>();
+      final userAuthProvider = context.watch<UserAuthProvider>();
       final newAccountType = await userAuthProvider.getAccountType();
       final newApprovalStatus = await userAuthProvider.getApprovalStatus();
 
@@ -67,7 +67,6 @@ class _HomePageState extends State<HomePage> {
         } else {
           // User is logged in, use the fetched accountType
           getAccountType();
-          print(accountType);
           if (accountType == 1 && approvalStatus == true){
             return const OrganizationView();
           } else if (accountType == 2){
