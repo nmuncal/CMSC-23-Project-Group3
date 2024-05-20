@@ -13,3 +13,4 @@ dart pub global activate flutterfire_cli
 flutterfire configure --project=cmsc-23-project-group3
 flutter pub get
 ```
+

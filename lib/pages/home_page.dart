@@ -67,18 +67,13 @@ class _HomePageState extends State<HomePage> {
         } else {
           // User is logged in, use the fetched accountType
           getAccountType();
-          switch (accountType) {
-            case 0:
-              return const DonorView();
-            case 1:
-              if (approvalStatus == true) {
-                return const OrganizationView();
-              }
-              return const DonorView();
-            case 2:
-              return const AdminView();
-            default:
-              return const DonorView();
+          print(accountType);
+          if (accountType == 1 && approvalStatus == true){
+            return const OrganizationView();
+          } else if (accountType == 2){
+            return const AdminView();
+          } else {
+            return const DonorView();
           }
         }
       },

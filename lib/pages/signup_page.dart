@@ -25,7 +25,7 @@ class _SignUpPageState extends State<SignUpPage> {
   String? name;
   String? contactNo;
   String? address;
-  String? secondaryAddress;
+  String? secondaryAddress = '';
 
   int accountType = 0; // 0 - Donor, 1 - Organization, 2 - Admin
   bool _obscureText = true;

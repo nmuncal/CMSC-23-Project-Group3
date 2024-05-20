@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'providers/auth_provider.dart';
+import 'providers/main_provider.dart';
 
 import 'firebase_options.dart';
 import 'pages/home_page.dart';
@@ -21,6 +22,7 @@ Future<void> main() async {
       providers: [
         ChangeNotifierProvider(create: ((context) => UserAuthProvider())),
         ChangeNotifierProvider(create: ((context) => UserStorageProvider())),
+        ChangeNotifierProvider(create: (_) => UserProvider()),
       ],
       child: const MyApp(),
     ),

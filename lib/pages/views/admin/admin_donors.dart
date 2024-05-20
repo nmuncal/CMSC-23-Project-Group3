@@ -1,46 +1,72 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '/providers/main_provider.dart';
+import '/models/user_model.dart';
 import 'details/donor_details.dart';
 
 class AdminDonors extends StatefulWidget {
   const AdminDonors({super.key});
 
   @override
-  State<AdminDonors> createState() => _AdminDonorsState();
+  State<AdminDonors> createState() => _DonorHomeState();
 }
 
-class _AdminDonorsState extends State<AdminDonors> {
-  // Define a list of donors
-  final List<String> donors = [
-    'Donor A',
-    'Donor B',
-    'Donor C',
-    'Donor D',
-  ];
+class _DonorHomeState extends State<AdminDonors> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<UserProvider>(context, listen: false).fetchDonors();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Donors'),
-      ),
-      body: ListView.builder(
-        itemCount: donors.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(donors[index]),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => DonorDetailPage(donorName: donors[index]),
-                ),
-              );
+      appBar: _buildAppBar(context),
+      body: Consumer<UserProvider>(
+        builder: (context, userProvider, child) {
+          return StreamBuilder<List<AppUser>>(
+            stream: userProvider.uStream,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                return const Center(child: Text('No donors found'));
+              } else {
+                final donors = snapshot.data!;
+                return ListView.builder(
+                  itemCount: donors.length,
+                  itemBuilder: (context, index) {
+                    final donor = donors[index];
+                    return ListTile(
+                      title: Text(donor.name),
+                                            onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DonorDetailPage(donorName: donor.name),
+                          ),
+                        );
+                      },
+                       // Assuming `AppUser` has a `name` field
+                    );
+                  },
+                );
+              }
             },
           );
         },
       ),
     );
   }
+
+  AppBar _buildAppBar(BuildContext context) {
+    return AppBar(
+      title: const Text('Donors'),
+      automaticallyImplyLeading: false, // This removes the back button
+    );
+  }
 }
-
-
