@@ -9,7 +9,6 @@ class AppUser {
   final int accountType;
   final bool isApproved;
 
-  final String tags;
   final bool isOpen;
   final String desc;
 
@@ -23,7 +22,6 @@ class AppUser {
     required this.isApproved,
 
     // additional fields for organizations
-    this.tags = '',
     this.isOpen = true,
     this.desc = ''
   });
@@ -38,7 +36,6 @@ class AppUser {
       accountType: json['accountType'],
       isApproved: json['isApproved'],
 
-      tags: json['tags'],
       isOpen: json['isOpen'],
       desc: json['desc']
     );
@@ -59,7 +56,6 @@ class AppUser {
       'accountType': accountType,
       'isApproved': isApproved,
 
-      'tags': tags,
       'isOpen': isOpen,
       'desc': desc
     };

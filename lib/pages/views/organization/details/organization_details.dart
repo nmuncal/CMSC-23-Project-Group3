@@ -10,13 +10,11 @@ class OrganizationDetails extends StatefulWidget {
 
 class Organization {
   final String name;
-  final String tags;
   final bool isOpen;
   final String desc;
 
   Organization({
     required this.name,
-    required this.tags,
     required this.isOpen,
     required this.desc,
   });
@@ -28,7 +26,6 @@ class _OrganizationDetailsState extends State<OrganizationDetails> {
   // THIS WILL USE THE MODIFIED APPUSER MODEL
   final Organization mockOrg = Organization(
     name: "Organization Name",
-    tags: "sample tags",
     isOpen: true,
     desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacus ligula, molestie porttitor magna sed, laoreet fringilla tellus."
   );
@@ -78,13 +75,6 @@ class _OrganizationDetailsState extends State<OrganizationDetails> {
           color: Styles.mainBlue, 
           fontSize: 24, 
           fontWeight: FontWeight.bold
-        )
-      ),
-      Text(mockOrg.tags, 
-        style: TextStyle(
-          color: Styles.darkerGray, 
-          fontSize: 14,
-          fontStyle: FontStyle.italic,
         )
       ),
     
