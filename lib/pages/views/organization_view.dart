@@ -1,17 +1,16 @@
-// NOTHING TO EDIT HERE
-// Routes the organization's view to different pages
-
 import 'package:cmsc_23_project_group3/pages/views/organization/organization_donations.dart';
 import 'package:cmsc_23_project_group3/pages/views/organization/organization_drives.dart';
 import 'package:cmsc_23_project_group3/pages/views/organization/organization_home.dart';
 import 'package:cmsc_23_project_group3/pages/views/organization/organization_profile.dart';
+import 'package:cmsc_23_project_group3/providers/auth_provider.dart';
 
 import 'package:cmsc_23_project_group3/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:provider/provider.dart';
 
 class OrganizationView extends StatefulWidget {
-  const OrganizationView({super.key});
+  const OrganizationView({Key? key});
 
   @override
   State<OrganizationView> createState() => _OrganizationViewState();
@@ -19,30 +18,37 @@ class OrganizationView extends StatefulWidget {
 
 class _OrganizationViewState extends State<OrganizationView> {
   int _currPageIndex = 0;
-  final _pages = [const OrganizationHome(), const OrganizationDonations(), const OrganizationDrives(), const OrganizationProfile()];
+  final _pages = [
+    OrganizationHome(),
+    OrganizationDonations(),
+    OrganizationDrives(),
+    OrganizationProfile()
+  ];
   final _pageController = PageController();
 
-  var approvedTabs = [
-            const GButton(
-              icon: Icons.home_outlined,
-              text: 'Home'
-            ),
-            const GButton(
-              icon: Icons.healing_outlined,
-              text: 'Donation'
-            ),
-            const GButton(
-              icon: Icons.handshake_outlined,
-              text: 'Drives'
-            ),
-            const GButton(
-              icon: Icons.person_outline_rounded,
-              text: 'My Profile'
-            ),
-          ];
+  final approvedTabs = [
+    GButton(icon: Icons.home_outlined, text: 'Home'),
+    GButton(icon: Icons.healing_outlined, text: 'Donation'),
+    GButton(icon: Icons.handshake_outlined, text: 'Drives'),
+    GButton(icon: Icons.person_outline_rounded, text: 'My Profile'),
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      context.read<UserAuthProvider>().getApprovalStatus();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    final bool? isApproved = context.watch<UserAuthProvider>().userApprovalStatus;
+
+    if (isApproved == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
     return Scaffold(
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
@@ -61,27 +67,29 @@ class _OrganizationViewState extends State<OrganizationView> {
           activeColor: Styles.mainBlue,
           backgroundColor: Colors.white,
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-          selectedIndex: _currPageIndex,
+          selectedIndex: isApproved ? _currPageIndex : 3,
           onTabChange: (index) {
             setState(() {
               _currPageIndex = index;
-              _pageController.animateToPage(_currPageIndex, 
-                duration: const Duration(milliseconds: 250), 
-                curve: Curves.linear);
+              _pageController.animateToPage(
+                _currPageIndex,
+                duration: const Duration(milliseconds: 250),
+                curve: Curves.linear,
+              );
             });
           },
-          tabs: approvedTabs
+          tabs: isApproved ? approvedTabs : [approvedTabs[3]],
         ),
       ),
       body: PageView(
         controller: _pageController,
-        onPageChanged: (index){
+        onPageChanged: (index) {
           setState(() {
             _currPageIndex = index;
           });
         },
-        children: _pages,
-      )
+        children: isApproved ? _pages : [_pages[3]],
+      ),
     );
   }
 }

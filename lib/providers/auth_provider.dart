@@ -8,6 +8,7 @@ import '../models/user_model.dart';
 class UserAuthProvider with ChangeNotifier {
   late FirebaseAuthAPI authService;
   late Stream<User?> _userStream;
+  bool? _userApprovalStatus;
   AppUser? _accountInfo;
 
   UserAuthProvider() {
@@ -15,11 +16,13 @@ class UserAuthProvider with ChangeNotifier {
     _initializeStreams();
     _userStream.listen((user) {
       _getAccountInfo();
+      getApprovalStatus;
     });
   }
 
   Stream<User?> get userStream => _userStream;
   User? get user => authService.getUser();
+  bool? get userApprovalStatus => _userApprovalStatus;
   AppUser? get accountInfo => _accountInfo;
 
   void _initializeStreams() {
@@ -34,7 +37,11 @@ class UserAuthProvider with ChangeNotifier {
     _accountInfo = await UserProvider().getAccountInfo(user!.uid);
     notifyListeners();
   }
-  
+
+  Future<void> getApprovalStatus() async {
+    _userApprovalStatus = await authService.getUserApprovalStatus();
+    notifyListeners();
+  }
 
   Future<String?> signUp(
     String email, String password, String username, String name, String contactNo, List<String> address, int accountType, bool isApproved) async {
