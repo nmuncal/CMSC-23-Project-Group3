@@ -14,6 +14,25 @@ class FirebaseAuthAPI {
     return auth.authStateChanges();
   }
 
+  Future<bool?> getUserApprovalStatus() async {
+    User? user = getUser();
+    if (user == null) {
+      return null;
+    }
+
+    try {
+      DocumentSnapshot doc = await db.collection('users').doc(user.uid).get();
+      if (doc.exists) {
+        return doc['isApproved'];
+      } else {
+        return null;
+      }
+    } catch (e) {
+      print("Error getting approval status: $e");
+      return null;
+    }
+  }
+
   Future<String?> signIn(String email, String password) async {
     try {
       await auth.signInWithEmailAndPassword(email: email, password: password);
@@ -81,44 +100,6 @@ class FirebaseAuthAPI {
     }
 
     return "Error";
-  }
-
-  Future<int?> getAccountType() async {
-    User? user = getUser();
-    if (user == null) {
-      return null;
-    }
-
-    try {
-      DocumentSnapshot doc = await db.collection('users').doc(user.uid).get();
-      if (doc.exists) {
-        return doc['accountType'];
-      } else {
-        return null;
-      }
-    } catch (e) {
-      print("Error getting account type: $e");
-      return null;
-    }
-  }
-
-  Future<bool?> getUserApprovalStatus() async {
-    User? user = getUser();
-    if (user == null) {
-      return null;
-    }
-
-    try {
-      DocumentSnapshot doc = await db.collection('users').doc(user.uid).get();
-      if (doc.exists) {
-        return doc['isApproved'];
-      } else {
-        return null;
-      }
-    } catch (e) {
-      print("Error getting approval status: $e");
-      return null;
-    }
   }
 
   Future<void> signOut() async {

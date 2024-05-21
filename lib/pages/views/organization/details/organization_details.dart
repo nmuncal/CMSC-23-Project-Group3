@@ -1,8 +1,14 @@
+// ignore_for_file: must_be_immutable
+
+import 'package:cmsc_23_project_group3/models/user_model.dart';
+import 'package:cmsc_23_project_group3/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:cmsc_23_project_group3/styles.dart';
+import 'package:provider/provider.dart';
 
 class OrganizationDetails extends StatefulWidget {
-  const OrganizationDetails({super.key});
+  late String? uid;
+  OrganizationDetails({super.key, required this.uid});
 
   @override
   State<OrganizationDetails> createState() => _OrganizationDetailsState();
@@ -10,13 +16,11 @@ class OrganizationDetails extends StatefulWidget {
 
 class Organization {
   final String name;
-  final String tags;
   final bool isOpen;
   final String desc;
 
   Organization({
     required this.name,
-    required this.tags,
     required this.isOpen,
     required this.desc,
   });
@@ -25,38 +29,43 @@ class Organization {
 
 class _OrganizationDetailsState extends State<OrganizationDetails> {
 
-  final Organization mockOrg = Organization(
-    name: "Organization Name",
-    tags: "sample tags",
-    isOpen: true,
-    desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacus ligula, molestie porttitor magna sed, laoreet fringilla tellus."
-  );
-
+  AppUser? organization;
+  
   final icon = 'lib/assets/ico_app.png';
   final cover = 'lib/assets/ico_splash.png';
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<UserProvider>().getAccountInfo(widget.uid!);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          imageSection(),
+    organization = context.watch<UserProvider>().selectedUser;
 
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30),
-            child: Column(children: [
-              aboutSection(),
-              const SizedBox(height: 15),
-              drivesSection(),
-            ],)
-          
-          )
-          
-
-        
-      ],)
-    );
+    return organization == null
+      ? const Center(child: CircularProgressIndicator())
+      : SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              imageSection(),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 30),
+                child: Column(
+                  children: [
+                    aboutSection(),
+                    const SizedBox(height: 15),
+                    drivesSection(),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
   }
 
   drivesSection() {
@@ -72,29 +81,22 @@ class _OrganizationDetailsState extends State<OrganizationDetails> {
 
   Widget aboutSection(){
     return Column(children: [
-      Text(mockOrg.name, 
+      Text(organization!.name, 
         style: TextStyle(
           color: Styles.mainBlue, 
           fontSize: 24, 
           fontWeight: FontWeight.bold
         )
       ),
-      Text(mockOrg.tags, 
-        style: TextStyle(
-          color: Styles.darkerGray, 
-          fontSize: 14,
-          fontStyle: FontStyle.italic,
-        )
-      ),
     
-      mockOrg.isOpen ? 
+      organization!.isOpen ? 
       const Text("Open for Donations", style: TextStyle(color: Colors.green, fontSize: 14)) : 
       const Text("Not Accepting Donations", style: TextStyle(color: Colors.red, fontSize: 14)),
     
       const SizedBox(height: 10),
     
       Text(
-        mockOrg.desc,
+        organization!.desc != "" ? organization!.desc : "It's empty here!",
         textAlign: TextAlign.center,
         style: TextStyle(
           color: Styles.darkerGray, 

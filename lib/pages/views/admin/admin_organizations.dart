@@ -1,7 +1,7 @@
 import 'package:cmsc_23_project_group3/pages/views/admin/details/org_details.dart';
+import 'package:cmsc_23_project_group3/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '/providers/main_provider.dart';
 import '/models/user_model.dart';
 import 'details/donor_details.dart';
 

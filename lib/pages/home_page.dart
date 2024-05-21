@@ -2,6 +2,7 @@
 // Should default to sign in page
 // After successful sign in user is redirected to their respective view depending on account type
 
+import 'package:cmsc_23_project_group3/models/user_model.dart';
 import 'package:cmsc_23_project_group3/pages/views/admin_view.dart';
 import 'package:cmsc_23_project_group3/pages/views/donor_view.dart';
 import 'package:cmsc_23_project_group3/pages/views/organization_view.dart';
@@ -19,57 +20,27 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int? accountType;
-  bool? approvalStatus;
-
-  @override
-  void initState() {
-    super.initState();
-    getAccountType();
-  }
-
-  Future<void> getAccountType() async {
-    try {
-      final userAuthProvider = context.watch<UserAuthProvider>();
-      final newAccountType = await userAuthProvider.getAccountType();
-      final newApprovalStatus = await userAuthProvider.getApprovalStatus();
-
-      setState(() {
-        accountType = newAccountType;
-        approvalStatus = newApprovalStatus;
-      });
-    } catch (error) {
-      print(error);
-    }
-  }
-
-  Widget _buildLoadingIndicator() {
-    return const Center(child: CircularProgressIndicator());
-  }
-
-  Widget _buildError(String message) {
-    return Center(child: Text(message));
-  }
+  AppUser? user;
 
   @override
   Widget build(BuildContext context) {
     Stream<User?> userStream = context.watch<UserAuthProvider>().userStream;
+    user = context.watch<UserAuthProvider>().accountInfo;
 
     return StreamBuilder<User?>(
       stream: userStream,
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          return _buildError(snapshot.error!.toString());
+          return Center(child: Text(snapshot.error!.toString()));
         } else if (snapshot.connectionState == ConnectionState.waiting) {
-          return _buildLoadingIndicator();
-        } else if (!snapshot.hasData) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (!snapshot.hasData || user == null) {
           return const SignInPage();
         } else {
-          // User is logged in, use the fetched accountType
-          getAccountType();
-          if (accountType == 1 && approvalStatus == true){
+          
+          if (user!.accountType == 1){
             return const OrganizationView();
-          } else if (accountType == 2){
+          } else if (user!.accountType == 2){
             return const AdminView();
           } else {
             return const DonorView();
