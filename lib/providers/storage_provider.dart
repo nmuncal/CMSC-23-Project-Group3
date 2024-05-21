@@ -12,4 +12,19 @@ class UserStorageProvider extends ChangeNotifier {
     notifyListeners();
     return downloadUrls;
   }
+
+  Future<String> uploadSingleFile(File file,String path) async {
+    final downloadUrl = await storageService.uploadFile(file,path);
+    notifyListeners();
+    return downloadUrl;
+  }
 }
+
+
+
+
+
+
+
+
+ 

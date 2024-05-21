@@ -1,4 +1,6 @@
+import 'package:cmsc_23_project_group3/providers/auth_provider.dart';
 import 'package:cmsc_23_project_group3/providers/user_provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '/models/user_model.dart';
@@ -20,7 +22,12 @@ class _DonorHomeState extends State<DonorHome> {
     });
   }
 
+  User? user;
+
   Widget build(BuildContext context) {
+
+    user = context.read<UserAuthProvider>().user;
+
     return Scaffold(
       appBar: _buildAppBar(context),
       body: Consumer<UserProvider>(
@@ -46,7 +53,7 @@ class _DonorHomeState extends State<DonorHome> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => CompanyDetailPage(companyName: organization.name),
+                            builder: (context) => CompanyDetailPage(companyName: organization.name, userId:user!.uid,companyId: organization.uid,),
                           ),
                         );
                       },
