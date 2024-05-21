@@ -19,18 +19,18 @@ class OrganizationView extends StatefulWidget {
 class _OrganizationViewState extends State<OrganizationView> {
   int _currPageIndex = 0;
   final _pages = [
-    OrganizationHome(),
-    OrganizationDonations(),
-    OrganizationDrives(),
-    OrganizationProfile()
+    const OrganizationHome(),
+    const OrganizationDonations(),
+    const OrganizationDrives(),
+    const OrganizationProfile()
   ];
   final _pageController = PageController();
 
   final approvedTabs = [
-    GButton(icon: Icons.home_outlined, text: 'Home'),
-    GButton(icon: Icons.healing_outlined, text: 'Donation'),
-    GButton(icon: Icons.handshake_outlined, text: 'Drives'),
-    GButton(icon: Icons.person_outline_rounded, text: 'My Profile'),
+    const GButton(icon: Icons.home_outlined, text: 'Home'),
+    const GButton(icon: Icons.healing_outlined, text: 'Donation'),
+    const GButton(icon: Icons.handshake_outlined, text: 'Drives'),
+    const GButton(icon: Icons.person_outline_rounded, text: 'My Profile'),
   ];
 
   @override
