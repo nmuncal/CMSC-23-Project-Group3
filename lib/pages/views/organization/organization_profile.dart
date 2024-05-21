@@ -1,3 +1,5 @@
+import 'package:cmsc_23_project_group3/models/user_model.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'details/organization_details.dart';
 
@@ -14,11 +16,15 @@ class OrganizationProfile extends StatefulWidget {
 }
 
 class _OrganizationProfileState extends State<OrganizationProfile> {
+  String? userId;
 
   @override
   Widget build(BuildContext context) {
+    
+    userId = context.watch<UserAuthProvider>().user!.uid;
+
     return Scaffold(
-      body: const OrganizationDetails(),
+      body: OrganizationDetails(uid: userId),
       floatingActionButton: PopupMenuButton(
         itemBuilder: (context) => [
           const PopupMenuItem(

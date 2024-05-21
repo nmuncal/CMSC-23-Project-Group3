@@ -1,6 +1,6 @@
+import 'package:cmsc_23_project_group3/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '/providers/main_provider.dart';
 import '/models/user_model.dart';
 import 'company_detail.dart';
 
@@ -12,14 +12,6 @@ class DonorHome extends StatefulWidget {
 }
 
 class _DonorHomeState extends State<DonorHome> {
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<UserProvider>(context, listen: false).fetchOrganizations();
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

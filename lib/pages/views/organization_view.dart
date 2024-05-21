@@ -19,8 +19,27 @@ class OrganizationView extends StatefulWidget {
 
 class _OrganizationViewState extends State<OrganizationView> {
   int _currPageIndex = 0;
-  var _pages = [OrganizationHome(), OrganizationDonations(), OrganizationDrives(), OrganizationProfile()];
-  var _pageController = PageController();
+  final _pages = [const OrganizationHome(), const OrganizationDonations(), const OrganizationDrives(), const OrganizationProfile()];
+  final _pageController = PageController();
+
+  var approvedTabs = [
+            const GButton(
+              icon: Icons.home_outlined,
+              text: 'Home'
+            ),
+            const GButton(
+              icon: Icons.healing_outlined,
+              text: 'Donation'
+            ),
+            const GButton(
+              icon: Icons.handshake_outlined,
+              text: 'Drives'
+            ),
+            const GButton(
+              icon: Icons.person_outline_rounded,
+              text: 'My Profile'
+            ),
+          ];
 
   @override
   Widget build(BuildContext context) {
@@ -47,28 +66,11 @@ class _OrganizationViewState extends State<OrganizationView> {
             setState(() {
               _currPageIndex = index;
               _pageController.animateToPage(_currPageIndex, 
-                duration: Duration(milliseconds: 250), 
+                duration: const Duration(milliseconds: 250), 
                 curve: Curves.linear);
             });
           },
-          tabs: const [
-            GButton(
-              icon: Icons.home_outlined,
-              text: 'Home'
-            ),
-            GButton(
-              icon: Icons.healing_outlined,
-              text: 'Donation'
-            ),
-            GButton(
-              icon: Icons.handshake_outlined,
-              text: 'Drives'
-            ),
-            GButton(
-              icon: Icons.person_outline_rounded,
-              text: 'My Profile'
-            ),
-          ]
+          tabs: approvedTabs
         ),
       ),
       body: PageView(
