@@ -12,7 +12,14 @@ class DonorHome extends StatefulWidget {
 }
 
 class _DonorHomeState extends State<DonorHome> {
-  @override
+   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<UserProvider>(context, listen: false).fetchOrganizations();
+    });
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _buildAppBar(context),
@@ -26,20 +33,20 @@ class _DonorHomeState extends State<DonorHome> {
               } else if (snapshot.hasError) {
                 return Center(child: Text('Error: ${snapshot.error}'));
               } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return const Center(child: Text('No donors found'));
+                return const Center(child: Text('No organizations found'));
               } else {
-                final donors = snapshot.data!;
+                final organizations = snapshot.data!;
                 return ListView.builder(
-                  itemCount: donors.length,
+                  itemCount: organizations.length,
                   itemBuilder: (context, index) {
-                    final donor = donors[index];
+                    final organization = organizations[index];
                     return ListTile(
-                      title: Text(donor.name), // Assuming `AppUser` has a `name` field
+                      title: Text(organization.name), // Assuming `AppUser` has a `name` field
                       onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => CompanyDetailPage(companyName: donor.name),
+                            builder: (context) => CompanyDetailPage(companyName: organization.name),
                           ),
                         );
                       },

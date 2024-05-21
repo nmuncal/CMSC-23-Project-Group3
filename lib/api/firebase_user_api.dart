@@ -6,11 +6,12 @@ class FirebaseUserAPI {
   static final FirebaseFirestore db = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  Stream<List<AppUser>> fetchUsersByAccountType(int accountType) {
+  Stream<List<AppUser>> fetchUsersByAccountType(int accountType,bool approvalStatus) {
     try {
       return db
           .collection('users')
           .where('accountType', isEqualTo: accountType)
+          .where('isApproved', isEqualTo: approvalStatus)
           .snapshots()
           .map((querySnapshot) {
             return querySnapshot.docs.map((doc) {
@@ -22,6 +23,11 @@ class FirebaseUserAPI {
       return Stream.error("Error getting Users: $e");
     }
   }
+
+
+
+
+
 
     Future<String?> fetchID() async {
     try {

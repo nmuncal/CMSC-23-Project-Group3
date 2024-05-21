@@ -1,44 +1,72 @@
+import 'package:cmsc_23_project_group3/providers/user_provider.dart';
 import 'package:flutter/material.dart';
-import 'details/signup_details.dart';
+import 'package:provider/provider.dart';
+import '/models/user_model.dart';
+import 'details/donor_details.dart';
 
 class AdminPending extends StatefulWidget {
   const AdminPending({super.key});
 
   @override
-  State<AdminPending> createState() => _AdminPendingState();
+  State<AdminPending> createState() => _PendingOrganizationHomeState();
 }
 
-class _AdminPendingState extends State<AdminPending> {
-  // Define a list of pending signups
-  final List<String> pendingSignups = [
-    'Signup 1',
-    'Signup 2',
-    'Signup 3',
-    'Signup 4',
-  ];
+class _PendingOrganizationHomeState extends State<AdminPending> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<UserProvider>(context, listen: false).fetchPendingOrganizations();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Pending Signups'),
-      ),
-      body: ListView.builder(
-        itemCount: pendingSignups.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(pendingSignups[index]),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => PendingDetailPage(signupName: pendingSignups[index]),
-                ),
-              );
+      appBar: _buildAppBar(context),
+      body: Consumer<UserProvider>(
+        builder: (context, userProvider, child) {
+          return StreamBuilder<List<AppUser>>(
+            stream: userProvider.uStream,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                return const Center(child: Text('No pending organizations found'));
+              } else {
+                final pendingOrgs = snapshot.data!;
+                return ListView.builder(
+                  itemCount: pendingOrgs.length,
+                  itemBuilder: (context, index) {
+                    final pendingOrg = pendingOrgs[index];
+                    return ListTile(
+                      title: Text(pendingOrg.name),
+                                            onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DonorDetailPage(donorName: pendingOrg.name),
+                          ),
+                        );
+                      },
+                       // Assuming `AppUser` has a `name` field
+                    );
+                  },
+                );
+              }
             },
           );
         },
       ),
+    );
+  }
+
+  AppBar _buildAppBar(BuildContext context) {
+    return AppBar(
+      title: const Text('Pending'),
+      automaticallyImplyLeading: false, // This removes the back button
     );
   }
 }
