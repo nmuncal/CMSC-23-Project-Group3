@@ -15,6 +15,7 @@ class Donation {
   final String recipientId;
   final String status;
   final String contactNumber;
+  final String donationDrive;
   final Timestamp selectedDateandTime;
 
   Donation({
@@ -32,6 +33,7 @@ class Donation {
     required this.status,
     required this.contactNumber,
     required this.selectedDateandTime,
+    required this.donationDrive,
   });
 
   factory Donation.fromJson(Map<String, dynamic> json) {
@@ -50,6 +52,7 @@ class Donation {
       status: json['status'],
       contactNumber: json['contactNumber'],
       selectedDateandTime: json['selectedDateandTime'] ?? Timestamp.now(),
+      donationDrive: json['donationDrive']
     );
   }
 
@@ -74,6 +77,7 @@ class Donation {
       'status': status,
       'contactNumber': contactNumber,
       'selectedDateandTime': selectedDateandTime,
+      'donationDrive': donationDrive
     };
   }
 }

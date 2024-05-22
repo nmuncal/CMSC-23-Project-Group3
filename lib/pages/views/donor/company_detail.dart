@@ -35,10 +35,12 @@ class _CompanyDetailPageState extends State<CompanyDetailPage> {
   String weight = '';
   String status = 'pending';
   List<String> addresses = [];
+  String donationDrive = '';
   String contactNumber = '';
   DateTime? selectedDate;
   TimeOfDay? selectedTime;
   File? _image;
+  
   final picker = ImagePicker();
 
   @override
@@ -312,6 +314,7 @@ class _CompanyDetailPageState extends State<CompanyDetailPage> {
               recipientId: widget.companyId,
               status: status,
               contactNumber: contactNumber,
+              donationDrive: donationDrive ,
               selectedDateandTime: Timestamp.fromDate(selectedDateTime));
 
           try {
