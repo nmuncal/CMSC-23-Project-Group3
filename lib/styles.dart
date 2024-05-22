@@ -37,6 +37,7 @@ class Styles{
     return AnimatedContainer(
       alignment: Alignment.center,
       duration: const Duration(milliseconds: 1000),
+      height: 60,
       width: double.infinity,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),

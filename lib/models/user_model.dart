@@ -24,7 +24,7 @@ class AppUser {
     required this.isApproved,
 
     // additional fields for organizations
-    this.isOpen = true,
+    this.isOpen = false,
     this.desc = ''
   });
 
