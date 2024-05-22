@@ -10,22 +10,22 @@ import 'dart:io';
 
 import 'package:provider/provider.dart';
 
-class CompanyDetailPage extends StatefulWidget {
+class DonatePage extends StatefulWidget {
   final String companyName;
   final String companyId;
   final String userId;
 
-  const CompanyDetailPage(
+  const DonatePage(
       {super.key,
       required this.companyName,
       required this.userId,
       required this.companyId});
 
   @override
-  _CompanyDetailPageState createState() => _CompanyDetailPageState();
+  _DonatePageState createState() => _DonatePageState();
 }
 
-class _CompanyDetailPageState extends State<CompanyDetailPage> {
+class _DonatePageState extends State<DonatePage> {
   bool food = false;
   bool clothes = false;
   bool cash = false;

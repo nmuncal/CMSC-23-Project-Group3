@@ -1,10 +1,11 @@
+import 'package:cmsc_23_project_group3/pages/views/admin/details/org_details.dart';
 import 'package:cmsc_23_project_group3/providers/auth_provider.dart';
 import 'package:cmsc_23_project_group3/providers/user_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '/models/user_model.dart';
-import 'company_detail.dart';
+import 'details/org_details.dart';
 
 class DonorHome extends StatefulWidget {
   const DonorHome({super.key});
@@ -53,7 +54,12 @@ class _DonorHomeState extends State<DonorHome> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => CompanyDetailPage(companyName: organization.name, userId:user!.uid,companyId: organization.uid,),
+                            builder: (context) => 
+                            ViewOrganization(orgId: organization.uid)
+                            
+                            
+                            
+                            // CompanyDetailPage(companyName: organization.name, userId:user!.uid,companyId: organization.uid,),
                           ),
                         );
                       },
