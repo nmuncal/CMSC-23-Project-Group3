@@ -1,9 +1,5 @@
 import 'dart:async';
-
 import 'package:cmsc_23_project_group3/pages/signup_page.dart';
-import 'package:cmsc_23_project_group3/pages/views/admin_view.dart';
-import 'package:cmsc_23_project_group3/pages/views/donor_view.dart';
-import 'package:cmsc_23_project_group3/pages/views/organization_view.dart';
 import 'package:cmsc_23_project_group3/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:cmsc_23_project_group3/styles.dart';
@@ -19,6 +15,7 @@ class SignInPage extends StatefulWidget {
 class _SignInPageState extends State<SignInPage> {
   String? email;
   String? password;
+  String? errorMessage;
 
   bool errorSignIn = false;
 
@@ -98,7 +95,10 @@ class _SignInPageState extends State<SignInPage> {
             const SizedBox(height: 15),
 
             signInButton(),
-            errorSignIn ? const Text("Invalid Credentials!", style:TextStyle(color: Colors.red)) : Container(),
+            const SizedBox(height: 15),
+            errorSignIn
+                ? Center(child: Text(errorMessage!, style: TextStyle(color: Colors.red)))
+                : Container(),
             const SizedBox(height: 15),
 
             // Google SignIn area, and Sign Up
@@ -175,7 +175,6 @@ class _SignInPageState extends State<SignInPage> {
     });
   }
 
-
   Widget signInButton() {
     return GestureDetector(
       child: Styles.gradientButtonBuilder('Sign In',
@@ -195,14 +194,14 @@ class _SignInPageState extends State<SignInPage> {
               .authService
               .signIn(email!, password!);
 
-          if (message != ""){
+          if (message != "Successful!") {
             setState(() {
               resetSignInLoading();
+              errorMessage = message;
               errorSignIn = true;
             });
           }
           print(message);
-
         }
       },
 

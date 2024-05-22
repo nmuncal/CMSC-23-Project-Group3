@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../api/firebase_user_api.dart';
 import '../models/user_model.dart';
@@ -15,6 +14,8 @@ class UserProvider with ChangeNotifier {
 
   AppUser? _selectedUser;
   AppUser? get selectedUser => _selectedUser;
+
+  bool unique= false;
 
   // Private method to handle the fetching logic.
   void _fetchUsersByType(int accountType, bool approvalStatus) {
@@ -49,5 +50,11 @@ class UserProvider with ChangeNotifier {
     _selectedUser = await fbService.getAccountInfo(id);
     notifyListeners();
     return _selectedUser;
+  }
+
+  Future<bool> isUsernameUnique(String username) async {
+    unique = await fbService.isUsernameUnique(username);
+    notifyListeners();
+    return unique;
   }
 }
