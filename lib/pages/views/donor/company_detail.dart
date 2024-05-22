@@ -308,23 +308,22 @@ class _CompanyDetailPageState extends State<CompanyDetailPage> {
               addressForPickup: addresses,
               recipientName: widget.companyName,
               donorName: userDetails.name,
+              donorId: widget.userId,
+              recipientId: widget.companyId,
               status: status,
               contactNumber: contactNumber,
               selectedDateandTime: Timestamp.fromDate(selectedDateTime));
 
           try {
-            String donationGivenId = await donationProvider.addDonation(
-                temp, widget.userId, "donor");
-
-            String donationRecipientId = await donationProvider.addDonation(
-                temp, widget.companyId, "recipient");
+            String donationId = await donationProvider.addDonation(
+                temp);
 
             if (_image != null) {
               try {
                 await userStorageProvider.uploadSingleFile(_image!,
-                    "${widget.userId}/donationsGiven/$donationGivenId");
+                    "${widget.userId}/donationsGiven/$donationId");
                 await userStorageProvider.uploadSingleFile(_image!,
-                    "${widget.companyId}/donationsReceived/$donationRecipientId");
+                    "${widget.companyId}/donationsReceived/$donationId");
               } catch (e) {
                 print("$e");
               }

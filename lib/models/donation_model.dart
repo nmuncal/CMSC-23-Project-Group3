@@ -11,6 +11,8 @@ class Donation {
   final List<String> addressForPickup;
   final String recipientName;
   final String donorName;
+  final String donorId;
+  final String recipientId;
   final String status;
   final String contactNumber;
   final Timestamp selectedDateandTime;
@@ -25,6 +27,8 @@ class Donation {
     required this.addressForPickup,
     required this.recipientName,
     required this.donorName,
+    required this.donorId,
+    required this.recipientId,
     required this.status,
     required this.contactNumber,
     required this.selectedDateandTime,
@@ -41,6 +45,8 @@ class Donation {
       addressForPickup: List<String>.from(json['addressForPickup']),
       recipientName: json['recipientName'],
       donorName: json['donorName'],
+      donorId: json['donorId'],
+      recipientId: json['recipientId'],
       status: json['status'],
       contactNumber: json['contactNumber'],
       selectedDateandTime: json['selectedDateandTime'] ?? Timestamp.now(),
@@ -63,6 +69,8 @@ class Donation {
       'addressForPickup': addressForPickup,
       'recipientName': recipientName,
       'donorName': donorName,
+      'donorId' : donorId, 
+      'recipientId':  recipientId,
       'status': status,
       'contactNumber': contactNumber,
       'selectedDateandTime': selectedDateandTime,
