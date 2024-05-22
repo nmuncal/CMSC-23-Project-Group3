@@ -8,21 +8,33 @@ class DonationProvider with ChangeNotifier {
 
   Stream<List<Donation>> get donationStream => _donationStream;
 
-  void fetchDonations(String uid) {
+  void fetchDonationsGiven(String uid) {
     try {
-      _donationStream = firebaseService.fetchDonations(uid);
+      _donationStream = firebaseService.fetchDonationsGiven(uid);
       notifyListeners();
     } catch (e) {
-      print('Error fetching users: $e');
+      print('Error fetching donations: $e');
+      _donationStream = Stream.empty();
+      notifyListeners();
+    }
+  }
+
+
+   void fetchDonationsReceived(String uid) {
+    try {
+      _donationStream = firebaseService.fetchDonationsReceived(uid);
+      notifyListeners();
+    } catch (e) {
+      print('Error fetching donations: $e');
       _donationStream = Stream.empty();
       notifyListeners();
     }
   }
 
   Future<String> addDonation(
-      Donation donation, String userId, String recipientId) async {
+      Donation donation) async {
     String message = await firebaseService.addDonation(
-        donation.toJson(donation), userId, recipientId);
+        donation.toJson(donation));
     notifyListeners();
     return message;
   }

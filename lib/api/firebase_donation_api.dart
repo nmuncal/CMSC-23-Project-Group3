@@ -6,41 +6,42 @@ class FirebaseDonationAPI {
   static final FirebaseFirestore db = FirebaseFirestore.instance;
 
   Future<String> addDonation(
-      Map<String, dynamic> donation, String userId, String type) async {
+      Map<String, dynamic> donation) async {
     try {
-      if (type == "donor") {
-        DocumentReference doc = await db
-            .collection("users")
-            .doc(userId)
-            .collection("donationsGiven")
-            .add(donation);
+   
+        DocumentReference doc = await db.collection("donations").add(donation);
 
         return doc.id;
-      }
+  
 
-      if (type == "recipient") {
-        DocumentReference doc = await db
-            .collection("users")
-            .doc(userId)
-            .collection("donationsReceived")
-            .add(donation);
 
-        return doc.id;
-      }
-
-      return "";
     } on FirebaseException catch (e) {
       return "Error in ${e.code}: ${e.message}";
     }
   }
 
-  Stream<List<Donation>> fetchDonations(String userId) {
+  Stream<List<Donation>> fetchDonationsGiven(String userId) {
     try {
       return db
-          .collection("users")
-          .doc(userId)
-          .collection("donationsGiven")
-          .snapshots()
+          .collection("donations")
+          .where('donorId', isEqualTo: userId).snapshots()
+          .map((querySnapshot) {
+        return querySnapshot.docs.map((doc) {
+          return Donation.fromJson(doc.data() as Map<String, dynamic>);
+        }).toList();
+      });
+    } catch (e) {
+      print("Error getting donations: $e");
+      return Stream.error("Error getting donations: $e");
+    }
+  }
+
+
+  Stream<List<Donation>> fetchDonationsReceived(String userId) {
+    try {
+      return db
+          .collection("donations")
+          .where('recipientId', isEqualTo: userId).snapshots()
           .map((querySnapshot) {
         return querySnapshot.docs.map((doc) {
           return Donation.fromJson(doc.data() as Map<String, dynamic>);
@@ -53,5 +54,14 @@ class FirebaseDonationAPI {
   }
 
   //TODO: ADD UPDATE DONATION STATUS
+    Future<String> editDonationStatus(String status,String id) async {
+    try {
+      await db.collection("donations").doc(id).update({"status": status});
+
+      return "Successfully edited!";
+    } on FirebaseException catch (e) {
+      return "Error in ${e.code}: ${e.message}";
+    }
+  }
 
 }

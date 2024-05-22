@@ -44,6 +44,8 @@ class FirebaseAuthAPI {
         return e.message;
       } else if (e.code == 'wrong-password') {
         return e.message;
+      } else if (e.code == 'user-not-found') {
+        return e.message;
       } else {
         return "Failed at ${e.code}: ${e.message}";
       }
@@ -69,6 +71,7 @@ class FirebaseAuthAPI {
         AppUser newUser = AppUser(
           uid: credential.user!.uid,
           email: email,
+          uid: credential.user!.uid,
           username: username,
           name: name,
           contactNo: contactNo,

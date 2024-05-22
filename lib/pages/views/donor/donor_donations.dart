@@ -20,7 +20,7 @@ class _DonorDonationsState extends State<DonorDonations> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
        final user = context.read<UserAuthProvider>().user;
       if (user != null) {
-        Provider.of<DonationProvider>(context, listen: false).fetchDonations(user.uid);
+        Provider.of<DonationProvider>(context, listen: false).fetchDonationsGiven(user.uid);
         print(user.uid);
       }
    
