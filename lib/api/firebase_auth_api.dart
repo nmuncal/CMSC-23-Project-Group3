@@ -78,7 +78,7 @@ class FirebaseAuthAPI {
 
         // Save user information to Firestore
         try {
-          Map<String, dynamic> userData = newUser.toJson();
+          Map<String, dynamic> userData = newUser.toJson(newUser);
           await db.collection("users").doc(credential.user!.uid).set(userData);
           return credential.user!.uid;
           // Now the user is successfully added to Firestore

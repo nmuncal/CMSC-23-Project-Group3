@@ -2,6 +2,7 @@ import 'dart:convert';
 
 class AppUser {
   final String email;
+  final String uid;
   final String username;
   final String name;
   final String contactNo;
@@ -14,6 +15,7 @@ class AppUser {
 
   AppUser({
     required this.email,
+    required this.uid,
     required this.username,
     required this.name,
     required this.contactNo,
@@ -29,6 +31,7 @@ class AppUser {
   factory AppUser.fromJson(Map<String, dynamic> json) {
     return AppUser(
       email: json['email'],
+      uid: json['uid'],
       username: json['username'],
       name: json['name'],
       contactNo: json['contactNo'],
@@ -46,20 +49,19 @@ class AppUser {
     return data.map<AppUser>((dynamic d) => AppUser.fromJson(d)).toList();
   }
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toJson(AppUser appUser) {
     return {
       'email': email,
+      'uid': uid,
       'username': username,
       'name': name,
       'contactNo': contactNo,
       'address': address,
       'accountType': accountType,
       'isApproved': isApproved,
-
       'isOpen': isOpen,
       'desc': desc
     };
   }
 }
 
-enum accountType { donor, organization, admin }

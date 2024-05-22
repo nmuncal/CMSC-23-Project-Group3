@@ -1,10 +1,25 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cmsc_23_project_group3/models/donation_model.dart';
+import 'package:cmsc_23_project_group3/models/user_model.dart';
+import 'package:cmsc_23_project_group3/providers/donation_provider.dart';
+import 'package:cmsc_23_project_group3/providers/storage_provider.dart';
+import 'package:cmsc_23_project_group3/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'dart:io'; 
+import 'dart:io';
+
+import 'package:provider/provider.dart';
+
 class CompanyDetailPage extends StatefulWidget {
   final String companyName;
+  final String companyId;
+  final String userId;
 
-  const CompanyDetailPage({super.key, required this.companyName});
+  const CompanyDetailPage(
+      {super.key,
+      required this.companyName,
+      required this.userId,
+      required this.companyId});
 
   @override
   _CompanyDetailPageState createState() => _CompanyDetailPageState();
@@ -18,6 +33,7 @@ class _CompanyDetailPageState extends State<CompanyDetailPage> {
   String others = '';
   bool pickUp = false;
   String weight = '';
+  String status = 'pending';
   List<String> addresses = [];
   String contactNumber = '';
   DateTime? selectedDate;
@@ -137,13 +153,17 @@ class _CompanyDetailPageState extends State<CompanyDetailPage> {
               Text('Date for Pick Up/Drop Off:'),
               ElevatedButton(
                 onPressed: _selectDate,
-                child: Text(selectedDate == null ? 'Select Date' : 'Selected Date: ${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}'),
+                child: Text(selectedDate == null
+                    ? 'Select Date'
+                    : 'Selected Date: ${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}'),
               ),
               SizedBox(height: 20),
               Text('Time for Pick Up/Drop Off:'),
               ElevatedButton(
                 onPressed: _selectTime,
-                child: Text(selectedTime == null ? 'Select Time' : 'Selected Time: ${selectedTime!.hour}:${selectedTime!.minute}'),
+                child: Text(selectedTime == null
+                    ? 'Select Time'
+                    : 'Selected Time: ${selectedTime!.hour}:${selectedTime!.minute}'),
               ),
               SizedBox(height: 20),
               ElevatedButton(
@@ -165,8 +185,9 @@ class _CompanyDetailPageState extends State<CompanyDetailPage> {
               ],
               SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () {
-                  // palagyan backend here
+                onPressed: () async {
+                  _handleSendDonation();
+                  Navigator.pop(context);
                 },
                 child: Text('Submit'),
               ),
@@ -177,7 +198,7 @@ class _CompanyDetailPageState extends State<CompanyDetailPage> {
     );
   }
 
-    Future<void> _getImageFromGallery() async {
+  Future<void> _getImageFromGallery() async {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
     setState(() {
@@ -211,7 +232,6 @@ class _CompanyDetailPageState extends State<CompanyDetailPage> {
     }
   }
 
-  
   void _selectTime() async {
     final TimeOfDay? pickedTime = await showTimePicker(
       context: context,
@@ -251,6 +271,7 @@ class _CompanyDetailPageState extends State<CompanyDetailPage> {
                   addresses.add(newAddress);
                 });
                 Navigator.of(context).pop();
+
               },
             ),
           ],
@@ -258,6 +279,64 @@ class _CompanyDetailPageState extends State<CompanyDetailPage> {
       },
     );
   }
+
+  Future<void> _handleSendDonation() async {
+    try {
+      if (selectedDate != null && selectedTime != null) {
+        final selectedDateTime = DateTime(
+          selectedDate!.year,
+          selectedDate!.month,
+          selectedDate!.day,
+          selectedTime!.hour,
+          selectedTime!.minute,
+        );
+
+        final userProvider = context.read<UserProvider>();
+        final donationProvider = context.read<DonationProvider>();
+        final userStorageProvider = context.read<UserStorageProvider>();
+
+        AppUser? userDetails = await userProvider.getAccountInfo(widget.userId);
+
+        if (userDetails != null) {
+          Donation temp = Donation(
+              food: food,
+              clothes: clothes,
+              cash: cash,
+              necessities: necessities,
+              isPickup: pickUp,
+              weight: weight,
+              addressForPickup: addresses,
+              recipientName: widget.companyName,
+              donorName: userDetails.name,
+              status: status,
+              contactNumber: contactNumber,
+              selectedDateandTime: Timestamp.fromDate(selectedDateTime));
+
+          try {
+            String donationGivenId = await donationProvider.addDonation(
+                temp, widget.userId, "donor");
+
+            String donationRecipientId = await donationProvider.addDonation(
+                temp, widget.companyId, "recipient");
+
+            if (_image != null) {
+              try {
+                await userStorageProvider.uploadSingleFile(_image!,
+                    "${widget.userId}/donationsGiven/$donationGivenId");
+                await userStorageProvider.uploadSingleFile(_image!,
+                    "${widget.companyId}/donationsReceived/$donationRecipientId");
+              } catch (e) {
+                print("$e");
+              }
+            }
+          } catch (e) {
+            print("Unable to send donation : $e");
+          }
+        }
+      }
+    } catch (error) {
+      // Handle any errors
+      print("Error during donation sending: $error");
+    }
+  }
 }
-
-

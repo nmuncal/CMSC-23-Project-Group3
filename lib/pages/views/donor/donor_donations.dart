@@ -1,5 +1,10 @@
+import 'package:cmsc_23_project_group3/models/donation_model.dart';
+import 'package:cmsc_23_project_group3/pages/views/donor/donation_detail.dart';
+import 'package:cmsc_23_project_group3/providers/auth_provider.dart';
+import 'package:cmsc_23_project_group3/providers/donation_provider.dart';
 import 'package:flutter/material.dart';
-import 'donation_detail.dart';
+import 'package:provider/provider.dart';
+
 
 class DonorDonations extends StatefulWidget {
   const DonorDonations({super.key});
@@ -9,36 +14,66 @@ class DonorDonations extends StatefulWidget {
 }
 
 class _DonorDonationsState extends State<DonorDonations> {
-  final List<String> donations = [
-    'Donation 1',
-    'Donation 2',
-    'Donation 3',
-    'Donation 4',
-  ];
+   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+       final user = context.read<UserAuthProvider>().user;
+      if (user != null) {
+        Provider.of<DonationProvider>(context, listen: false).fetchDonations(user.uid);
+        print(user.uid);
+      }
+   
+    });
+  }
 
-  @override
+
   Widget build(BuildContext context) {
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Donor Donations'),
-        automaticallyImplyLeading: false, 
-      ),
-      body: ListView.builder(
-        itemCount: donations.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(donations[index]),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => DonationDetailPage(donationName: donations[index]),
-                ),
-              );
+      appBar: _buildAppBar(context),
+      body: Consumer<DonationProvider>(
+        builder: (context, donationProvider, child) {
+          return StreamBuilder<List<Donation>>(
+            stream: donationProvider.donationStream,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                return const Center(child: Text('No donations found'));
+              } else {
+                final donations = snapshot.data!;
+                return ListView.builder(
+                  itemCount: donations.length,
+                  itemBuilder: (context, index) {
+                    final donation = donations[index];
+                    return ListTile(
+                      title: Text("donation"), 
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DonationDetailPage(donationName: donation.recipientName,),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                );
+              }
             },
           );
         },
       ),
+    );
+  }
+
+  AppBar _buildAppBar(BuildContext context) {
+    return AppBar(
+      title: const Text('Donor Home'),
+      automaticallyImplyLeading: false, // This removes the back button
     );
   }
 }

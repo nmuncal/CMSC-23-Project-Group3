@@ -9,10 +9,10 @@ class AdminOrganizations extends StatefulWidget {
   const AdminOrganizations({super.key});
 
   @override
-  State<AdminOrganizations> createState() => _DonorHomeState();
+  State<AdminOrganizations> createState() => _OrganizationHomeState();
 }
 
-class _DonorHomeState extends State<AdminOrganizations> {
+class _OrganizationHomeState extends State<AdminOrganizations> {
   @override
   void initState() {
     super.initState();
@@ -35,13 +35,13 @@ class _DonorHomeState extends State<AdminOrganizations> {
               } else if (snapshot.hasError) {
                 return Center(child: Text('Error: ${snapshot.error}'));
               } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return const Center(child: Text('No donors found'));
+                return const Center(child: Text('No organizations found'));
               } else {
-                final donors = snapshot.data!;
+                final organizations = snapshot.data!;
                 return ListView.builder(
-                  itemCount: donors.length,
+                  itemCount: organizations.length,
                   itemBuilder: (context, index) {
-                    final donor = donors[index];
+                    final donor = organizations[index];
                     return ListTile(
                       title: Text(donor.name),
                                             onTap: () {

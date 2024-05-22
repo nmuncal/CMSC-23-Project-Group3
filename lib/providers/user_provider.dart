@@ -17,9 +17,9 @@ class UserProvider with ChangeNotifier {
   AppUser? get selectedUser => _selectedUser;
 
   // Private method to handle the fetching logic.
-  void _fetchUsersByType(int accountType) {
+  void _fetchUsersByType(int accountType, bool approvalStatus) {
     try {
-      _uStream = fbService.fetchUsersByAccountType(accountType);
+      _uStream = fbService.fetchUsersByAccountType(accountType, approvalStatus);
       notifyListeners();
     } catch (e) {
       print('Error fetching users: $e');
@@ -30,15 +30,19 @@ class UserProvider with ChangeNotifier {
 
   // Public methods to fetch specific user types.
   void fetchDonors() {
-    _fetchUsersByType(donorAcc);
+    _fetchUsersByType(donorAcc,false);
   }
 
   void fetchOrganizations() {
-    _fetchUsersByType(orgAcc);
+    _fetchUsersByType(orgAcc,true);
+  }
+
+  void fetchPendingOrganizations() {
+    _fetchUsersByType(orgAcc,false);
   }
 
   void fetchAdmins() {
-    _fetchUsersByType(adminAcc);
+    _fetchUsersByType(adminAcc,false);
   }
 
   Future<AppUser?> getAccountInfo(String id) async {
