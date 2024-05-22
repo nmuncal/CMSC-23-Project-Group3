@@ -372,22 +372,44 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   Widget addProof() {
-    return GestureDetector(
-      child: Styles.iconButtonBuilder(
-          null,
-          Icon(Icons.arrow_upward_rounded, color: Styles.mainBlue),
-          Styles.mainBlue),
-      onTap: () async {
-        final filesResult = await FilePicker.platform.pickFiles(
-          allowMultiple: true,
-        );
-        if (filesResult != null && filesResult.files.isNotEmpty) {
-          files = filesResult.files.map((file) => File(file.path!)).toList();
-          setState(() {});
-        }
-      },
+    return Column(
+      children: [
+        for (int i = 0; i < files.length; i++)
+          Row(
+            children: [
+              Expanded(
+                child: Text(files[i].path.split('/').last),
+              ),
+              IconButton(
+                icon: Icon(Icons.delete),
+                onPressed: () {
+                  setState(() {
+                    files.removeAt(i);
+                  });
+                },
+              ),
+            ],
+          ),
+        GestureDetector(
+          child: Styles.iconButtonBuilder(
+              null,
+              Icon(Icons.arrow_upward_rounded, color: Styles.mainBlue),
+              Styles.mainBlue),
+          onTap: () async {
+            final filesResult = await FilePicker.platform.pickFiles(
+              allowMultiple: true,
+            );
+            if (filesResult != null && filesResult.files.isNotEmpty) {
+              files.addAll(filesResult.files.map((file) => File(file.path!)));
+              setState(() {});
+            }
+          },
+        ),
+      ],
     );
   }
+
+  
 
   Widget signUpButton() {
     return GestureDetector(
@@ -408,45 +430,45 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   Future<void> _handleSignUp() async {
-  try {
-    final userAuthProvider = context.read<UserAuthProvider>();
-    final userStorageProvider = context.read<UserStorageProvider>();
+    try {
+      final userAuthProvider = context.read<UserAuthProvider>();
+      final userStorageProvider = context.read<UserStorageProvider>();
 
-    // Attempt sign-up
-    String? uid = await userAuthProvider.signUp(
-      email!,
-      password!,
-      username!,
-      name!,
-      contactNo!,
-      secondaryAddress!.isEmpty ? [address!] : [address!, secondaryAddress!],
-      accountType,
-      false,
-    );
+      // Attempt sign-up
+      String? uid = await userAuthProvider.signUp(
+        email!,
+        password!,
+        username!,
+        name!,
+        contactNo!,
+        secondaryAddress!.isEmpty ? [address!] : [address!, secondaryAddress!],
+        accountType,
+        false,
+      );
 
-    // Check if UID is not null and not an error message
-    if (uid != null && !uid.contains("Error")) {
-      // Proceed with file upload only if the account type is 1 and files are not empty
-      if (accountType == 1 && files.isNotEmpty) {
-        await userStorageProvider.uploadMultipleFiles(files, "$uid/proofOfLegitimacy");
+      // Check if UID is not null and not an error message
+      if (uid != null && !uid.contains("Error")) {
+        // Proceed with file upload only if the account type is 1 and files are not empty
+        if (accountType == 1 && files.isNotEmpty) {
+          await userStorageProvider.uploadMultipleFiles(
+              files, "$uid/proofOfLegitimacy");
+        }
+
+        // If all operations were successful, navigate back
+        if (mounted) {
+          Navigator.pop(context);
+        }
+      } else {
+        // Handle sign-up failure or error message (e.g., display an error message to the user)
+        print("Sign-up failed: $uid");
+        // Optionally, you can show an error message to the user
+        // You can use a SnackBar or showDialog to display an error message
       }
-
-      // If all operations were successful, navigate back
-      if (mounted) {
-        Navigator.pop(context);
-      }
-    } else {
-      // Handle sign-up failure or error message (e.g., display an error message to the user)
-      print("Sign-up failed: $uid");
+    } catch (error) {
+      // Handle any errors that occur during sign up
+      print("Error during sign up: $error");
       // Optionally, you can show an error message to the user
       // You can use a SnackBar or showDialog to display an error message
     }
-  } catch (error) {
-    // Handle any errors that occur during sign up
-    print("Error during sign up: $error");
-    // Optionally, you can show an error message to the user
-    // You can use a SnackBar or showDialog to display an error message
   }
-}
-
 }
