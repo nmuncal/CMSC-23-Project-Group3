@@ -50,7 +50,7 @@ class _OrganizationViewState extends State<OrganizationView> {
     }
 
     return Scaffold(
-      bottomNavigationBar: Container(
+      bottomNavigationBar: !isApproved ? null : Container(
         decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(
@@ -67,7 +67,7 @@ class _OrganizationViewState extends State<OrganizationView> {
           activeColor: Styles.mainBlue,
           backgroundColor: Colors.white,
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-          selectedIndex: isApproved ? _currPageIndex : 3,
+          selectedIndex: _currPageIndex,
           onTabChange: (index) {
             setState(() {
               _currPageIndex = index;

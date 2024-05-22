@@ -67,6 +67,7 @@ class FirebaseAuthAPI {
 
       if (credential.user != null) {
         AppUser newUser = AppUser(
+          uid: credential.user!.uid,
           email: email,
           username: username,
           name: name,
