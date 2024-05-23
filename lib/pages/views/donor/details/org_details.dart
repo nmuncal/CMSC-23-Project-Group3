@@ -63,7 +63,6 @@ class _ViewOrganizationState extends State<ViewOrganization> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => DonatePage(companyName: '', userId: context.read<UserAuthProvider>().user!.uid, companyId: widget.orgId!),
             builder: (context) => DonatePage(
               companyName: context.read<UserProvider>().selectedUser!.name, 
               userId: context.read<UserAuthProvider>().user!.uid, 
