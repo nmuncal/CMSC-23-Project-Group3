@@ -1,7 +1,9 @@
+import 'package:cmsc_23_project_group3/api/firebase_user_api.dart';
 import 'package:cmsc_23_project_group3/pages/views/donor/details/donate_page.dart';
 import 'package:cmsc_23_project_group3/pages/views/organization/details/donations_received_details.dart';
 import 'package:cmsc_23_project_group3/pages/views/organization/details/organization_details.dart';
 import 'package:cmsc_23_project_group3/providers/auth_provider.dart';
+import 'package:cmsc_23_project_group3/providers/user_provider.dart';
 import 'package:cmsc_23_project_group3/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -51,17 +53,22 @@ class _ViewOrganizationState extends State<ViewOrganization> {
     );
   }
 
-  bool _donateIsPressed = false;
   Widget donateButton(){
     return GestureDetector(
-      child: Styles.gradientButtonBuilder('Donate',
-          isPressed:
-              _donateIsPressed), // Use gradientButtonBuilder from styles.dart
+      child: Styles.gradientButtonBuilder('Donate'), // Use gradientButtonBuilder from styles.dart
       onTap: () async {
+
+        context.read<UserProvider>().getAccountInfo(widget.orgId!);
+        
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => DonatePage(companyName: '', userId: context.read<UserAuthProvider>().user!.uid, companyId: widget.orgId!),
+            builder: (context) => DonatePage(
+              companyName: context.read<UserProvider>().selectedUser!.name, 
+              userId: context.read<UserAuthProvider>().user!.uid, 
+              companyId: widget.orgId!
+            ),
           ),
         );
       },
