@@ -6,7 +6,8 @@ class FirebaseUserAPI {
   static final FirebaseFirestore db = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  Stream<List<AppUser>> fetchUsersByAccountType(int accountType,bool approvalStatus) {
+  Stream<List<AppUser>> fetchUsersByAccountType(
+      int accountType, bool approvalStatus) {
     try {
       return db
           .collection('users')
@@ -14,28 +15,40 @@ class FirebaseUserAPI {
           .where('isApproved', isEqualTo: approvalStatus)
           .snapshots()
           .map((querySnapshot) {
-            return querySnapshot.docs.map((doc) {
-              return AppUser.fromJson(doc.data() as Map<String, dynamic>);
-            }).toList();
-          });
+        return querySnapshot.docs.map((doc) {
+          return AppUser.fromJson(doc.data() as Map<String, dynamic>);
+        }).toList();
+      });
     } catch (e) {
       print("Error getting Users: $e");
       return Stream.error("Error getting Users: $e");
     }
   }
 
-
-
-
-
-
-    Future<String?> fetchID() async {
+  Future<String?> fetchID() async {
     try {
       User? user = _auth.currentUser;
       return user?.uid;
     } catch (e) {
       print("Error getting current user ID: $e");
       return null;
+    }
+  }
+
+  Future<bool> isUsernameUnique(String username) async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .where('username', isEqualTo: username)
+          .get();
+
+      if (querySnapshot.size == 0) {
+        return true;
+      }
+
+      return false;
+    } catch (e) {
+      return false;
     }
   }
 

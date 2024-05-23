@@ -36,7 +36,7 @@ class FirebaseAuthAPI {
   Future<String?> signIn(String email, String password) async {
     try {
       await auth.signInWithEmailAndPassword(email: email, password: password);
-      return "";
+      return "Successful!";
     } on FirebaseAuthException catch (e) {
       if (e.code == 'invalid-email') {
         return e.message;
@@ -71,7 +71,6 @@ class FirebaseAuthAPI {
         AppUser newUser = AppUser(
           uid: credential.user!.uid,
           email: email,
-          uid: credential.user!.uid,
           username: username,
           name: name,
           contactNo: contactNo,

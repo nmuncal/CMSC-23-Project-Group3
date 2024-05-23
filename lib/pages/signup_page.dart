@@ -2,10 +2,12 @@ import 'dart:async';
 import 'dart:io';
 import 'package:cmsc_23_project_group3/providers/auth_provider.dart';
 import 'package:cmsc_23_project_group3/providers/storage_provider.dart';
+import 'package:cmsc_23_project_group3/providers/user_provider.dart';
 import 'package:cmsc_23_project_group3/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:email_validator/email_validator.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -31,6 +33,8 @@ class _SignUpPageState extends State<SignUpPage> {
   bool _obscureText = true;
   bool secondaryAddressEnabled = false;
   bool _signUpPressed = false;
+  bool errorSignup = false;
+  String? errorSignupMessage;
 
   @override
   Widget build(BuildContext context) {
@@ -75,6 +79,10 @@ class _SignUpPageState extends State<SignUpPage> {
             accountType == 1 ? proofOfLegitimacy() : Container(),
             const SizedBox(height: 20),
             signUpButton(),
+            const SizedBox(height: 15),
+            errorSignup
+                ? Center(child: Text(errorSignupMessage!, style: TextStyle(color: Colors.red)))
+                : Container(),
             const SizedBox(height: 15),
           ],
         ),
@@ -201,6 +209,9 @@ class _SignUpPageState extends State<SignUpPage> {
       validator: (value) {
         if (value == null || value.isEmpty) {
           return 'Please enter your email';
+        }
+        if (EmailValidator.validate(value) == false) {
+          return "Please enter a valid email format";
         }
         return null;
       },
@@ -372,20 +383,49 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   Widget addProof() {
-    return GestureDetector(
-      child: Styles.iconButtonBuilder(
-          null,
-          Icon(Icons.arrow_upward_rounded, color: Styles.mainBlue),
-          Styles.mainBlue),
-      onTap: () async {
-        final filesResult = await FilePicker.platform.pickFiles(
-          allowMultiple: true,
-        );
-        if (filesResult != null && filesResult.files.isNotEmpty) {
-          files = filesResult.files.map((file) => File(file.path!)).toList();
-          setState(() {});
-        }
-      },
+    return Column(
+      children: [
+        for (int i = 0; i < files.length; i++)
+          Row(
+            children: [
+              Expanded(
+                child: Text(files[i].path.split('/').last),
+              ),
+              IconButton(
+                icon: Icon(Icons.delete),
+                onPressed: () {
+                  setState(() {
+                    files.removeAt(i);
+                  });
+                },
+              ),
+            ],
+          ),
+        GestureDetector(
+          child: Styles.iconButtonBuilder(
+              null,
+              Icon(Icons.arrow_upward_rounded, color: Styles.mainBlue),
+              Styles.mainBlue),
+          onTap: () async {
+            final filesResult = await FilePicker.platform.pickFiles(
+              allowMultiple: true,
+            );
+            if (filesResult != null && filesResult.files.isNotEmpty) {
+              for (var file in filesResult.files) {
+                String fileName = file.path!.split('/').last;
+                // Check if the file name already exists in the list
+                bool fileExists = files.any((existingFile) =>
+                    existingFile.path.split('/').last == fileName);
+                if (!fileExists) {
+                  // If the file is not present, add it to the list
+                  files.add(File(file.path!));
+                }
+              }
+              setState(() {});
+            }
+          },
+        ),
+      ],
     );
   }
 
@@ -408,45 +448,50 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   Future<void> _handleSignUp() async {
-  try {
-    final userAuthProvider = context.read<UserAuthProvider>();
-    final userStorageProvider = context.read<UserStorageProvider>();
+    try {
+      final userAuthProvider = context.read<UserAuthProvider>();
+      final userProvider = context.read<UserProvider>();
+      final userStorageProvider = context.read<UserStorageProvider>();
 
-    // Attempt sign-up
-    String? uid = await userAuthProvider.signUp(
-      email!,
-      password!,
-      username!,
-      name!,
-      contactNo!,
-      secondaryAddress!.isEmpty ? [address!] : [address!, secondaryAddress!],
-      accountType,
-      false,
-    );
+      bool isUsernameUnique = await userProvider.isUsernameUnique(username!);
 
-    // Check if UID is not null and not an error message
-    if (uid != null && !uid.contains("Error")) {
-      // Proceed with file upload only if the account type is 1 and files are not empty
-      if (accountType == 1 && files.isNotEmpty) {
-        await userStorageProvider.uploadMultipleFiles(files, "$uid/proofOfLegitimacy");
+      if (isUsernameUnique) {
+        String? uid = await userAuthProvider.signUp(
+          email!,
+          password!,
+          username!,
+          name!,
+          contactNo!,
+          secondaryAddress!.isEmpty
+              ? [address!]
+              : [address!, secondaryAddress!],
+          accountType,
+          false,
+        );
+
+        if (uid != null && !uid.contains("Error")) {
+          if (accountType == 1 && files.isNotEmpty) {
+            await userStorageProvider.uploadMultipleFiles(
+                files, "$uid/proofOfLegitimacy");
+          }
+
+          if (mounted) {
+            Navigator.pop(context);
+          }
+        } else {
+          setState(() {
+            errorSignup = true;
+            errorSignupMessage = uid ?? "Unknown error occurred";
+          });
+        }
+      } else {
+        setState(() {
+          errorSignup = true;
+          errorSignupMessage = "Username already exists!";
+        });
       }
-
-      // If all operations were successful, navigate back
-      if (mounted) {
-        Navigator.pop(context);
-      }
-    } else {
-      // Handle sign-up failure or error message (e.g., display an error message to the user)
-      print("Sign-up failed: $uid");
-      // Optionally, you can show an error message to the user
-      // You can use a SnackBar or showDialog to display an error message
+    } catch (error) {
+      print("Error during sign up: $error");
     }
-  } catch (error) {
-    // Handle any errors that occur during sign up
-    print("Error during sign up: $error");
-    // Optionally, you can show an error message to the user
-    // You can use a SnackBar or showDialog to display an error message
   }
-}
-
 }

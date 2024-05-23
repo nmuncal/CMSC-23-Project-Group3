@@ -15,32 +15,30 @@ class DonatePage extends StatefulWidget {
   final String companyId;
   final String userId;
 
-  const DonatePage(
-      {super.key,
-      required this.companyName,
-      required this.userId,
-      required this.companyId});
+  const DonatePage({
+    super.key,
+    required this.companyName,
+    required this.userId,
+    required this.companyId
+  });
 
   @override
   _DonatePageState createState() => _DonatePageState();
 }
 
 class _DonatePageState extends State<DonatePage> {
-  bool food = false;
-  bool clothes = false;
-  bool cash = false;
-  bool necessities = false;
+  List<String> donatedItems = [];
   String others = '';
   bool pickUp = false;
   String weight = '';
-  String status = 'pending';
+  String status = 'Pending';
   List<String> addresses = [];
   String donationDrive = '';
   String contactNumber = '';
   DateTime? selectedDate;
   TimeOfDay? selectedTime;
   File? _image;
-  
+
   final picker = ImagePicker();
 
   @override
@@ -58,37 +56,53 @@ class _DonatePageState extends State<DonatePage> {
               Text('Select Donation Types:'),
               CheckboxListTile(
                 title: Text('Food'),
-                value: food,
+                value: donatedItems.contains('Food'),
                 onChanged: (newValue) {
                   setState(() {
-                    food = newValue!;
+                    if (newValue == true) {
+                      donatedItems.add('Food');
+                    } else {
+                      donatedItems.remove('Food');
+                    }
                   });
                 },
               ),
               CheckboxListTile(
                 title: Text('Clothes'),
-                value: clothes,
+                value: donatedItems.contains('Clothes'),
                 onChanged: (newValue) {
                   setState(() {
-                    clothes = newValue!;
+                    if (newValue == true) {
+                      donatedItems.add('Clothes');
+                    } else {
+                      donatedItems.remove('Clothes');
+                    }
                   });
                 },
               ),
               CheckboxListTile(
                 title: Text('Cash'),
-                value: cash,
+                value: donatedItems.contains('Cash'),
                 onChanged: (newValue) {
                   setState(() {
-                    cash = newValue!;
+                    if (newValue == true) {
+                      donatedItems.add('Cash');
+                    } else {
+                      donatedItems.remove('Cash');
+                    }
                   });
                 },
               ),
               CheckboxListTile(
                 title: Text('Necessities'),
-                value: necessities,
+                value: donatedItems.contains('Necessities'),
                 onChanged: (newValue) {
                   setState(() {
-                    necessities = newValue!;
+                    if (newValue == true) {
+                      donatedItems.add('Necessities');
+                    } else {
+                      donatedItems.remove('Necessities');
+                    }
                   });
                 },
               ),
@@ -273,7 +287,6 @@ class _DonatePageState extends State<DonatePage> {
                   addresses.add(newAddress);
                 });
                 Navigator.of(context).pop();
-
               },
             ),
           ],
@@ -299,27 +312,25 @@ class _DonatePageState extends State<DonatePage> {
 
         AppUser? userDetails = await userProvider.getAccountInfo(widget.userId);
 
+        if (others != '') {
+          donatedItems.add(others);
+        }
+
         if (userDetails != null) {
           Donation temp = Donation(
-              food: food,
-              clothes: clothes,
-              cash: cash,
-              necessities: necessities,
-              isPickup: pickUp,
-              weight: weight,
-              addressForPickup: addresses,
-              recipientName: widget.companyName,
-              donorName: userDetails.name,
-              donorId: widget.userId,
-              recipientId: widget.companyId,
-              status: status,
-              contactNumber: contactNumber,
-              donationDrive: donationDrive ,
-              selectedDateandTime: Timestamp.fromDate(selectedDateTime));
+            donatedItems: donatedItems,
+            isPickup: pickUp,
+            weight: weight,
+            addressForPickup: addresses,
+            donorId: widget.userId,
+            recipientId: widget.companyId,
+            status: status,
+            contactNumber: contactNumber,
+            selectedDateandTime: Timestamp.fromDate(selectedDateTime),
+          );
 
           try {
-            String donationId = await donationProvider.addDonation(
-                temp);
+            String donationId = await donationProvider.addDonation(temp);
 
             if (_image != null) {
               try {
