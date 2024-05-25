@@ -1,4 +1,5 @@
 import 'package:cmsc_23_project_group3/api/firebase_user_api.dart';
+import 'package:cmsc_23_project_group3/models/user_model.dart';
 import 'package:cmsc_23_project_group3/pages/views/donor/details/donate_page.dart';
 import 'package:cmsc_23_project_group3/pages/views/organization/details/donations_received_details.dart';
 import 'package:cmsc_23_project_group3/pages/views/organization/details/organization_details.dart';
@@ -17,13 +18,27 @@ class ViewOrganization extends StatefulWidget {
 }
 
 class _ViewOrganizationState extends State<ViewOrganization> {
+  
+  late AppUser? org;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<UserProvider>().getAccountInfo(widget.orgId!);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+
+    org = context.watch<UserProvider>().selectedUser;
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
           color: Styles.mainBlue,
           onPressed: () {
             context.read<UserProvider>().getAccountInfo(null);
@@ -33,26 +48,53 @@ class _ViewOrganizationState extends State<ViewOrganization> {
         backgroundColor: Colors.transparent,
         centerTitle: true,
       ),
-      body: body(),
+      body: org == null ? const Center(child: CircularProgressIndicator()) : body(),
     );
   }
 
+  
+
   Widget body() {
+
     return Stack(
 
       children: [
 
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
           child:Align(
             alignment: Alignment.bottomCenter,
-            child:donateButton(),        
+            child: !(org!.isOpen) ? closedButton() : donateButton(),        
           ),
         ),
         
 
         OrganizationDetails(uid: widget.orgId),     
       ]
+    );
+  }
+
+  Widget closedButton(){
+    return GestureDetector(
+      onTap: () async {
+        final ScaffoldMessengerState scaffoldMessenger = ScaffoldMessenger.of(context);
+        scaffoldMessenger.removeCurrentSnackBar();
+        scaffoldMessenger.showSnackBar(
+          const SnackBar(
+            content: Text("This organization is currently not accepting donations."),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      },
+      child: Styles.iconButtonBuilder(
+        null,
+        Icon(
+          Icons.do_not_disturb_alt_outlined,
+          color: Styles.mainBlue,
+        ),
+        Styles.mainBlue,
+        null,
+      ),
     );
   }
 

@@ -64,7 +64,7 @@ Widget body() {
 
   Widget viewProofButton(){
     return GestureDetector(
-      child: Styles.gradientButtonBuilder('View Proofs'), // Use gradientButtonBuilder from styles.dart
+      child: Styles.iconButtonBuilder(null, Icon(Icons.file_copy, color: Styles.mainBlue), Styles.mainBlue, null), // Use gradientButtonBuilder from styles.dart
       onTap: () async {
 
       },
@@ -76,7 +76,7 @@ Widget body() {
   bool approveButtonisPressed = false;
   Widget approveButton(){
     return GestureDetector(
-      child: Styles.iconButtonBuilder(null, const Icon(Icons.check_rounded, color: Colors.white,), Colors.white, Colors.green, isPressed: approveButtonisPressed),
+      child: Styles.gradientButtonBuilder('Approve'),
       onTap: () async {
         setState(() {
           approveButtonisPressed = true;
