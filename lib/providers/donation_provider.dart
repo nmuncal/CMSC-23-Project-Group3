@@ -37,8 +37,9 @@ class DonationProvider with ChangeNotifier {
     return message;
   }
 
-  Future<String> setDonationUrl(String id, String url) async {
-    String message = await firebaseService.setDonationUrl(id, url);
+
+  Future<String?> updateDonation(String id, Donation details) async {
+    String? message = await firebaseService.updateDonation(id, details.toJson(details));
     notifyListeners();
     return message;
   }

@@ -12,7 +12,7 @@ class DonorProfile extends StatefulWidget {
 class _DonorProfileState extends State<DonorProfile> {
   @override
   Widget build(BuildContext context) {
-    return  ElevatedButton(
+    return  TextButton(
               onPressed:  () {
                 context.read<UserAuthProvider>().signOut();
               },

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:cmsc_23_project_group3/models/user_model.dart';
 import 'package:cmsc_23_project_group3/providers/auth_provider.dart';
 import 'package:cmsc_23_project_group3/providers/storage_provider.dart';
 import 'package:cmsc_23_project_group3/providers/user_provider.dart';
@@ -81,7 +82,9 @@ class _SignUpPageState extends State<SignUpPage> {
             signUpButton(),
             const SizedBox(height: 15),
             errorSignup
-                ? Center(child: Text(errorSignupMessage!, style: TextStyle(color: Colors.red)))
+                ? Center(
+                    child: Text(errorSignupMessage!,
+                        style: TextStyle(color: Colors.red)))
                 : Container(),
             const SizedBox(height: 15),
           ],
@@ -405,7 +408,8 @@ class _SignUpPageState extends State<SignUpPage> {
           child: Styles.iconButtonBuilder(
               null,
               Icon(Icons.arrow_upward_rounded, color: Styles.mainBlue),
-              Styles.mainBlue, null),
+              Styles.mainBlue,
+              null),
           onTap: () async {
             final filesResult = await FilePicker.platform.pickFiles(
               allowMultiple: true,
@@ -454,6 +458,7 @@ class _SignUpPageState extends State<SignUpPage> {
       final userStorageProvider = context.read<UserStorageProvider>();
 
       bool isUsernameUnique = await userProvider.isUsernameUnique(username!);
+      print(isUsernameUnique);
 
       if (isUsernameUnique) {
         String? uid = await userAuthProvider.signUp(
@@ -471,8 +476,14 @@ class _SignUpPageState extends State<SignUpPage> {
 
         if (uid != null && !uid.contains("Error")) {
           if (accountType == 1 && files.isNotEmpty) {
-            await userStorageProvider.uploadMultipleFiles(
-                files, "$uid/proofOfLegitimacy");
+            List<String> urls = await userStorageProvider.uploadMultipleFiles(
+                files, "users/$uid/proofOfLegitimacy");
+
+            AppUser userDetails = AppUser(email: email!, uid: uid, username: username!, name: name!, contactNo: contactNo!, address: secondaryAddress!.isEmpty ? [address!] : [address!, secondaryAddress!], accountType: accountType, isApproved: false,proofOfLegitimacy: urls);
+            
+            await userProvider.updateUser(uid, userDetails);
+
+
           }
 
           if (mounted) {

@@ -347,7 +347,9 @@ class _DonatePageState extends State<DonatePage> {
           String url = await userStorageProvider.uploadSingleFile(
               _image!, "donations/$donationId");
 
-          await donationProvider.setDonationUrl(donationId, url);
+          Donation details = Donation(donatedItems: donatedItems, isPickup: pickUp, weight: weight, donorId: widget.userId, recipientId: widget.companyId, status: status, selectedDateandTime: Timestamp.fromDate(selectedDateTime),url: url);
+
+          await donationProvider.updateDonation(donationId, details);
         }
       }
     } catch (error) {

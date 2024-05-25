@@ -49,24 +49,14 @@ class FirebaseDonationAPI {
     }
   }
 
-  //TODO: ADD UPDATE DONATION STATUS
-  Future<String> editDonationStatus(String status, String id) async {
+  Future<String?> updateDonation(
+      String id, Map<String, dynamic> details) async {
     try {
-      await db.collection("donations").doc(id).update({"status": status});
-
-      return "Successfully edited!";
-    } on FirebaseException catch (e) {
-      return "Error in ${e.code}: ${e.message}";
+      await db.collection('donations').doc(id).update(details);
+    } catch (e) {
+      print("Error getting current donation ID: $e");
+      return null;
     }
-  }
-
-  Future<String> setDonationUrl(String id, String url) async {
-    try {
-      await db.collection("donations").doc(id).update({"url": url});
-
-      return "Successfully set url!";
-    } on FirebaseException catch (e) {
-      return "Error in ${e.code}: ${e.message}";
-    }
+    return null;
   }
 }
