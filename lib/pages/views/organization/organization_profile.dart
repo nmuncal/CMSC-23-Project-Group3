@@ -1,4 +1,5 @@
 import 'package:cmsc_23_project_group3/models/user_model.dart';
+import 'package:cmsc_23_project_group3/pages/views/organization/details/edit_organization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'details/organization_details.dart';
@@ -33,7 +34,7 @@ class _OrganizationProfileState extends State<OrganizationProfile> {
           ),
           const PopupMenuItem(
             value: 'sign out',
-            child: Text("Sign Out")
+            child: Text("Sign Out", style: TextStyle(color: Colors.red),)
           )
         ],
         offset: const Offset(0, -100),
@@ -48,7 +49,12 @@ class _OrganizationProfileState extends State<OrganizationProfile> {
         ),
         onSelected: (value){
           if (value == 'edit'){
-
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+              builder: (context) => EditOrganization(orgId: userId!),
+              ),
+            );
           }
           if (value == 'sign out'){
             context.read<UserAuthProvider>().signOut();
