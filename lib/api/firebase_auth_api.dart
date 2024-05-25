@@ -105,6 +105,21 @@ class FirebaseAuthAPI {
     return "Error";
   }
 
+  Future<String?> fetchEmail(String username) async {
+    try {
+      QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore.instance.collection('users').where("username", isEqualTo: username).get();
+
+      if (snapshot.docs.isNotEmpty) {
+        return snapshot.docs.first.get('email') as String?;
+      } else {
+        return null; // User not found
+      }
+    } catch (e) {
+      print("Error fetching email: $e");
+      return null;
+    }
+  }
+
   Future<void> signOut() async {
     await auth.signOut();
   }

@@ -46,6 +46,14 @@ class UserAuthProvider with ChangeNotifier {
     });
   }
 
+  String? _email;
+  String? get email => _email;
+
+  Future<void> fetchEmail(username) async {
+    _email = await authService.fetchEmail(username);
+    notifyListeners();
+  }
+
   Future<void> _getAccountInfo() async {
     if (user == null) {
       return;
