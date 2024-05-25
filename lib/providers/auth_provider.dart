@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cmsc_23_project_group3/api/firebase_auth_api.dart';
 import 'package:cmsc_23_project_group3/providers/user_provider.dart';
 import 'package:flutter/material.dart';
@@ -10,14 +12,24 @@ class UserAuthProvider with ChangeNotifier {
   late Stream<User?> _userStream;
   bool? _userApprovalStatus;
   AppUser? _accountInfo;
+  Timer? _timer;
 
   UserAuthProvider() {
     authService = FirebaseAuthAPI();
     _initializeStreams();
+
     _userStream.listen((user) {
-      _getAccountInfo();
-      getApprovalStatus;
+      refresh();
     });
+
+    _timer = Timer.periodic(const Duration(seconds: 10), (timer) {
+      refresh();
+    });
+  }
+
+  void refresh(){
+    _getAccountInfo();
+    getApprovalStatus();
   }
 
   Stream<User?> get userStream => _userStream;

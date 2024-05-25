@@ -14,19 +14,6 @@ class OrganizationDetails extends StatefulWidget {
   State<OrganizationDetails> createState() => _OrganizationDetailsState();
 }
 
-class Organization {
-  final String name;
-  final bool isOpen;
-  final String desc;
-
-  Organization({
-    required this.name,
-    required this.isOpen,
-    required this.desc,
-  });
-}
-
-
 class _OrganizationDetailsState extends State<OrganizationDetails> {
 
   AppUser? organization;

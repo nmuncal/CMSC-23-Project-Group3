@@ -25,7 +25,10 @@ class _ViewOrganizationState extends State<ViewOrganization> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
           color: Styles.mainBlue,
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () {
+            context.read<UserProvider>().getAccountInfo(null);
+            Navigator.of(context).pop();
+          },
         ), 
         backgroundColor: Colors.transparent,
         centerTitle: true,

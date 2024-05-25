@@ -10,7 +10,7 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:provider/provider.dart';
 
 class OrganizationView extends StatefulWidget {
-  const OrganizationView({Key? key});
+  const OrganizationView({super.key});
 
   @override
   State<OrganizationView> createState() => _OrganizationViewState();
