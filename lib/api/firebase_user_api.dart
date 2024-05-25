@@ -6,6 +6,22 @@ class FirebaseUserAPI {
   static final FirebaseFirestore db = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
+  Stream<List<AppUser>> fetchUsers() {
+    try {
+      return db
+          .collection('users')
+          .snapshots()
+          .map((querySnapshot) {
+        return querySnapshot.docs.map((doc) {
+          return AppUser.fromJson(doc.data());
+        }).toList();
+      });
+    } catch (e) {
+      print("Error getting Users: $e");
+      return Stream.error("Error getting Users: $e");
+    }
+  }
+
   Stream<List<AppUser>> fetchUsersByAccountType(
       int accountType, bool approvalStatus) {
     try {
@@ -16,7 +32,7 @@ class FirebaseUserAPI {
           .snapshots()
           .map((querySnapshot) {
         return querySnapshot.docs.map((doc) {
-          return AppUser.fromJson(doc.data() as Map<String, dynamic>);
+          return AppUser.fromJson(doc.data());
         }).toList();
       });
     } catch (e) {
@@ -32,6 +48,7 @@ class FirebaseUserAPI {
       print("Error getting current user ID: $e");
       return null;
     }
+    return null;
   }
 
   Future<String?> fetchID() async {

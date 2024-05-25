@@ -1,6 +1,4 @@
-import 'package:cmsc_23_project_group3/models/user_model.dart';
 import 'package:cmsc_23_project_group3/pages/views/organization/details/edit_organization.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'details/organization_details.dart';
 

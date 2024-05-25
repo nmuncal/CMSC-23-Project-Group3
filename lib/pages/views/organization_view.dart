@@ -36,7 +36,7 @@ class _OrganizationViewState extends State<OrganizationView> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<UserAuthProvider>().getApprovalStatus();
     });
   }

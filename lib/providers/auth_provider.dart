@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cmsc_23_project_group3/api/firebase_auth_api.dart';
+import 'package:cmsc_23_project_group3/api/firebase_user_api.dart';
 import 'package:cmsc_23_project_group3/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -8,23 +9,16 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../models/user_model.dart';
 
 class UserAuthProvider with ChangeNotifier {
-  late FirebaseAuthAPI authService;
-  late Stream<User?> _userStream;
+ late FirebaseAuthAPI authService;
+  late Stream<User?> _authStream;
   bool? _userApprovalStatus;
   AppUser? _accountInfo;
-  Timer? _timer;
+  Stream<List<AppUser>>? _dbStream;
+
 
   UserAuthProvider() {
     authService = FirebaseAuthAPI();
     _initializeStreams();
-
-    _userStream.listen((user) {
-      refresh();
-    });
-
-    _timer = Timer.periodic(const Duration(seconds: 10), (timer) {
-      refresh();
-    });
   }
 
   void refresh(){
@@ -32,14 +26,24 @@ class UserAuthProvider with ChangeNotifier {
     getApprovalStatus();
   }
 
-  Stream<User?> get userStream => _userStream;
+  Stream<User?> get userStream => _authStream;
   User? get user => authService.getUser();
   bool? get userApprovalStatus => _userApprovalStatus;
   AppUser? get accountInfo => _accountInfo;
 
   void _initializeStreams() {
-    _userStream = authService.userSignedIn();
+    _authStream = authService.userSignedIn();
     notifyListeners();
+
+    _authStream = authService.userSignedIn();
+    _authStream.listen((user) {
+      refresh();
+    });
+
+    _dbStream = FirebaseUserAPI().fetchUsers();
+    _dbStream!.listen((users) {
+      refresh();
+    });
   }
 
   Future<void> _getAccountInfo() async {
@@ -72,11 +76,5 @@ class UserAuthProvider with ChangeNotifier {
     await authService.signOut();
     _accountInfo = null;
     notifyListeners();
-  }
-
-  @override
-  void dispose() {
-    _timer?.cancel();
-    super.dispose();
   }
 }

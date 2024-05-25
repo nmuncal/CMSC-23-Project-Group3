@@ -7,12 +7,11 @@ import '../models/user_model.dart';
 class UserProvider with ChangeNotifier {
   late FirebaseUserAPI fbService;
 
-  late Stream<List<AppUser>> _uStream = const Stream.empty();
+  Stream<List<AppUser>>? _dbStream;
   late Stream<List<AppUser>> _orgStream = const Stream.empty();
   late Stream<List<AppUser>> _pendingOrgStream = const Stream.empty();
   late Stream<List<AppUser>> _donorStream = const Stream.empty();
 
-  Stream<List<AppUser>> get uStream => _uStream;
   Stream<List<AppUser>> get orgStream => _orgStream;
   Stream<List<AppUser>> get pendingOrgStream => _pendingOrgStream;
   Stream<List<AppUser>> get donorStream => _donorStream;
@@ -23,12 +22,11 @@ class UserProvider with ChangeNotifier {
   AppUser? get selectedUser => _selectedUser;
   bool unique = false;
 
-  Timer? _timer;
-
   UserProvider(){
     fbService = FirebaseUserAPI();
 
-    _timer = Timer.periodic(const Duration(seconds: 10), (timer) {
+    _dbStream = FirebaseUserAPI().fetchUsers();
+    _dbStream!.listen((users) {
       refresh();
     });
   }
@@ -37,7 +35,6 @@ class UserProvider with ChangeNotifier {
     if (_selectedUser != null) getAccountInfo(_selectedUser!.uid);
   }
 
-  // Private method to handle the fetching logic.
   void _fetchUsersByType(int accountType, bool approvalStatus) {
     try {
       var newStream = fbService.fetchUsersByAccountType(accountType, approvalStatus);
@@ -53,16 +50,13 @@ class UserProvider with ChangeNotifier {
           break;
       }
 
-      _uStream = fbService.fetchUsersByAccountType(accountType, approvalStatus);
       notifyListeners();
     } catch (e) {
       print('Error fetching users: $e');
-      _uStream = const Stream.empty();
       notifyListeners();
     }
   }
 
-  // Public methods to fetch specific user types.
   void fetchDonors() {
     _fetchUsersByType(donorAcc,false);
   }
@@ -97,16 +91,9 @@ class UserProvider with ChangeNotifier {
     return unique;
   }
 
-
   Future<String?> updateUser(String id, AppUser details) async {
     String? message = await fbService.updateUser(id, details.toJson(details));
     notifyListeners();
     return message;
-  }
-
-  @override
-  void dispose() {
-    _timer?.cancel();
-    super.dispose();
   }
 }

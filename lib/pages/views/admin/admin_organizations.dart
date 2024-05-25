@@ -3,7 +3,6 @@ import 'package:cmsc_23_project_group3/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '/models/user_model.dart';
-import 'details/donor_details.dart';
 
 class AdminOrganizations extends StatefulWidget {
   const AdminOrganizations({super.key});

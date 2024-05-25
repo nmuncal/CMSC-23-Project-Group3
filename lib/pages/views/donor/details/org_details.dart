@@ -1,7 +1,7 @@
-import 'package:cmsc_23_project_group3/api/firebase_user_api.dart';
+// ignore_for_file: must_be_immutable
+
 import 'package:cmsc_23_project_group3/models/user_model.dart';
 import 'package:cmsc_23_project_group3/pages/views/donor/details/donate_page.dart';
-import 'package:cmsc_23_project_group3/pages/views/organization/details/donations_received_details.dart';
 import 'package:cmsc_23_project_group3/pages/views/organization/details/organization_details.dart';
 import 'package:cmsc_23_project_group3/providers/auth_provider.dart';
 import 'package:cmsc_23_project_group3/providers/user_provider.dart';

@@ -1,4 +1,3 @@
-import 'package:cmsc_23_project_group3/pages/views/admin/details/org_details.dart';
 import 'package:cmsc_23_project_group3/providers/auth_provider.dart';
 import 'package:cmsc_23_project_group3/providers/user_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -34,7 +33,7 @@ class _DonorHomeState extends State<DonorHome> {
       body: Consumer<UserProvider>(
         builder: (context, userProvider, child) {
           return StreamBuilder<List<AppUser>>(
-            stream: userProvider.uStream,
+            stream: userProvider.orgStream,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
@@ -56,10 +55,6 @@ class _DonorHomeState extends State<DonorHome> {
                           MaterialPageRoute(
                             builder: (context) => 
                             ViewOrganization(orgId: organization.uid)
-                            
-                            
-                            
-                            // CompanyDetailPage(companyName: organization.name, userId:user!.uid,companyId: organization.uid,),
                           ),
                         );
                       },

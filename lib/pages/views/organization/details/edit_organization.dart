@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:cmsc_23_project_group3/models/user_model.dart';
 import 'package:cmsc_23_project_group3/providers/user_provider.dart';
 import 'package:cmsc_23_project_group3/styles.dart';
