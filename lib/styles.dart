@@ -82,16 +82,18 @@ class Styles{
     String? imagePath,
     Icon? icon, 
     Color? color,
+    Color? bgColor,
     {bool isPressed = false,
   }) {
     return AnimatedContainer(
       alignment: Alignment.center,
       duration: const Duration(milliseconds: 1000),
+      height: 60,
       width: double.infinity,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: color ?? Styles.mainBlue, width: 1),
-        color: Colors.white,
+        color: bgColor ?? Colors.white,
       ),
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
       child: isPressed

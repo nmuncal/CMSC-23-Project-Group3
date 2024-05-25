@@ -27,7 +27,7 @@ class _DonorHomeState extends State<AdminDonors> {
       body: Consumer<UserProvider>(
         builder: (context, userProvider, child) {
           return StreamBuilder<List<AppUser>>(
-            stream: userProvider.uStream,
+            stream: userProvider.donorStream,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());

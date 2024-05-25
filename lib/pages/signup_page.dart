@@ -361,7 +361,7 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget addSecondaryAddressButton() {
     return GestureDetector(
       child: Styles.iconButtonBuilder(
-          null, Icon(Icons.add, color: Styles.mainBlue), Styles.mainBlue),
+          null, Icon(Icons.add, color: Styles.mainBlue), Styles.mainBlue, null),
       onTap: () {
         setState(() {
           secondaryAddressEnabled = true;
@@ -405,7 +405,7 @@ class _SignUpPageState extends State<SignUpPage> {
           child: Styles.iconButtonBuilder(
               null,
               Icon(Icons.arrow_upward_rounded, color: Styles.mainBlue),
-              Styles.mainBlue),
+              Styles.mainBlue, null),
           onTap: () async {
             final filesResult = await FilePicker.platform.pickFiles(
               allowMultiple: true,

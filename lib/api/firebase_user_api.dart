@@ -25,6 +25,15 @@ class FirebaseUserAPI {
     }
   }
 
+  Future<String?> updateUser(String id, Map<String, dynamic> details) async {
+    try {
+      await db.collection('users').doc(id).update(details);
+    } catch (e) {
+      print("Error getting current user ID: $e");
+      return null;
+    }
+  }
+
   Future<String?> fetchID() async {
     try {
       User? user = _auth.currentUser;

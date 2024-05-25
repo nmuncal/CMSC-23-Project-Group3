@@ -28,7 +28,7 @@ class _OrganizationHomeState extends State<AdminOrganizations> {
       body: Consumer<UserProvider>(
         builder: (context, userProvider, child) {
           return StreamBuilder<List<AppUser>>(
-            stream: userProvider.uStream,
+            stream: userProvider.orgStream,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
@@ -41,14 +41,14 @@ class _OrganizationHomeState extends State<AdminOrganizations> {
                 return ListView.builder(
                   itemCount: organizations.length,
                   itemBuilder: (context, index) {
-                    final donor = organizations[index];
+                    final org = organizations[index];
                     return ListTile(
-                      title: Text(donor.name),
+                      title: Text(org.name),
                                             onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => OrganizationDetailPage(organizationName: donor.name),
+                            builder: (context) => OrganizationDetailPage(orgId: org.uid, pending: false),
                           ),
                         );
                       },

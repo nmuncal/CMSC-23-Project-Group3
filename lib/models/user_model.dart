@@ -28,6 +28,32 @@ class AppUser {
     this.desc = ''
   });
 
+   AppUser copyWith({
+    String? email,
+    String? uid,
+    String? username,
+    String? name,
+    String? contactNo,
+    List<String>? address,
+    int? accountType,
+    bool? isApproved,
+    bool? isOpen,
+    String? desc,
+  }) {
+    return AppUser(
+      email: email ?? this.email,
+      uid: uid ?? this.uid,
+      username: username ?? this.username,
+      name: name ?? this.name,
+      contactNo: contactNo ?? this.contactNo,
+      address: address ?? this.address,
+      accountType: accountType ?? this.accountType,
+      isApproved: isApproved ?? this.isApproved,
+      isOpen: isOpen ?? this.isOpen,
+      desc: desc ?? this.desc,
+    );
+  }
+
   factory AppUser.fromJson(Map<String, dynamic> json) {
     return AppUser(
       email: json['email'],

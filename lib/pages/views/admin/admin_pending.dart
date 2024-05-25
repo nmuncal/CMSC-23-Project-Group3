@@ -1,8 +1,8 @@
+import 'package:cmsc_23_project_group3/pages/views/admin/details/org_details.dart';
 import 'package:cmsc_23_project_group3/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '/models/user_model.dart';
-import 'details/donor_details.dart';
 
 class AdminPending extends StatefulWidget {
   const AdminPending({super.key});
@@ -27,7 +27,7 @@ class _PendingOrganizationHomeState extends State<AdminPending> {
       body: Consumer<UserProvider>(
         builder: (context, userProvider, child) {
           return StreamBuilder<List<AppUser>>(
-            stream: userProvider.uStream,
+            stream: userProvider.pendingOrgStream,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
@@ -47,7 +47,7 @@ class _PendingOrganizationHomeState extends State<AdminPending> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => DonorDetailPage(donorName: pendingOrg.name),
+                            builder: (context) => OrganizationDetailPage(orgId: pendingOrg.uid, pending: true),
                           ),
                         );
                       },

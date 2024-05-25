@@ -212,7 +212,7 @@ class _SignInPageState extends State<SignInPage> {
   Widget googleSignInButton() {
     return GestureDetector(
         child: Styles.iconButtonBuilder(
-            'lib/assets/ico_google.png', null, Styles.mainBlue,
+            'lib/assets/ico_google.png', null, Styles.mainBlue, null,
             isPressed: _googleSignInPressed),
         onTap: () {
           setState(() {
