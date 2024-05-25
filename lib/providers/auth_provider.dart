@@ -73,4 +73,10 @@ class UserAuthProvider with ChangeNotifier {
     _accountInfo = null;
     notifyListeners();
   }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
 }

@@ -79,4 +79,10 @@ class UserProvider with ChangeNotifier {
     notifyListeners();
     return unique;
   }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
 }
