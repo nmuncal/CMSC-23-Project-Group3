@@ -5,16 +5,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 class FirebaseDonationAPI {
   static final FirebaseFirestore db = FirebaseFirestore.instance;
 
-  Future<String> addDonation(
-      Map<String, dynamic> donation) async {
+  Future<String> addDonation(Map<String, dynamic> donation) async {
     try {
-   
-        DocumentReference doc = await db.collection("donations").add(donation);
+      DocumentReference doc = await db.collection("donations").add(donation);
 
-        return doc.id;
-  
-
-
+      return doc.id;
     } on FirebaseException catch (e) {
       return "Error in ${e.code}: ${e.message}";
     }
@@ -24,7 +19,8 @@ class FirebaseDonationAPI {
     try {
       return db
           .collection("donations")
-          .where('donorId', isEqualTo: userId).snapshots()
+          .where('donorId', isEqualTo: userId)
+          .snapshots()
           .map((querySnapshot) {
         return querySnapshot.docs.map((doc) {
           return Donation.fromJson(doc.data() as Map<String, dynamic>);
@@ -36,12 +32,12 @@ class FirebaseDonationAPI {
     }
   }
 
-
   Stream<List<Donation>> fetchDonationsReceived(String userId) {
     try {
       return db
           .collection("donations")
-          .where('recipientId', isEqualTo: userId).snapshots()
+          .where('recipientId', isEqualTo: userId)
+          .snapshots()
           .map((querySnapshot) {
         return querySnapshot.docs.map((doc) {
           return Donation.fromJson(doc.data() as Map<String, dynamic>);
@@ -54,7 +50,7 @@ class FirebaseDonationAPI {
   }
 
   //TODO: ADD UPDATE DONATION STATUS
-    Future<String> editDonationStatus(String status,String id) async {
+  Future<String> editDonationStatus(String status, String id) async {
     try {
       await db.collection("donations").doc(id).update({"status": status});
 
@@ -64,4 +60,13 @@ class FirebaseDonationAPI {
     }
   }
 
+  Future<String> setDonationUrl(String id, String url) async {
+    try {
+      await db.collection("donations").doc(id).update({"url": url});
+
+      return "Successfully set url!";
+    } on FirebaseException catch (e) {
+      return "Error in ${e.code}: ${e.message}";
+    }
+  }
 }
