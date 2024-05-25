@@ -9,19 +9,19 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../models/user_model.dart';
 
 class UserAuthProvider with ChangeNotifier {
- late FirebaseAuthAPI authService;
+  late FirebaseAuthAPI authService;
   late Stream<User?> _authStream;
   bool? _userApprovalStatus;
   AppUser? _accountInfo;
   Stream<List<AppUser>>? _dbStream;
-
+  bool unique = false;
 
   UserAuthProvider() {
     authService = FirebaseAuthAPI();
     _initializeStreams();
   }
 
-  void refresh(){
+  void refresh() {
     _getAccountInfo();
     getApprovalStatus();
   }
@@ -46,6 +46,14 @@ class UserAuthProvider with ChangeNotifier {
     });
   }
 
+  String? _email;
+  String? get email => _email;
+
+  Future<void> fetchEmail(username) async {
+    _email = await authService.fetchEmail(username);
+    notifyListeners();
+  }
+
   Future<void> _getAccountInfo() async {
     if (user == null) {
       return;
@@ -60,8 +68,16 @@ class UserAuthProvider with ChangeNotifier {
   }
 
   Future<String?> signUp(
-    String email, String password, String username, String name, String contactNo, List<String> address, int accountType, bool isApproved) async {
-    String? uid = await authService.signUp(email, password, username, name, contactNo, address, accountType, isApproved);
+      String email,
+      String password,
+      String username,
+      String name,
+      String contactNo,
+      List<String> address,
+      int accountType,
+      bool isApproved) async {
+    String? uid = await authService.signUp(email, password, username, name,
+        contactNo, address, accountType, isApproved);
     notifyListeners();
     return uid;
   }
@@ -70,6 +86,12 @@ class UserAuthProvider with ChangeNotifier {
     String? message = await authService.signIn(email, password);
     notifyListeners();
     return message;
+  }
+
+  Future<bool> isUsernameUnique(String username) async {
+    unique = await authService.isUsernameUnique(username);
+    notifyListeners();
+    return unique;
   }
 
   Future<void> signOut() async {

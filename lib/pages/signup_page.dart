@@ -457,7 +457,8 @@ class _SignUpPageState extends State<SignUpPage> {
       final userProvider = context.read<UserProvider>();
       final userStorageProvider = context.read<UserStorageProvider>();
 
-      bool isUsernameUnique = await userProvider.isUsernameUnique(username!);
+      bool isUsernameUnique =
+          await userAuthProvider.isUsernameUnique(username!);
       print(isUsernameUnique);
 
       if (isUsernameUnique) {
@@ -479,11 +480,20 @@ class _SignUpPageState extends State<SignUpPage> {
             List<String> urls = await userStorageProvider.uploadMultipleFiles(
                 files, "users/$uid/proofOfLegitimacy");
 
-            AppUser userDetails = AppUser(email: email!, uid: uid, username: username!, name: name!, contactNo: contactNo!, address: secondaryAddress!.isEmpty ? [address!] : [address!, secondaryAddress!], accountType: accountType, isApproved: false,proofOfLegitimacy: urls);
-            
+            AppUser userDetails = AppUser(
+                email: email!,
+                uid: uid,
+                username: username!,
+                name: name!,
+                contactNo: contactNo!,
+                address: secondaryAddress!.isEmpty
+                    ? [address!]
+                    : [address!, secondaryAddress!],
+                accountType: accountType,
+                isApproved: false,
+                proofOfLegitimacy: urls);
+
             await userProvider.updateUser(uid, userDetails);
-
-
           }
 
           if (mounted) {

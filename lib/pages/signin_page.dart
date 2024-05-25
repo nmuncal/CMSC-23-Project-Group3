@@ -4,6 +4,7 @@ import 'package:cmsc_23_project_group3/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:cmsc_23_project_group3/styles.dart';
 import 'package:provider/provider.dart'; // Uses the styles class to make reusable widgets/components
+import 'package:email_validator/email_validator.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
@@ -97,7 +98,9 @@ class _SignInPageState extends State<SignInPage> {
             signInButton(),
             const SizedBox(height: 15),
             errorSignIn
-                ? Center(child: Text(errorMessage!, style: TextStyle(color: Colors.red)))
+                ? Center(
+                    child: Text(errorMessage!,
+                        style: TextStyle(color: Colors.red)))
                 : Container(),
             const SizedBox(height: 15),
 
@@ -189,6 +192,12 @@ class _SignInPageState extends State<SignInPage> {
           });
 
           _formKey.currentState!.save();
+
+          if (EmailValidator.validate(email!) == false) {
+            await context.read<UserAuthProvider>().fetchEmail(email);
+            email = context.read<UserAuthProvider>().email;
+          }
+
           String? message = await context
               .read<UserAuthProvider>()
               .authService
