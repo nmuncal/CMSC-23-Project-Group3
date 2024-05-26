@@ -34,7 +34,7 @@ class _OrgProofState extends State<OrgProof> {
     org = context.watch<UserProvider>().selectedUser;
 
     return org == null ? 
-    const Center(child: CircularProgressIndicator()) :
+    const Scaffold(body:Center(child: CircularProgressIndicator())) :
     Scaffold(
         appBar: AppBar(
           scrolledUnderElevation: 0,
