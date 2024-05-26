@@ -68,7 +68,7 @@ class _DonorDetailsState extends State<DonorDetails> {
 
   Widget aboutSection(){
     return Column(children: [
-      Text(donor!.username, 
+      Text(donor!.name, 
         style: TextStyle(
           color: Styles.mainBlue, 
           fontSize: 24, 
@@ -77,7 +77,7 @@ class _DonorDetailsState extends State<DonorDetails> {
       ),
     
       Text(
-        "@${donor!.name}",
+        "@${donor!.username}",
         textAlign: TextAlign.center,
         style: TextStyle(
           color: Styles.darkerGray, 

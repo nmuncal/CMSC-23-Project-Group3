@@ -1,4 +1,5 @@
 import 'package:cmsc_23_project_group3/models/user_model.dart';
+import 'package:cmsc_23_project_group3/pages/views/admin/details/org_proofs.dart';
 import 'package:cmsc_23_project_group3/pages/views/organization/details/organization_details.dart';
 import 'package:cmsc_23_project_group3/providers/user_provider.dart';
 import 'package:cmsc_23_project_group3/styles.dart';
@@ -75,7 +76,12 @@ Widget body() {
     return GestureDetector(
       child: Styles.iconButtonBuilder(null, Icon(Icons.file_copy, color: Styles.mainBlue), Styles.mainBlue, null), // Use gradientButtonBuilder from styles.dart
       onTap: () async {
-
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => OrgProof(orgId: widget.orgId),
+          ),
+        );
       },
 
       // SIGN IN LOGIC
