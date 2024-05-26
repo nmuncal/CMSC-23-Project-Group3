@@ -29,6 +29,10 @@ class UserProvider with ChangeNotifier {
     _dbStream!.listen((users) {
       refresh();
     });
+
+    fetchDonors();
+    fetchOrganizations();
+    fetchPendingOrganizations();
   }
 
   void refresh(){

@@ -17,7 +17,7 @@ class _DonorHomeState extends State<AdminDonors> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<UserProvider>(context, listen: false).fetchDonors();
+      context.read<UserProvider>().getAccountInfo(null);
     });
   }
 

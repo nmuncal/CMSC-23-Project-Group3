@@ -1,4 +1,6 @@
+import 'package:cmsc_23_project_group3/providers/user_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'details/donations_received_details.dart';
 
 class OrganizationDonations extends StatefulWidget {
@@ -16,6 +18,14 @@ class _OrganizationDonationsState extends State<OrganizationDonations> {
     'Donor C',
     'Donor D'
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<UserProvider>().getAccountInfo(null);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

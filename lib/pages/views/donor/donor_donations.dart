@@ -2,6 +2,7 @@ import 'package:cmsc_23_project_group3/models/donation_model.dart';
 import 'package:cmsc_23_project_group3/pages/views/donor/donation_detail.dart';
 import 'package:cmsc_23_project_group3/providers/auth_provider.dart';
 import 'package:cmsc_23_project_group3/providers/donation_provider.dart';
+import 'package:cmsc_23_project_group3/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -18,12 +19,12 @@ class _DonorDonationsState extends State<DonorDonations> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-       final user = context.read<UserAuthProvider>().user;
+      context.read<UserProvider>().getAccountInfo(null);
+      final user = context.read<UserAuthProvider>().user;
       if (user != null) {
         Provider.of<DonationProvider>(context, listen: false).fetchDonationsGiven(user.uid);
         print(user.uid);
       }
-   
     });
   }
 

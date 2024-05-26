@@ -19,7 +19,7 @@ class _DonorHomeState extends State<DonorHome> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<UserProvider>(context, listen: false).fetchOrganizations();
+      context.read<UserProvider>().getAccountInfo(null);
     });
   }
 

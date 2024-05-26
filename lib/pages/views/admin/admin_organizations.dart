@@ -17,7 +17,7 @@ class _OrganizationHomeState extends State<AdminOrganizations> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<UserProvider>(context, listen: false).fetchOrganizations();
+      context.read<UserProvider>().getAccountInfo(null);
     });
   }
 

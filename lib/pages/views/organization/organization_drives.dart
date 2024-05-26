@@ -1,4 +1,6 @@
+import 'package:cmsc_23_project_group3/providers/user_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'details/drive_details.dart';
 
 class OrganizationDrives extends StatefulWidget {
@@ -16,6 +18,14 @@ class _OrganizationDrivesState extends State<OrganizationDrives> {
     'Drive 3',
     'Drive 4',
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<UserProvider>().getAccountInfo(null);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

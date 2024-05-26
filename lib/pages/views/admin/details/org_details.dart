@@ -21,7 +21,6 @@ class _OrganizationDetailPageState extends State<OrganizationDetailPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<UserProvider>().getAccountInfo(null);
       context.read<UserProvider>().getAccountInfo(widget.orgId);
     });
   }

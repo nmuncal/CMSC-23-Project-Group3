@@ -17,7 +17,7 @@ class _PendingOrganizationHomeState extends State<AdminPending> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<UserProvider>(context, listen: false).fetchPendingOrganizations();
+      context.read<UserProvider>().getAccountInfo(null);
     });
   }
 
