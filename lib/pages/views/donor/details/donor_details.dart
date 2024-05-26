@@ -101,7 +101,7 @@ class _DonorDetailsState extends State<DonorDetails> {
     ]);
   }
 
-  Widget imageSection(){
+   Widget imageSection(){
    return Stack(
       children: [
         const SizedBox(
@@ -111,8 +111,10 @@ class _DonorDetailsState extends State<DonorDetails> {
         SizedBox(
           height: 200,
           width: double.infinity,
-          child: Image.asset(
-            cover, // Profile cover image
+          child: Image.network(
+            donor!.coverPhoto != '' ?
+            donor!.profilePhoto:
+            'https://abetterchance.org/wp-content/uploads/2022/05/Placeholder-Landscape.jpg', // Profile cover image
             fit: BoxFit.cover,
           ),
         ),
@@ -128,8 +130,11 @@ class _DonorDetailsState extends State<DonorDetails> {
               shape: BoxShape.circle,
             ),
             child: ClipOval(
-              child: Image.asset(
-                icon, // Circular image
+              child: Image.network(
+                donor!.profilePhoto != '' ?
+                donor!.profilePhoto:
+                'https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_1280.png'
+                , // Circular image
                 fit: BoxFit.cover,
               ),
             ),

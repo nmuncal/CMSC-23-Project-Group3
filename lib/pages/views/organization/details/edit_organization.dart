@@ -39,7 +39,7 @@ class _EditOrganizationState extends State<EditOrganization> {
             org!.name,
             style: TextStyle(
                 color: Styles.mainBlue,
-                fontSize: 36,
+                fontSize: 18,
                 fontWeight: FontWeight.bold),
           ),
           backgroundColor: Colors.white,
