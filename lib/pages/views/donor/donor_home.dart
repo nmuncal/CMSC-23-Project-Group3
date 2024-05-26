@@ -45,7 +45,7 @@ class _DonorHomeState extends State<DonorHome> {
               } else {
                 final organizations = snapshot.data!;
                 return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
                   child: ListView.builder(
                     itemCount: organizations.length,
                     itemBuilder: (context, index) {
@@ -63,20 +63,23 @@ class _DonorHomeState extends State<DonorHome> {
   }
 
   Widget componentTiles(AppUser user) {
-    return ListTile(
+  return Card(
+    elevation: 1,
+    color: Colors.white,
+    shape: RoundedRectangleBorder(
+      borderRadius: Styles.rounded,
+    ),
+    child: ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
       leading: Stack(
         children: [
           CircleAvatar(
             backgroundImage: NetworkImage(
-              user.profilePhoto != '' ?
-              user.profilePhoto :
-              Styles.defaultProfile
+              user.profilePhoto != '' ? user.profilePhoto : Styles.defaultProfile,
             ),
             backgroundColor: Colors.transparent,
-            radius: 30, 
+            radius: 30.0,
           ),
-
           Positioned.fill(
             child: Container(
               decoration: BoxDecoration(
@@ -90,9 +93,10 @@ class _DonorHomeState extends State<DonorHome> {
           ),
         ],
       ),
-      title: Text(user.name, style: TextStyle(color: Styles.mainBlue, fontSize: 24),),
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      title: Text(user.name, style: TextStyle(color: Styles.mainBlue, fontSize: 24), maxLines: 1, overflow: TextOverflow.ellipsis,
+      ),
+      subtitle: Column( // Use Column for vertical layout
+        crossAxisAlignment: CrossAxisAlignment.start, // Align text to the left
         children: [
           Text("@${user.username}", style: TextStyle(color: Styles.lightestBlue, fontStyle: FontStyle.italic)),
           const SizedBox(height: 5),
@@ -100,8 +104,8 @@ class _DonorHomeState extends State<DonorHome> {
             user.desc != '' ? user.desc : "This organization is still crafting their story!",
             style: const TextStyle(color: Colors.black54),
             maxLines: 2,
-            overflow: TextOverflow.ellipsis
-          )
+            overflow: TextOverflow.ellipsis,
+          ),
         ],
       ),
       trailing: Icon(Icons.navigate_next_rounded, color: Styles.darkerGray),
@@ -113,12 +117,9 @@ class _DonorHomeState extends State<DonorHome> {
           ),
         );
       },
-      shape: RoundedRectangleBorder(
-        side: BorderSide(color: Styles.darkerGray, width: 1),
-        borderRadius: Styles.rounded
-      ),
-    );
-  }
+    ),
+  );
+}
 
   AppBar _buildAppBar(BuildContext context) {
     return AppBar(

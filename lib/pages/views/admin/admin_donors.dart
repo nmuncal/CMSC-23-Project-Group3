@@ -39,7 +39,7 @@ class _DonorHomeState extends State<AdminDonors> {
               } else {
                 final donors = snapshot.data!;
                 return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
                   child: ListView.builder(
                     itemCount: donors.length,
                     itemBuilder: (context, index) {

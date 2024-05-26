@@ -39,7 +39,7 @@ class _OrganizationHomeState extends State<AdminOrganizations> {
               } else {
                 final organizations = snapshot.data!;
                 return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
                   child: ListView.builder(
                     itemCount: organizations.length,
                     itemBuilder: (context, index) {
