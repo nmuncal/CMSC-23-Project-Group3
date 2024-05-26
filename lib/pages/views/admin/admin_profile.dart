@@ -12,7 +12,7 @@ class AdminProfile extends StatefulWidget {
 class _AdminProfileState extends State<AdminProfile> {
   @override
   Widget build(BuildContext context) {
-    return  ElevatedButton(
+    return  TextButton(
               onPressed:  () {
                 context.read<UserAuthProvider>().signOut();
               },

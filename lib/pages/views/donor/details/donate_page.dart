@@ -15,12 +15,11 @@ class DonatePage extends StatefulWidget {
   final String companyId;
   final String userId;
 
-  const DonatePage({
-    super.key,
-    required this.companyName,
-    required this.userId,
-    required this.companyId
-  });
+  const DonatePage(
+      {super.key,
+      required this.companyName,
+      required this.userId,
+      required this.companyId});
 
   @override
   _DonatePageState createState() => _DonatePageState();
@@ -316,8 +315,10 @@ class _DonatePageState extends State<DonatePage> {
           donatedItems.add(others);
         }
 
-        if (userDetails != null) {
-          Donation temp = Donation(
+        Donation temp;
+
+        if (pickUp == true) {
+          temp = Donation(
             donatedItems: donatedItems,
             isPickup: pickUp,
             weight: weight,
@@ -328,27 +329,30 @@ class _DonatePageState extends State<DonatePage> {
             contactNumber: contactNumber,
             selectedDateandTime: Timestamp.fromDate(selectedDateTime),
           );
+        } else {
+          temp = Donation(
+            donatedItems: donatedItems,
+            isPickup: pickUp,
+            weight: weight,
+            donorId: widget.userId,
+            recipientId: widget.companyId,
+            status: status,
+            selectedDateandTime: Timestamp.fromDate(selectedDateTime),
+          );
+        }
 
-          try {
-            String donationId = await donationProvider.addDonation(temp);
+        String donationId = await donationProvider.addDonation(temp);
 
-            if (_image != null) {
-              try {
-                await userStorageProvider.uploadSingleFile(_image!,
-                    "${widget.userId}/donationsGiven/$donationId");
-                await userStorageProvider.uploadSingleFile(_image!,
-                    "${widget.companyId}/donationsReceived/$donationId");
-              } catch (e) {
-                print("$e");
-              }
-            }
-          } catch (e) {
-            print("Unable to send donation : $e");
-          }
+        if (_image != null) {
+          String url = await userStorageProvider.uploadSingleFile(
+              _image!, "donations/$donationId");
+
+          Donation details = Donation(donatedItems: donatedItems, isPickup: pickUp, weight: weight, donorId: widget.userId, recipientId: widget.companyId, status: status, selectedDateandTime: Timestamp.fromDate(selectedDateTime),url: url);
+
+          await donationProvider.updateDonation(donationId, details);
         }
       }
     } catch (error) {
-      // Handle any errors
       print("Error during donation sending: $error");
     }
   }

@@ -105,7 +105,7 @@ class FirebaseAuthAPI {
     return "Error";
   }
 
-  Future<String?> fetchEmail(String username) async {
+   Future<String?> fetchEmail(String username) async {
     try {
       QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore.instance.collection('users').where("username", isEqualTo: username).get();
 
@@ -120,7 +120,29 @@ class FirebaseAuthAPI {
     }
   }
 
+  Future<bool> isUsernameUnique(String username) async {
+  try {
+    QuerySnapshot querySnapshot = await db
+        .collection('users')
+        .where('username', isEqualTo: username)
+        .get();
+
+    // Logging the size of the query result
+    print('Query size: ${querySnapshot.size}');
+
+    if (querySnapshot.size == 0) {
+      return true;
+    }
+    return false;
+  } catch (e) {
+    // Logging the error
+    print('Error in isUsernameUnique: $e');
+    return false;
+  }
+}
+
   Future<void> signOut() async {
     await auth.signOut();
   }
+
 }

@@ -5,16 +5,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 class FirebaseDonationAPI {
   static final FirebaseFirestore db = FirebaseFirestore.instance;
 
-  Future<String> addDonation(
-      Map<String, dynamic> donation) async {
+  Future<String> addDonation(Map<String, dynamic> donation) async {
     try {
-   
-        DocumentReference doc = await db.collection("donations").add(donation);
+      DocumentReference doc = await db.collection("donations").add(donation);
 
-        return doc.id;
-  
-
-
+      return doc.id;
     } on FirebaseException catch (e) {
       return "Error in ${e.code}: ${e.message}";
     }
@@ -24,7 +19,8 @@ class FirebaseDonationAPI {
     try {
       return db
           .collection("donations")
-          .where('donorId', isEqualTo: userId).snapshots()
+          .where('donorId', isEqualTo: userId)
+          .snapshots()
           .map((querySnapshot) {
         return querySnapshot.docs.map((doc) {
           return Donation.fromJson(doc.data() as Map<String, dynamic>);
@@ -35,13 +31,13 @@ class FirebaseDonationAPI {
       return Stream.error("Error getting donations: $e");
     }
   }
-
 
   Stream<List<Donation>> fetchDonationsReceived(String userId) {
     try {
       return db
           .collection("donations")
-          .where('recipientId', isEqualTo: userId).snapshots()
+          .where('recipientId', isEqualTo: userId)
+          .snapshots()
           .map((querySnapshot) {
         return querySnapshot.docs.map((doc) {
           return Donation.fromJson(doc.data() as Map<String, dynamic>);
@@ -53,15 +49,14 @@ class FirebaseDonationAPI {
     }
   }
 
-  //TODO: ADD UPDATE DONATION STATUS
-    Future<String> editDonationStatus(String status,String id) async {
+  Future<String?> updateDonation(
+      String id, Map<String, dynamic> details) async {
     try {
-      await db.collection("donations").doc(id).update({"status": status});
-
-      return "Successfully edited!";
-    } on FirebaseException catch (e) {
-      return "Error in ${e.code}: ${e.message}";
+      await db.collection('donations').doc(id).update(details);
+    } catch (e) {
+      print("Error getting current donation ID: $e");
+      return null;
     }
+    return null;
   }
-
 }

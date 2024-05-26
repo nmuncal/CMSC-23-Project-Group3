@@ -11,32 +11,36 @@ class Donation {
   final String status;
   final String contactNumber;
   final Timestamp selectedDateandTime;
+  final String url;
+
 
   Donation({
     required this.donatedItems,
     required this.isPickup,
     required this.weight,
-    required this.addressForPickup,
     required this.donorId,
     required this.recipientId,
     required this.status,
-    required this.contactNumber,
+    this.contactNumber = '',
     required this.selectedDateandTime,
+    this.addressForPickup = const [],
+    this.url = '',
   });
 
   factory Donation.fromJson(Map<String, dynamic> json) {
-    return Donation(
-      donatedItems: List<String>.from(json['donatedItems']),
-      isPickup: json['isPickup'],
-      weight: json['weight'],
-      addressForPickup: List<String>.from(json['addressForPickup']),
-      donorId: json['donorId'],
-      recipientId: json['recipientId'],
-      status: json['status'],
-      contactNumber: json['contactNumber'],
-      selectedDateandTime: json['selectedDateandTime'] ?? Timestamp.now(),
-    );
-  }
+  return Donation(
+    donatedItems: List<String>.from(json['donatedItems'] ?? []),
+    isPickup: json['isPickup'] ?? false,
+    weight: json['weight'] ?? 0.0,
+    addressForPickup: List<String>.from(json['addressForPickup'] ?? []),
+    donorId: json['donorId'],
+    recipientId: json['recipientId'],
+    status: json['status'],
+    contactNumber: json['contactNumber'],
+    url: json['url'] ?? '',
+    selectedDateandTime: json['selectedDateandTime'] ?? Timestamp.now(),
+  );
+}
 
   static List<Donation> fromJsonArray(String jsonData) {
     final Iterable<dynamic> data = jsonDecode(jsonData);
@@ -53,6 +57,7 @@ class Donation {
       'recipientId':  recipientId,
       'status': status,
       'contactNumber': contactNumber,
+      'url' : url,
       'selectedDateandTime': selectedDateandTime,
     };
   }

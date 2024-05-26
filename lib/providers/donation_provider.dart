@@ -19,8 +19,7 @@ class DonationProvider with ChangeNotifier {
     }
   }
 
-
-   void fetchDonationsReceived(String uid) {
+  void fetchDonationsReceived(String uid) {
     try {
       _donationStream = firebaseService.fetchDonationsReceived(uid);
       notifyListeners();
@@ -31,10 +30,16 @@ class DonationProvider with ChangeNotifier {
     }
   }
 
-  Future<String> addDonation(
-      Donation donation) async {
-    String message = await firebaseService.addDonation(
-        donation.toJson(donation));
+  Future<String> addDonation(Donation donation) async {
+    String message =
+        await firebaseService.addDonation(donation.toJson(donation));
+    notifyListeners();
+    return message;
+  }
+
+
+  Future<String?> updateDonation(String id, Donation details) async {
+    String? message = await firebaseService.updateDonation(id, details.toJson(details));
     notifyListeners();
     return message;
   }
