@@ -38,12 +38,15 @@ class _DonorHomeState extends State<AdminDonors> {
                 return const Center(child: Text('No donors found'));
               } else {
                 final donors = snapshot.data!;
-                return ListView.builder(
-                  itemCount: donors.length,
-                  itemBuilder: (context, index) {
-                    final donor = donors[index];
-                    return componentTiles(donor);
-                  },
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: ListView.builder(
+                    itemCount: donors.length,
+                    itemBuilder: (context, index) {
+                      final donor = donors[index];
+                      return componentTiles(donor);
+                    },
+                  ),
                 );
               }
             },
@@ -55,7 +58,7 @@ class _DonorHomeState extends State<AdminDonors> {
 
   Widget componentTiles(AppUser user) {
     return ListTile(
-      contentPadding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+      contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
       leading: Stack(
         children: [
           CircleAvatar(
@@ -81,8 +84,8 @@ class _DonorHomeState extends State<AdminDonors> {
           ),
         ],
       ),
-      title: Text(user.username),
-      trailing: const Icon(Icons.navigate_next_rounded),
+      title: Text("@${user.username}"),
+      trailing: Icon(Icons.navigate_next_rounded, color: Styles.darkerGray),
       onTap: () {
         Navigator.push(
           context,

@@ -38,12 +38,15 @@ class _OrganizationHomeState extends State<AdminOrganizations> {
                 return const Center(child: Text('No organizations found'));
               } else {
                 final organizations = snapshot.data!;
-                return ListView.builder(
-                  itemCount: organizations.length,
-                  itemBuilder: (context, index) {
-                    final org = organizations[index];
-                    return componentTiles(org);          
-                  },
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: ListView.builder(
+                    itemCount: organizations.length,
+                    itemBuilder: (context, index) {
+                      final org = organizations[index];
+                      return componentTiles(org);          
+                    },
+                  ),
                 );
               }
             },
@@ -55,7 +58,7 @@ class _OrganizationHomeState extends State<AdminOrganizations> {
 
   Widget componentTiles(AppUser user) {
     return ListTile(
-      contentPadding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+      contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
       leading: Stack(
         children: [
           CircleAvatar(
@@ -82,7 +85,7 @@ class _OrganizationHomeState extends State<AdminOrganizations> {
         ],
       ),
       title: Text(user.name),
-      trailing: const Icon(Icons.navigate_next_rounded),
+      trailing: Icon(Icons.navigate_next_rounded, color: Styles.darkerGray),
       onTap: () {
         Navigator.push(
           context,

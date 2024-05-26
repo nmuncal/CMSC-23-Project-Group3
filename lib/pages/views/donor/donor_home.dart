@@ -1,5 +1,6 @@
 import 'package:cmsc_23_project_group3/providers/auth_provider.dart';
 import 'package:cmsc_23_project_group3/providers/user_provider.dart';
+import 'package:cmsc_23_project_group3/styles.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -43,28 +44,78 @@ class _DonorHomeState extends State<DonorHome> {
                 return const Center(child: Text('No organizations found'));
               } else {
                 final organizations = snapshot.data!;
-                return ListView.builder(
-                  itemCount: organizations.length,
-                  itemBuilder: (context, index) {
-                    final organization = organizations[index];
-                    return ListTile(
-                      title: Text(organization.name), // Assuming `AppUser` has a `name` field
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => 
-                            ViewOrganization(orgId: organization.uid)
-                          ),
-                        );
-                      },
-                    );
-                  },
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: ListView.builder(
+                    itemCount: organizations.length,
+                    itemBuilder: (context, index) {
+                      final organization = organizations[index];
+                      return componentTiles(organization);
+                    },
+                  ),
                 );
               }
             },
           );
         },
+      ),
+    );
+  }
+
+  Widget componentTiles(AppUser user) {
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+      leading: Stack(
+        children: [
+          CircleAvatar(
+            backgroundImage: NetworkImage(
+              user.profilePhoto != '' ?
+              user.profilePhoto :
+              Styles.defaultProfile
+            ),
+            backgroundColor: Colors.transparent,
+            radius: 30, 
+          ),
+
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: user.isOpen ? Colors.green : Colors.red,
+                  width: 1.5,
+                ),
+                shape: BoxShape.circle,
+              ),
+            ),
+          ),
+        ],
+      ),
+      title: Text(user.name, style: TextStyle(color: Styles.mainBlue, fontSize: 24),),
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text("@${user.username}", style: TextStyle(color: Styles.lightestBlue, fontStyle: FontStyle.italic)),
+          const SizedBox(height: 5),
+          Text(
+            user.desc != '' ? user.desc : "This organization is still crafting their story!",
+            style: const TextStyle(color: Colors.black54),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis
+          )
+        ],
+      ),
+      trailing: Icon(Icons.navigate_next_rounded, color: Styles.darkerGray),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ViewOrganization(orgId: user.uid),
+          ),
+        );
+      },
+      shape: RoundedRectangleBorder(
+        side: BorderSide(color: Styles.darkerGray, width: 1),
+        borderRadius: Styles.rounded
       ),
     );
   }
