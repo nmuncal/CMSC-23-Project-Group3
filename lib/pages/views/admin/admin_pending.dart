@@ -1,5 +1,6 @@
 import 'package:cmsc_23_project_group3/pages/views/admin/details/org_details.dart';
 import 'package:cmsc_23_project_group3/providers/user_provider.dart';
+import 'package:cmsc_23_project_group3/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '/models/user_model.dart';
@@ -41,18 +42,7 @@ class _PendingOrganizationHomeState extends State<AdminPending> {
                   itemCount: pendingOrgs.length,
                   itemBuilder: (context, index) {
                     final pendingOrg = pendingOrgs[index];
-                    return ListTile(
-                      title: Text(pendingOrg.name),
-                                            onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => OrganizationDetailPage(orgId: pendingOrg.uid, pending: true),
-                          ),
-                        );
-                      },
-                       // Assuming `AppUser` has a `name` field
-                    );
+                    return componentTiles(pendingOrg);
                   },
                 );
               }
@@ -60,6 +50,47 @@ class _PendingOrganizationHomeState extends State<AdminPending> {
           );
         },
       ),
+    );
+  }
+
+  Widget componentTiles(AppUser user) {
+    return ListTile(
+      contentPadding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+      leading: Stack(
+        children: [
+          CircleAvatar(
+            backgroundImage: NetworkImage(
+              user.profilePhoto != '' ?
+              user.profilePhoto :
+              Styles.defaultProfile
+            ),
+            backgroundColor: Colors.transparent,
+            radius: 30.0, 
+          ),
+
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: user.isOpen ? Colors.green : Colors.red,
+                  width: 1.5,
+                ),
+                shape: BoxShape.circle,
+              ),
+            ),
+          ),
+        ],
+      ),
+      title: Text(user.name),
+      trailing: const Icon(Icons.navigate_next_rounded),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => OrganizationDetailPage(orgId: user.uid, pending: true),
+          ),
+        );
+      }
     );
   }
 

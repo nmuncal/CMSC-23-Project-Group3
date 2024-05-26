@@ -49,7 +49,9 @@ class _OrganizationDetailPageState extends State<OrganizationDetailPage> {
 Widget body() {
   return Stack(
     children: [
-      
+
+      OrganizationDetails(uid: widget.orgId),
+    
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
         child: Align(
@@ -66,8 +68,6 @@ Widget body() {
           ),
         ),
       ),
-
-      OrganizationDetails(uid: widget.orgId),
     ],
   );
 }
@@ -83,8 +83,6 @@ Widget body() {
           ),
         );
       },
-
-      // SIGN IN LOGIC
     );
   }
 

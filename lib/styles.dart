@@ -13,6 +13,9 @@ class Styles{
   static Color darkerGray = const Color(0xFFAFAFAF);
   
   static BorderRadius rounded = BorderRadius.circular(20);
+
+  static String defaultCover = 'https://abetterchance.org/wp-content/uploads/2022/05/Placeholder-Landscape.jpg';
+  static String defaultProfile = 'https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_1280.png';
   
 
   static InputDecoration textFieldStyle (hintText) => InputDecoration(    // Style for text form field 

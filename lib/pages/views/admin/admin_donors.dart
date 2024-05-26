@@ -1,4 +1,5 @@
 import 'package:cmsc_23_project_group3/providers/user_provider.dart';
+import 'package:cmsc_23_project_group3/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '/models/user_model.dart';
@@ -41,18 +42,7 @@ class _DonorHomeState extends State<AdminDonors> {
                   itemCount: donors.length,
                   itemBuilder: (context, index) {
                     final donor = donors[index];
-                    return ListTile(
-                      title: Text(donor.name),
-                                            onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => DonorDetailPage(donorId: donor.uid),
-                          ),
-                        );
-                      },
-                       // Assuming `AppUser` has a `name` field
-                    );
+                    return componentTiles(donor);
                   },
                 );
               }
@@ -60,6 +50,47 @@ class _DonorHomeState extends State<AdminDonors> {
           );
         },
       ),
+    );
+  }
+
+  Widget componentTiles(AppUser user) {
+    return ListTile(
+      contentPadding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+      leading: Stack(
+        children: [
+          CircleAvatar(
+            backgroundImage: NetworkImage(
+              user.profilePhoto != '' ?
+              user.profilePhoto :
+              Styles.defaultProfile
+            ),
+            backgroundColor: Colors.transparent,
+            radius: 30.0, 
+          ),
+
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Styles.mainBlue,
+                  width: 1.5,
+                ),
+                shape: BoxShape.circle,
+              ),
+            ),
+          ),
+        ],
+      ),
+      title: Text(user.username),
+      trailing: const Icon(Icons.navigate_next_rounded),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => DonorDetailPage(donorId: user.uid),
+          ),
+        );
+      },
     );
   }
 

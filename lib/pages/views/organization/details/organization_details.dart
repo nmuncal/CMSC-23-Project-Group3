@@ -58,7 +58,6 @@ class _OrganizationDetailsState extends State<OrganizationDetails> {
       Text("Active Donation Drives", style: TextStyle(color: Styles.mainBlue)),
       const SizedBox(height: 10),
       Text("Previous Donation Drives", style: TextStyle(color: Styles.mainBlue)),
-    
       ],
     );
   }
@@ -102,8 +101,8 @@ class _OrganizationDetailsState extends State<OrganizationDetails> {
           width: double.infinity,
           child: Image.network(
             organization!.coverPhoto != '' ?
-            organization!.profilePhoto:
-            'https://abetterchance.org/wp-content/uploads/2022/05/Placeholder-Landscape.jpg', // Profile cover image
+            organization!.coverPhoto:
+            Styles.defaultCover, // Profile cover image
             fit: BoxFit.cover,
           ),
         ),
@@ -122,7 +121,7 @@ class _OrganizationDetailsState extends State<OrganizationDetails> {
               child: Image.network(
                 organization!.profilePhoto != '' ?
                 organization!.profilePhoto:
-                'https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_1280.png'
+                Styles.defaultProfile
                 , // Circular image
                 fit: BoxFit.cover,
               ),

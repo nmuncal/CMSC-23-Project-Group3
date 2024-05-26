@@ -113,8 +113,8 @@ class _DonorDetailsState extends State<DonorDetails> {
           width: double.infinity,
           child: Image.network(
             donor!.coverPhoto != '' ?
-            donor!.profilePhoto:
-            'https://abetterchance.org/wp-content/uploads/2022/05/Placeholder-Landscape.jpg', // Profile cover image
+            donor!.coverPhoto:
+            Styles.defaultCover, // Profile cover image
             fit: BoxFit.cover,
           ),
         ),
@@ -133,7 +133,7 @@ class _DonorDetailsState extends State<DonorDetails> {
               child: Image.network(
                 donor!.profilePhoto != '' ?
                 donor!.profilePhoto:
-                'https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_1280.png'
+                Styles.defaultProfile
                 , // Circular image
                 fit: BoxFit.cover,
               ),

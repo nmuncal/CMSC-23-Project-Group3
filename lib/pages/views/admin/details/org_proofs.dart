@@ -49,7 +49,7 @@ class _OrgProofState extends State<OrgProof> {
             org!.name,
             style: TextStyle(
                 color: Styles.mainBlue,
-                fontSize: 36,
+                fontSize: 24,
                 fontWeight: FontWeight.bold),
           ),
           backgroundColor: Colors.white,
@@ -89,7 +89,7 @@ class _OrgProofState extends State<OrgProof> {
 
           return ListTile(
             leading: Icon(iconData),
-            title: Text(fileName),
+            title: Text(fileName, style: TextStyle(fontSize: 14)),
             onTap: () => _launchURL(proofs[index]),
           );
           },
