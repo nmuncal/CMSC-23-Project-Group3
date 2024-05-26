@@ -1,5 +1,6 @@
 import 'package:cmsc_23_project_group3/pages/views/donor/details/donor_details.dart';
 import 'package:cmsc_23_project_group3/pages/views/organization/details/edit_organization.dart';
+import 'package:cmsc_23_project_group3/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 
 import 'package:cmsc_23_project_group3/styles.dart';
@@ -16,6 +17,14 @@ class AdminProfile extends StatefulWidget {
 
 class _AdminProfileState extends State<AdminProfile> {
   String? userId;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<UserProvider>().getAccountInfo(null);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
