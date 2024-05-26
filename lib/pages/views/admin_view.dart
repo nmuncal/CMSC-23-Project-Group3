@@ -54,11 +54,11 @@ class _AdminViewState extends State<AdminView> {
           tabs: const [
             GButton(
               icon: Icons.groups_outlined,
-              text: 'Organizations'
+              text: 'Orgs'
             ),
             GButton(
               icon: Icons.group_add_outlined,
-              text: 'Sign Ups'
+              text: 'Pending'
             ),
             GButton(
               icon: Icons.person_pin_rounded,
@@ -66,7 +66,7 @@ class _AdminViewState extends State<AdminView> {
             ),
             GButton(
               icon: Icons.person_outline_rounded,
-              text: 'My Profile'
+              text: 'Profile'
             ),
           ]
         ),

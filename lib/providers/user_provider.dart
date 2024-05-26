@@ -38,13 +38,20 @@ class UserProvider with ChangeNotifier {
   void _fetchUsersByType(int accountType, bool approvalStatus) {
     try {
       var newStream = fbService.fetchUsersByAccountType(accountType, approvalStatus);
+      
+        var sortedStream = newStream.map((snapshot) {
+          var docs = snapshot;
+          docs.sort((a, b) => a.name.compareTo(b.name));
+          return snapshot;
+        });
+      
       switch(accountType){
         case 0: 
-          _donorStream = newStream; 
+          _donorStream = sortedStream; 
           break;
         case 1:
-          if (approvalStatus){_orgStream = newStream;}
-          else {_pendingOrgStream = newStream;}
+          if (approvalStatus){_orgStream = sortedStream;}
+          else {_pendingOrgStream = sortedStream;}
           break;
         default:
           break;

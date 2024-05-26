@@ -28,9 +28,9 @@ class _OrganizationViewState extends State<OrganizationView> {
 
   final approvedTabs = [
     const GButton(icon: Icons.home_outlined, text: 'Home'),
-    const GButton(icon: Icons.healing_outlined, text: 'Donation'),
+    const GButton(icon: Icons.healing_outlined, text: 'Donations'),
     const GButton(icon: Icons.handshake_outlined, text: 'Drives'),
-    const GButton(icon: Icons.person_outline_rounded, text: 'My Profile'),
+    const GButton(icon: Icons.person_outline_rounded, text: 'Profile'),
   ];
 
   @override

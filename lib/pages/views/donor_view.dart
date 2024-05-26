@@ -70,11 +70,11 @@ class _DonorViewState extends State<DonorView> {
             ),
             GButton(
               icon: Icons.healing_outlined,
-              text: 'My Donations'
+              text: 'Donations'
             ),
             GButton(
               icon: Icons.person_outline_rounded,
-              text: 'My Profile'
+              text: 'Profile'
             ),
           ]
         ),

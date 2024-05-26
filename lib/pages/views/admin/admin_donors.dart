@@ -47,7 +47,7 @@ class _DonorHomeState extends State<AdminDonors> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => DonorDetailPage(donorName: donor.name),
+                            builder: (context) => DonorDetailPage(donorId: donor.uid),
                           ),
                         );
                       },
