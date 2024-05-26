@@ -203,7 +203,9 @@ class _SignInPageState extends State<SignInPage> {
             email = context.read<UserAuthProvider>().email;
           }
 
-          String? message = await context
+          String? message = (email == null) ? 
+              "User Not Found!" :
+              await context
               .read<UserAuthProvider>()
               .authService
               .signIn(email!, password!);
