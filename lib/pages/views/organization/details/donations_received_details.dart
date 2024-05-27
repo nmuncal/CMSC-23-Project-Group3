@@ -1,19 +1,52 @@
+import 'package:cmsc_23_project_group3/models/donation_model.dart';
+import 'package:cmsc_23_project_group3/providers/donation_provider.dart';
+import 'package:cmsc_23_project_group3/styles.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class DonationDetailPage extends StatelessWidget {
-  final String donationName;
 
-  const DonationDetailPage({super.key, required this.donationName});
+class DonationDetailPage extends StatefulWidget {
+  final Donation? donation;
+
+  const DonationDetailPage({super.key, this.donation});
+
+  @override
+  State<DonationDetailPage> createState() => _DonationDetailPageState();
+}
+
+class _DonationDetailPageState extends State<DonationDetailPage> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<DonationProvider>(context, listen: false)
+          .setDonationId(widget.donation!.id);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: Text(donationName),
+        title: Text('${widget.donation!.id}'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+        backgroundColor: Colors.transparent,
+        centerTitle: true,
       ),
-      body: Center(
-        child: Text('Details about $donationName'),
+      body: Consumer<DonationProvider>(
+        builder: (context, donationProvider, child) {
+          return Stack(
+            children: [Text(widget.donation!.id)]
+          );
+        },
       ),
     );
   }
+
 }

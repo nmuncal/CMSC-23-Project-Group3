@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cmsc_23_project_group3/models/donation_model.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+
 
 class FirebaseDonationAPI {
   static final FirebaseFirestore db = FirebaseFirestore.instance;
@@ -49,6 +49,16 @@ class FirebaseDonationAPI {
     }
   }
 
+  Future<String?> updateDonationStatus(String id) async {
+    try {
+      await db.collection('donations').doc(id).update({'status': 'Completed'});
+      return 'Status updated successfully';
+    } catch (e) {
+      print('Error updating status for donation ID $id: $e');
+      return 'Error updating status';
+    }
+  }
+
   Future<String?> updateDonation(
       String id, Map<String, dynamic> details) async {
     try {
@@ -58,5 +68,18 @@ class FirebaseDonationAPI {
       return null;
     }
     return null;
+  }
+
+  Stream<Donation?> getDonationInfo(String donationId) {
+    return db
+        .collection('donations')
+        .doc(donationId)
+        .snapshots()
+        .map((snapshot) {
+      if (snapshot.exists) {
+        return Donation.fromJson(snapshot.data() as Map<String, dynamic>);
+      }
+      return null;
+    });
   }
 }

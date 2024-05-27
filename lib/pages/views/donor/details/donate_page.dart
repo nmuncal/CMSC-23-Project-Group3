@@ -1,13 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cmsc_23_project_group3/models/donation_model.dart';
-import 'package:cmsc_23_project_group3/models/user_model.dart';
 import 'package:cmsc_23_project_group3/providers/donation_provider.dart';
 import 'package:cmsc_23_project_group3/providers/storage_provider.dart';
-import 'package:cmsc_23_project_group3/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-
 import 'package:provider/provider.dart';
 
 class DonatePage extends StatefulWidget {
@@ -202,7 +199,6 @@ class _DonatePageState extends State<DonatePage> {
               ElevatedButton(
                 onPressed: () async {
                   _handleSendDonation();
-                  Navigator.pop(context);
                 },
                 child: Text('Submit'),
               ),
@@ -305,11 +301,8 @@ class _DonatePageState extends State<DonatePage> {
           selectedTime!.minute,
         );
 
-        final userProvider = context.read<UserProvider>();
         final donationProvider = context.read<DonationProvider>();
         final userStorageProvider = context.read<UserStorageProvider>();
-
-        AppUser? userDetails = await userProvider.getAccountInfo(widget.userId);
 
         if (others != '') {
           donatedItems.add(others);
@@ -319,6 +312,7 @@ class _DonatePageState extends State<DonatePage> {
 
         if (pickUp == true) {
           temp = Donation(
+            id: '',
             donatedItems: donatedItems,
             isPickup: pickUp,
             weight: weight,
@@ -331,6 +325,7 @@ class _DonatePageState extends State<DonatePage> {
           );
         } else {
           temp = Donation(
+            id: '',
             donatedItems: donatedItems,
             isPickup: pickUp,
             weight: weight,
@@ -342,14 +337,28 @@ class _DonatePageState extends State<DonatePage> {
         }
 
         String donationId = await donationProvider.addDonation(temp);
+        print(donationId);
 
         if (_image != null) {
           String url = await userStorageProvider.uploadSingleFile(
               _image!, "donations/$donationId");
 
-          Donation details = Donation(donatedItems: donatedItems, isPickup: pickUp, weight: weight, donorId: widget.userId, recipientId: widget.companyId, status: status, selectedDateandTime: Timestamp.fromDate(selectedDateTime),url: url);
+          //update url and donation id field
 
-          await donationProvider.updateDonation(donationId, details);
+          Donation details = Donation(
+              id: donationId,
+              donatedItems: donatedItems,
+              isPickup: pickUp,
+              weight: weight,
+              donorId: widget.userId,
+              recipientId: widget.companyId,
+              status: status,
+              selectedDateandTime: Timestamp.fromDate(selectedDateTime),
+              url: url);
+
+          await donationProvider.updateDonation(donationId, details).then((value) => Navigator.pop(context));
+
+          
         }
       }
     } catch (error) {

@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Donation {
   final List<String> donatedItems;
+  final String id;
   final bool isPickup;
   final String weight;
   final List<String> addressForPickup;
@@ -13,8 +14,8 @@ class Donation {
   final Timestamp selectedDateandTime;
   final String url;
 
-
   Donation({
+    required this.id,
     required this.donatedItems,
     required this.isPickup,
     required this.weight,
@@ -28,19 +29,20 @@ class Donation {
   });
 
   factory Donation.fromJson(Map<String, dynamic> json) {
-  return Donation(
-    donatedItems: List<String>.from(json['donatedItems'] ?? []),
-    isPickup: json['isPickup'] ?? false,
-    weight: json['weight'] ?? 0.0,
-    addressForPickup: List<String>.from(json['addressForPickup'] ?? []),
-    donorId: json['donorId'],
-    recipientId: json['recipientId'],
-    status: json['status'],
-    contactNumber: json['contactNumber'],
-    url: json['url'] ?? '',
-    selectedDateandTime: json['selectedDateandTime'] ?? Timestamp.now(),
-  );
-}
+    return Donation(
+      donatedItems: List<String>.from(json['donatedItems'] ?? []),
+      id: json['id']?? '',
+      isPickup: json['isPickup'] ?? false,
+      weight: json['weight'] ?? 0.0,
+      addressForPickup: List<String>.from(json['addressForPickup'] ?? []),
+      donorId: json['donorId'],
+      recipientId: json['recipientId'],
+      status: json['status'],
+      contactNumber: json['contactNumber'],
+      url: json['url'] ?? '',
+      selectedDateandTime: json['selectedDateandTime'] ?? Timestamp.now(),
+    );
+  }
 
   static List<Donation> fromJsonArray(String jsonData) {
     final Iterable<dynamic> data = jsonDecode(jsonData);
@@ -49,15 +51,16 @@ class Donation {
 
   Map<String, dynamic> toJson(Donation donation) {
     return {
+      'id':id,
       'donatedItems': donatedItems,
       'isPickup': isPickup,
       'weight': weight,
       'addressForPickup': addressForPickup,
-      'donorId' : donorId, 
-      'recipientId':  recipientId,
+      'donorId': donorId,
+      'recipientId': recipientId,
       'status': status,
       'contactNumber': contactNumber,
-      'url' : url,
+      'url': url,
       'selectedDateandTime': selectedDateandTime,
     };
   }
