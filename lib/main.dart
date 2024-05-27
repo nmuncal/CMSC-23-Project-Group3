@@ -46,6 +46,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Styles.mainBlue),
         textTheme: GoogleFonts.montserratTextTheme(Theme.of(context).textTheme),
+        appBarTheme: AppBarTheme(surfaceTintColor: Colors.transparent)
       ),
     );
   }
