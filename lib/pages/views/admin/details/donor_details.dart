@@ -22,6 +22,7 @@ class _DonorDetailPageState extends State<DonorDetailPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<UserProvider>().getAccountInfo(null);
       context.read<UserProvider>().getAccountInfo(widget.donorId);
     });
   }

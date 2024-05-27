@@ -3,6 +3,7 @@ import 'package:cmsc_23_project_group3/providers/user_provider.dart';
 import 'package:cmsc_23_project_group3/styles.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '/models/user_model.dart';
 import 'details/org_details.dart';
@@ -15,12 +16,21 @@ class DonorHome extends StatefulWidget {
 }
 
 class _DonorHomeState extends State<DonorHome> {
+
+  final ScrollController _scrollController = ScrollController(); 
+
    @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<UserProvider>().getAccountInfo(null);
     });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   User? user;
@@ -45,12 +55,13 @@ class _DonorHomeState extends State<DonorHome> {
               } else {
                 final organizations = snapshot.data!;
                 return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
                   child: ListView.builder(
+                    controller: _scrollController,
                     itemCount: organizations.length,
                     itemBuilder: (context, index) {
                       final organization = organizations[index];
-                      return componentTiles(organization);
+                      return componentTiles(organization, index);
                     },
                   ),
                 );
@@ -62,69 +73,135 @@ class _DonorHomeState extends State<DonorHome> {
     );
   }
 
-  Widget componentTiles(AppUser user) {
-  return Card(
-    elevation: 1,
-    color: Colors.white,
-    shape: RoundedRectangleBorder(
-      borderRadius: Styles.rounded,
-    ),
-    child: ListTile(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-      leading: Stack(
-        children: [
-          CircleAvatar(
-            backgroundImage: NetworkImage(
-              user.profilePhoto != '' ? user.profilePhoto : Styles.defaultProfile,
+Widget componentTiles(AppUser user, int index) {
+  return GestureDetector(
+    onTap: () => _navigateToOrganization(context, user),
+    child: Card(
+        elevation: 2,
+        color: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: Styles.rounded,
+        ),
+        child: ClipRRect(
+          borderRadius: Styles.rounded,
+          child: Stack(
+            children: [
+              _buildCoverImage(user, index),
+              _buildGradientOverlay(context, user),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+Widget _buildCoverImage(AppUser user, int index) {
+    return AnimatedBuilder( 
+      animation: _scrollController,
+      builder: (context, child) {
+        double maxOffset = 50.0; 
+        double offset = _scrollController.hasClients ? _scrollController.offset/5 : 0;
+        offset = offset - (index * 20);
+        offset = offset.clamp(0, maxOffset);
+
+        return Transform.translate(
+          offset: Offset(0.0, offset * 0.5), 
+          child: Transform.scale(
+            scale: 1.3,
+            child: Image.network(
+              user.coverPhoto != '' ? user.coverPhoto : Styles.defaultCover,
+              height: 200,
+              width: double.infinity,
+              fit: BoxFit.cover,
             ),
-            backgroundColor: Colors.transparent,
-            radius: 30.0,
-          ),
-          Positioned.fill(
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: user.isOpen ? Colors.green : Colors.red,
-                  width: 1.5,
-                ),
-                shape: BoxShape.circle,
-              ),
-            ),
-          ),
-        ],
-      ),
-      title: Text(user.name, style: TextStyle(color: Styles.mainBlue, fontSize: 24), maxLines: 1, overflow: TextOverflow.ellipsis,
-      ),
-      subtitle: Column( // Use Column for vertical layout
-        crossAxisAlignment: CrossAxisAlignment.start, // Align text to the left
-        children: [
-          Text("@${user.username}", style: TextStyle(color: Styles.lightestBlue, fontStyle: FontStyle.italic)),
-          const SizedBox(height: 5),
-          Text(
-            user.desc != '' ? user.desc : "This organization is still crafting their story!",
-            style: const TextStyle(color: Colors.black54),
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
-      ),
-      trailing: Icon(Icons.navigate_next_rounded, color: Styles.darkerGray),
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ViewOrganization(orgId: user.uid),
           ),
         );
       },
-    ),
+    );
+  }
+
+
+  Widget _buildGradientOverlay(BuildContext context, user) {
+    return Positioned(
+      bottom: 0,
+      left: 0,
+      right: 0,
+      child: Container(
+          padding: const EdgeInsets.all(10),
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.black54, Colors.black38, Colors.transparent],
+              begin: Alignment.bottomCenter,
+              end: Alignment.topCenter,
+            ),
+          ),
+          child: _buildTextContent(user),
+        ),
+      );
+  }
+
+ Widget _buildTextContent(AppUser user) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Row(
+        children: [
+          Text(
+            user.name,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          SizedBox(width: 10),
+          Container(
+            width: 10,
+            height: 10,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: user.isOpen ? Colors.green : Colors.red,
+            ),
+          ),
+        ],
+      ),
+      const SizedBox(height: 5),
+      Text(
+        user.desc.isNotEmpty ? user.desc : "This organization is still crafting their story!",
+        style: const TextStyle(color: Colors.white70),
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+      ),
+    ],
   );
 }
 
-  AppBar _buildAppBar(BuildContext context) {
-    return AppBar(
-      title: const Text('Donor Home'),
-      automaticallyImplyLeading: false, // This removes the back button
+
+  void _navigateToOrganization(BuildContext context, AppUser user) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ViewOrganization(orgId: user.uid),
+      ),
     );
   }
+
+  AppBar _buildAppBar(BuildContext context) {
+    return AppBar(
+      title: Center(
+        child: Text(
+          'tayo',
+          style: GoogleFonts.quicksand(
+            color: Styles.mainBlue,
+            fontWeight: FontWeight.bold,
+            fontSize: 30
+          ),
+        ),
+      ),
+      automaticallyImplyLeading: false,
+    );
+  }
+
 }
