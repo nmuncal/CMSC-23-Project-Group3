@@ -99,15 +99,15 @@ Widget _buildCoverImage(AppUser user, int index) {
     return AnimatedBuilder( 
       animation: _scrollController,
       builder: (context, child) {
-        double maxOffset = 50.0; 
-        double offset = _scrollController.hasClients ? _scrollController.offset/5 : 0;
+        double maxOffset = 75.0; 
+        double offset = _scrollController.hasClients ? _scrollController.offset/4 : 0;
         offset = offset - (index * 20);
         offset = offset.clamp(0, maxOffset);
 
         return Transform.translate(
           offset: Offset(0.0, offset * 0.5), 
           child: Transform.scale(
-            scale: 1.3,
+            scale: 1.4,
             child: Image.network(
               user.coverPhoto != '' ? user.coverPhoto : Styles.defaultCover,
               height: 200,

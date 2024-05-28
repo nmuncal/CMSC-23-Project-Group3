@@ -52,8 +52,8 @@ class AppUser {
     bool? isOpen,
     String? desc,
     List<String>? proofOfLegitimacy,
-    // String? profilePhoto,
-    // String? coverPhoto,
+    String? profilePhoto,
+    String? coverPhoto,
   }) {
     return AppUser(
       email: email ?? this.email,
@@ -67,8 +67,8 @@ class AppUser {
       isOpen: isOpen ?? this.isOpen,
       desc: desc ?? this.desc,
       proofOfLegitimacy: proofOfLegitimacy ?? this.proofOfLegitimacy,
-      // profilePhoto: profilePhoto ?? this.profilePhoto,
-      // coverPhoto: coverPhoto ?? this.coverPhoto
+      profilePhoto: profilePhoto ?? this.profilePhoto,
+      coverPhoto: coverPhoto ?? this.coverPhoto
     );
   }
 
@@ -85,8 +85,8 @@ class AppUser {
     isOpen: json['isOpen'] ?? false,
     desc: json['desc'] ?? '',
     proofOfLegitimacy: List<String>.from(json['proofOfLegitimacy'] ?? []),
-        // profilePhoto: json['profilePhoto'],
-      // coverPhoto: json['coverPhoto'],
+    profilePhoto: json['profilePhoto'],
+    coverPhoto: json['coverPhoto'],
   );
 }
 
@@ -108,8 +108,8 @@ class AppUser {
       'isOpen': isOpen,
       'desc': desc,
       'proofOfLegitimacy':proofOfLegitimacy,
-      // 'profilePhoto':profilePhoto,
-      // 'coverPhoto' :coverPhoto
+      'profilePhoto':profilePhoto,
+      'coverPhoto' :coverPhoto
     };
   }
 }
