@@ -7,7 +7,6 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:cmsc_23_project_group3/styles.dart';
 import 'package:provider/provider.dart'; // Uses the styles class to make reusable widgets/components
-import 'package:email_validator/email_validator.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
@@ -27,7 +26,6 @@ class _SignInPageState extends State<SignInPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
-        // Places them in a stack so that the white container sits on top of the background image
         children: [
           bgImg,
           Align(
@@ -124,7 +122,7 @@ class _SignInPageState extends State<SignInPage> {
       },
       validator: (value) {
         if (value == null || value.isEmpty) {
-          return "Please enter your email";
+          return "Please enter your email or username";
         }
         return null;
       }, // Use the builder from styles.dart
