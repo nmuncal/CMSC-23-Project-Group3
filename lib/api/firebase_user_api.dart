@@ -51,6 +51,16 @@ class FirebaseUserAPI {
     return null;
   }
 
+   Future<String?> addUser(String id, Map<String, dynamic> details) async {
+    try {
+      await db.collection('users').doc(id).set(details);
+    } catch (e) {
+     
+      return null;
+    }
+    return null;
+  }
+
   Future<String?> fetchID() async {
     try {
       User? user = _auth.currentUser;
@@ -61,26 +71,6 @@ class FirebaseUserAPI {
     }
   }
 
- Future<bool> isUsernameUnique(String username) async {
-  try {
-    QuerySnapshot querySnapshot = await db
-        .collection('users')
-        .where('username', isEqualTo: username)
-        .get();
-
-    // Logging the size of the query result
-    print('Query size: ${querySnapshot.size}');
-
-    if (querySnapshot.size == 0) {
-      return true;
-    }
-    return false;
-  } catch (e) {
-    // Logging the error
-    print('Error in isUsernameUnique: $e');
-    return false;
-  }
-}
 
   Future<AppUser?> getAccountInfo(String id) async {
     try {

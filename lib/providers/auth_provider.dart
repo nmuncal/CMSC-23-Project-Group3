@@ -89,6 +89,13 @@ class UserAuthProvider with ChangeNotifier {
     return message;
   }
 
+
+  Future<String?> signInWithGoogle() async {
+    String? message = await authService.signInWithGoogle();
+    notifyListeners();
+    return message;
+  }
+
   Future<bool> isUsernameUnique(String username) async {
     unique = await authService.isUsernameUnique(username);
     notifyListeners();

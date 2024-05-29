@@ -1,13 +1,14 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:async';
+import 'package:cmsc_23_project_group3/pages/home_page.dart';
 import 'package:cmsc_23_project_group3/pages/signup_page.dart';
 import 'package:cmsc_23_project_group3/providers/auth_provider.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:cmsc_23_project_group3/styles.dart';
-import 'package:provider/provider.dart'; // Uses the styles class to make reusable widgets/components
-import 'package:email_validator/email_validator.dart';
+import 'package:cmsc_23_project_group3/styles.dart'; // Uses the styles class to make reusable widgets/components
+import 'package:provider/provider.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
@@ -108,8 +109,8 @@ class _SignInPageState extends State<SignInPage> {
             const SizedBox(height: 15),
 
             // Google SignIn area, and Sign Up
-            //googleSignInButton(),
-            //const SizedBox(height: 15),
+            googleSignInButton(),
+            const SizedBox(height: 15),
 
             textToSignUp()
           ],
@@ -203,12 +204,12 @@ class _SignInPageState extends State<SignInPage> {
             email = context.read<UserAuthProvider>().email;
           }
 
-          String? message = (email == null) ? 
-              "User Not Found!" :
-              await context
-              .read<UserAuthProvider>()
-              .authService
-              .signIn(email!, password!);
+          String? message = (email == null)
+              ? "User Not Found!"
+              : await context
+                  .read<UserAuthProvider>()
+                  .authService
+                  .signIn(email!, password!);
 
           if (message != "Successful!") {
             setState(() {
@@ -227,18 +228,32 @@ class _SignInPageState extends State<SignInPage> {
 
   Widget googleSignInButton() {
     return GestureDetector(
-        child: Styles.iconButtonBuilder(
-            'lib/assets/ico_google.png', null, Styles.mainBlue, null,
-            isPressed: _googleSignInPressed),
-        onTap: () {
-          setState(() {
-            _signInPressed =
-                false; // After pressing, google button shows a circular loading indicator
-            _googleSignInPressed = true;
-          });
-
-          // Google SIGN IN LOGIC
+      child: Styles.iconButtonBuilder(
+          'lib/assets/ico_google.png', null, Styles.mainBlue, null,
+          isPressed: _googleSignInPressed),
+      onTap: () async {
+        setState(() {
+          _signInPressed = false;
+          _googleSignInPressed = true;
         });
+
+        try {
+          await context.read<UserAuthProvider>().signInWithGoogle();
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const HomePage()),
+          );
+        } catch (e) {
+          setState(() {
+            _googleSignInPressed = false;
+          });
+          // Handle sign-in error here (e.g., show a snackbar or alert)
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Sign in failed: $e')),
+          );
+        }
+      },
+    );
   }
 
   Widget textToSignUp() {

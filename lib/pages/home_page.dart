@@ -3,6 +3,7 @@
 // After successful sign in user is redirected to their respective view depending on account type
 
 import 'package:cmsc_23_project_group3/models/user_model.dart';
+import 'package:cmsc_23_project_group3/pages/google_signup_page.dart';
 import 'package:cmsc_23_project_group3/pages/views/admin_view.dart';
 import 'package:cmsc_23_project_group3/pages/views/donor_view.dart';
 import 'package:cmsc_23_project_group3/pages/views/organization_view.dart';
@@ -30,6 +31,7 @@ class _HomePageState extends State<HomePage> {
     return StreamBuilder<User?>(
       stream: userStream,
       builder: (context, snapshot) {
+        print(snapshot.data);
         if (snapshot.hasError) {
           return Center(child: Text(snapshot.error!.toString()));
         } else if (snapshot.connectionState == ConnectionState.waiting) {
@@ -37,13 +39,17 @@ class _HomePageState extends State<HomePage> {
         } else if (!snapshot.hasData || user == null) {
           return const SignInPage();
         } else {
-          
-          if (user!.accountType == 1){
+          if (user!.accountType == 1) {
             return const OrganizationView();
-          } else if (user!.accountType == 2){
+          } else if (user!.accountType == 2) {
             return const AdminView();
-          } else {
+          } else if (user!.accountType == 0) {
             return const DonorView();
+          } else {
+            String email = snapshot.data!.email!;
+            String uid = snapshot.data!.uid;
+            String displayName = snapshot.data!.displayName!;
+            return GoogleSignupPage(email: email, uid: uid, name: displayName);
           }
         }
       },

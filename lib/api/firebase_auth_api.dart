@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cmsc_23_project_group3/models/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class FirebaseAuthAPI {
   static final FirebaseAuth auth = FirebaseAuth.instance;
@@ -105,9 +106,13 @@ class FirebaseAuthAPI {
     return "Error";
   }
 
-   Future<String?> fetchEmail(String username) async {
+  Future<String?> fetchEmail(String username) async {
     try {
-      QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore.instance.collection('users').where("username", isEqualTo: username).get();
+      QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
+          .instance
+          .collection('users')
+          .where("username", isEqualTo: username)
+          .get();
 
       if (snapshot.docs.isNotEmpty) {
         return snapshot.docs.first.get('email') as String?;
@@ -121,28 +126,46 @@ class FirebaseAuthAPI {
   }
 
   Future<bool> isUsernameUnique(String username) async {
-  try {
-    QuerySnapshot querySnapshot = await db
-        .collection('users')
-        .where('username', isEqualTo: username)
-        .get();
+    try {
+      QuerySnapshot querySnapshot = await db
+          .collection('users')
+          .where('username', isEqualTo: username)
+          .get();
 
-    // Logging the size of the query result
-    print('Query size: ${querySnapshot.size}');
+      // Logging the size of the query result
+      print('Query size: ${querySnapshot.size}');
 
-    if (querySnapshot.size == 0) {
-      return true;
+      if (querySnapshot.size == 0) {
+        return true;
+      }
+      return false;
+    } catch (e) {
+      // Logging the error
+      print('Error in isUsernameUnique: $e');
+      return false;
     }
-    return false;
-  } catch (e) {
-    // Logging the error
-    print('Error in isUsernameUnique: $e');
-    return false;
   }
-}
 
   Future<void> signOut() async {
     await auth.signOut();
   }
 
+  Future<String?> signInWithGoogle() async {
+    try {
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+      final GoogleSignInAuthentication? googleAuth =
+          await googleUser?.authentication;
+
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth?.accessToken,
+        idToken: googleAuth?.idToken,
+      );
+
+      UserCredential account = await auth.signInWithCredential(credential);
+      return account.user!.email;
+    } on Exception catch (e) {
+      return 'exception->$e';
+    }
+  }
 }
