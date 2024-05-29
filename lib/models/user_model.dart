@@ -5,17 +5,17 @@ class AppUser {
   final String uid;
   final String username;
   final String name;
-  final String contactNo;
-  final List<String> address;
+  String contactNo;
+  List<String> address;
   final int accountType;
-  final bool isApproved;
+  bool isApproved;
 
-  final bool isOpen;
-  final String desc;
-  final List<String> proofOfLegitimacy;
+  bool isOpen;
+  String desc;
+  List<String> proofOfLegitimacy;
 
-  final String profilePhoto;
-  final String coverPhoto;
+  String profilePhoto;
+  String coverPhoto;
 
   AppUser({
     required this.email,

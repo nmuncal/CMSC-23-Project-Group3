@@ -493,7 +493,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 isApproved: false,
                 proofOfLegitimacy: urls);
 
-            await userProvider.updateUser(uid, userDetails);
+            await userProvider.updateUser(userDetails);
           }
 
           if (mounted) {

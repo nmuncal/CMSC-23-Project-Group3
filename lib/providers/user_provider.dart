@@ -102,8 +102,8 @@ class UserProvider with ChangeNotifier {
     return unique;
   }
 
-  Future<String?> updateUser(String id, AppUser details) async {
-    String? message = await fbService.updateUser(id, details.toJson(details));
+  Future<String?> updateUser(AppUser details) async {
+    String? message = await fbService.updateUser(details.uid, details.toJson(details));
     notifyListeners();
     return message;
   }

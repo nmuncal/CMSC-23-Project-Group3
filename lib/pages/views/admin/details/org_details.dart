@@ -98,7 +98,7 @@ Widget body() {
         AppUser? details = context.read<UserProvider>().selectedUser;
         AppUser detailsCopy = details!.copyWith(isApproved: true);
 
-        var message = await context.read<UserProvider>().updateUser(widget.orgId, detailsCopy);
+        var message = await context.read<UserProvider>().updateUser(detailsCopy);
         print(message);
 
         if (mounted){
