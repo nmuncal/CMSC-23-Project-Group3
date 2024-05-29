@@ -4,7 +4,6 @@ import 'package:cmsc_23_project_group3/providers/donation_provider.dart';
 import 'package:cmsc_23_project_group3/providers/storage_provider.dart';
 import 'package:cmsc_23_project_group3/styles.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -92,10 +91,12 @@ bool _areRequiredFieldsFilled() {
               SizedBox(height: 20),
               donationCheckbox(),
               SizedBox(height: 20),
-      if (pickUp) ...[
-        Center(child: Column( children: [
-        const Padding(
-          padding: EdgeInsets.symmetric(vertical: 8.0),
+ if (pickUp) ...[
+  Center(
+    child: Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
           child: Text(
             'Address',
             style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
@@ -119,15 +120,14 @@ bool _areRequiredFieldsFilled() {
           icon: Icon(Icons.add, color: Styles.mainBlue),
           label: Text('Add Address'),
           style: ElevatedButton.styleFrom(
-
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
           ),
         ),
         SizedBox(height: 10),
-        const Padding(
-          padding: EdgeInsets.symmetric(vertical: 8.0),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
           child: Text(
             'Contact Number',
             style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
@@ -138,7 +138,7 @@ bool _areRequiredFieldsFilled() {
           child: TextFormField(
             onChanged: (value) {
               setState(() {
-                contactNumber = value;
+                contactNumber = value; // Update contactNumber when the value changes
               });
             },
             keyboardType: TextInputType.phone,
@@ -159,8 +159,11 @@ bool _areRequiredFieldsFilled() {
             ),
           ),
         ),
-      ],),),
-            ],
+      ],
+    ),
+  ),
+],
+
             SizedBox(height: 20),
         const Padding(
           padding: EdgeInsets.symmetric(vertical: 8.0),
@@ -354,41 +357,43 @@ ElevatedButton(
       });
     }
   }
-
-  void _addAddress() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        String newAddress = '';
-        return AlertDialog(
-          title: Text('Add Address'),
-          content: TextField(
-            onChanged: (value) {
-              newAddress = value;
+void _addAddress() {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      String newAddress = '';
+      return AlertDialog(
+        title: Text('Add Address'),
+        content: TextField(
+          onChanged: (value) {
+            newAddress = value.trim(); // Trim leading and trailing spaces
+          },
+          decoration: InputDecoration(hintText: 'Enter address'),
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: Text('Cancel'),
+            onPressed: () {
+              Navigator.of(context).pop();
             },
-            decoration: InputDecoration(hintText: 'Enter address'),
           ),
-          actions: <Widget>[
-            TextButton(
-              child: Text('Cancel'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: Text('Add'),
-              onPressed: () {
+          TextButton(
+            child: Text('Add'),
+            onPressed: () {
+              if (newAddress.isNotEmpty) { // Check if the trimmed address is not empty
                 setState(() {
                   addresses.add(newAddress);
                 });
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
+              }
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
 
 Future<void> _handleSendDonation() async {
   if (!_areRequiredFieldsFilled()) {
@@ -425,11 +430,11 @@ Future<void> _handleSendDonation() async {
           donatedItems: donatedItems,
           isPickup: pickUp,
           weight: weight,
-          addressForPickup: addresses,
+          addressForPickup: addresses, // Include addresses for pickup
           donorId: widget.userId,
           recipientId: widget.companyId,
           status: status,
-          contactNumber: contactNumber,
+          contactNumber: contactNumber, // Include contact number
           selectedDateandTime: Timestamp.fromDate(selectedDateTime),
         );
       } else {
@@ -462,7 +467,9 @@ Future<void> _handleSendDonation() async {
             donorId: widget.userId,
             recipientId: widget.companyId,
             status: status,
+            contactNumber: contactNumber, // Include contact number
             selectedDateandTime: Timestamp.fromDate(selectedDateTime),
+            addressForPickup: addresses, // Include addresses for pickup
             url: url);
 
         await donationProvider.updateDonation(donationId, details).then((value) => Navigator.pop(context));
@@ -472,7 +479,6 @@ Future<void> _handleSendDonation() async {
     print("Error during donation sending: $error");
   }
 }
-
 
 AppBar _buildAppBar(BuildContext context, Text titleText) {
   return AppBar(
@@ -527,8 +533,6 @@ void _showExitConfirmationDialog() {
     },
   );
 }
-
-
 
 Widget donationCheckbox() {
   return Column(

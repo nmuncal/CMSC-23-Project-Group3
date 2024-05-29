@@ -51,6 +51,7 @@ dependencies:
   url_launcher: ^6.2.6
   qr_flutter: ^4.1.0
   qr_code_scanner: ^1.0.1
+  cached_network_image: ^3.0.0
 
 
 dev_dependencies:

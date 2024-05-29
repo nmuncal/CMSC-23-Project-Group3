@@ -17,12 +17,12 @@ class UserProvider with ChangeNotifier {
   Stream<List<AppUser>> get donorStream => _donorStream;
 
   final int donorAcc = 0, orgAcc = 1, adminAcc = 2;
-  
+
   AppUser? _selectedUser;
   AppUser? get selectedUser => _selectedUser;
   bool unique = false;
 
-  UserProvider(){
+  UserProvider() {
     fbService = FirebaseUserAPI();
 
     _dbStream = FirebaseUserAPI().fetchUsers();
@@ -35,27 +35,30 @@ class UserProvider with ChangeNotifier {
     fetchPendingOrganizations();
   }
 
-  void refresh(){
+  void refresh() {
     if (_selectedUser != null) getAccountInfo(_selectedUser!.uid);
   }
 
   void _fetchUsersByType(int accountType, bool approvalStatus) {
     try {
       var newStream = fbService.fetchUsersByAccountType(accountType, approvalStatus);
-      
-        var sortedStream = newStream.map((snapshot) {
-          var docs = snapshot;
-          docs.sort((a, b) => a.name.compareTo(b.name));
-          return snapshot;
-        });
-      
-      switch(accountType){
-        case 0: 
-          _donorStream = sortedStream; 
+
+      var sortedStream = newStream.map((snapshot) {
+        var docs = snapshot;
+        docs.sort((a, b) => a.name.compareTo(b.name));
+        return snapshot;
+      });
+
+      switch (accountType) {
+        case 0:
+          _donorStream = sortedStream;
           break;
         case 1:
-          if (approvalStatus){_orgStream = sortedStream;}
-          else {_pendingOrgStream = sortedStream;}
+          if (approvalStatus) {
+            _orgStream = sortedStream;
+          } else {
+            _pendingOrgStream = sortedStream;
+          }
           break;
         default:
           break;
@@ -69,23 +72,23 @@ class UserProvider with ChangeNotifier {
   }
 
   void fetchDonors() {
-    _fetchUsersByType(donorAcc,false);
+    _fetchUsersByType(donorAcc, false);
   }
 
   void fetchOrganizations() {
-    _fetchUsersByType(orgAcc,true);
+    _fetchUsersByType(orgAcc, true);
   }
 
   void fetchPendingOrganizations() {
-    _fetchUsersByType(orgAcc,false);
+    _fetchUsersByType(orgAcc, false);
   }
 
   void fetchAdmins() {
-    _fetchUsersByType(adminAcc,false);
+    _fetchUsersByType(adminAcc, false);
   }
 
   Future<AppUser?> getAccountInfo(String? id) async {
-    if (id == null){
+    if (id == null) {
       _selectedUser = null;
       notifyListeners();
       return _selectedUser;
@@ -106,5 +109,15 @@ class UserProvider with ChangeNotifier {
     String? message = await fbService.updateUser(id, details.toJson(details));
     notifyListeners();
     return message;
+  }
+
+  Future<String?> getUsernameByUid(String uid) async {
+    try {
+      AppUser? user = await fbService.getAccountInfo(uid);
+      return user?.username;
+    } catch (e) {
+      print('Error fetching username: $e');
+      return null;
+    }
   }
 }

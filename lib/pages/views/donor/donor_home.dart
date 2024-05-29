@@ -215,3 +215,4 @@ Widget _buildTextContent(AppUser user) {
   }
 
 }
+

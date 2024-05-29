@@ -52,7 +52,7 @@ class Donation {
   Map<String, dynamic> toJson(Donation donation) {
     return {
       'id':id,
-      'donatedItems': donatedItems,
+      'donatedItems': donation.donatedItems.where((item) => item.isNotEmpty).toList(),
       'isPickup': isPickup,
       'weight': weight,
       'addressForPickup': addressForPickup,
