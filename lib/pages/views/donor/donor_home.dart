@@ -96,29 +96,39 @@ Widget componentTiles(AppUser user, int index) {
   }
 
 Widget _buildCoverImage(AppUser user, int index) {
-    return AnimatedBuilder( 
-      animation: _scrollController,
-      builder: (context, child) {
-        double maxOffset = 75.0; 
-        double offset = _scrollController.hasClients ? _scrollController.offset/4 : 0;
-        offset = offset - (index * 20);
-        offset = offset.clamp(0, maxOffset);
+  return AnimatedBuilder(
+    animation: _scrollController,
+    builder: (context, child) {
+      double maxOffset = 75.0;
+      double offset = _scrollController.hasClients ? _scrollController.offset / 4 : 0;
+      offset = offset - (index * 20);
+      offset = offset.clamp(0, maxOffset);
 
-        return Transform.translate(
-          offset: Offset(0.0, offset * 0.5), 
-          child: Transform.scale(
-            scale: 1.4,
-            child: Image.network(
-              user.coverPhoto != '' ? user.coverPhoto : Styles.defaultCover,
-              height: 200,
-              width: double.infinity,
-              fit: BoxFit.cover,
-            ),
+      return Transform.translate(
+        offset: Offset(0.0, offset * 0.5),
+        child: Transform.scale(
+          scale: 1.4,
+          child: Stack(
+            children: [
+              Image.network(
+                user.coverPhoto != '' ? user.coverPhoto : Styles.defaultCover,
+                height: 200,
+                width: double.infinity,
+                fit: BoxFit.cover,
+              ),
+              Container(
+                height: 200,
+                width: double.infinity,
+                color: Colors.black.withOpacity(0.3), // Adjust opacity as needed
+              ),
+            ],
           ),
-        );
-      },
-    );
-  }
+        ),
+      );
+    },
+  );
+}
+
 
 
   Widget _buildGradientOverlay(BuildContext context, user) {
@@ -130,7 +140,7 @@ Widget _buildCoverImage(AppUser user, int index) {
           padding: const EdgeInsets.all(10),
           decoration: const BoxDecoration(
             gradient: LinearGradient(
-              colors: [Colors.black54, Colors.black38, Colors.transparent],
+              colors: [Color.fromARGB(203, 0, 0, 0), Colors.black38, Color.fromARGB(115, 0, 0, 0), Colors.transparent],
               begin: Alignment.bottomCenter,
               end: Alignment.topCenter,
             ),
@@ -140,7 +150,7 @@ Widget _buildCoverImage(AppUser user, int index) {
       );
   }
 
- Widget _buildTextContent(AppUser user) {
+Widget _buildTextContent(AppUser user) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
