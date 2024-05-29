@@ -17,12 +17,13 @@ class _OrganizationDonationsState extends State<OrganizationDonations> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
-      final user = context.read<UserAuthProvider>().user;
-      if (user != null) {
-        Provider.of<DonationProvider>(context, listen: false)
-            .fetchDonationsReceived(user.uid);
-        print(user.uid);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        final user = context.read<UserAuthProvider>().user;
+        if (user != null) {
+          Provider.of<DonationProvider>(context, listen: false)
+              .fetchDonationsReceived(user.uid);
+        }
       }
     });
   }

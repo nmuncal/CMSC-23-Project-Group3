@@ -33,7 +33,6 @@ class UserAuthProvider with ChangeNotifier {
 
   void _initializeStreams() {
     _authStream = authService.userSignedIn();
-    notifyListeners();
 
     _authStream = authService.userSignedIn();
     _authStream.listen((user) {
@@ -44,6 +43,8 @@ class UserAuthProvider with ChangeNotifier {
     _dbStream!.listen((users) {
       refresh();
     });
+
+    notifyListeners();
   }
 
   String? _email;

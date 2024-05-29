@@ -27,20 +27,17 @@ class AppUser {
     required this.accountType,
     required this.isApproved,
 
-    // additional fields for organizations
+    // Additional fields for organizations
     this.isOpen = false,
     this.desc = '',
     this.proofOfLegitimacy = const [],
 
-    //photo
+    // Photos
     this.profilePhoto = '',
     this.coverPhoto = '',
-
-
-
   });
 
-   AppUser copyWith({
+  AppUser copyWith({
     String? email,
     String? uid,
     String? username,
@@ -68,34 +65,34 @@ class AppUser {
       desc: desc ?? this.desc,
       proofOfLegitimacy: proofOfLegitimacy ?? this.proofOfLegitimacy,
       profilePhoto: profilePhoto ?? this.profilePhoto,
-      coverPhoto: coverPhoto ?? this.coverPhoto
+      coverPhoto: coverPhoto ?? this.coverPhoto,
     );
   }
 
   factory AppUser.fromJson(Map<String, dynamic> json) {
-  return AppUser(
-    email: json['email'] ?? '',
-    uid: json['uid'] ?? '',
-    username: json['username'] ?? '',
-    name: json['name'] ?? '',
-    contactNo: json['contactNo'] ?? '',
-    address: List<String>.from(json['address'] ?? []),
-    accountType: json['accountType'] ?? 0,
-    isApproved: json['isApproved'] ?? false,
-    isOpen: json['isOpen'] ?? false,
-    desc: json['desc'] ?? '',
-    proofOfLegitimacy: List<String>.from(json['proofOfLegitimacy'] ?? []),
-    profilePhoto: json['profilePhoto'],
-    coverPhoto: json['coverPhoto'],
-  );
-}
+    return AppUser(
+      email: json['email'] ?? '',
+      uid: json['uid'] ?? '',
+      username: json['username'] ?? '',
+      name: json['name'] ?? '',
+      contactNo: json['contactNo'] ?? '',
+      address: List<String>.from(json['address'] ?? []),
+      accountType: json['accountType'] ?? 0,
+      isApproved: json['isApproved'] ?? false,
+      isOpen: json['isOpen'] ?? false,
+      desc: json['desc'] ?? '',
+      proofOfLegitimacy: List<String>.from(json['proofOfLegitimacy'] ?? []),
+      profilePhoto: json['profilePhoto'] ?? '',
+      coverPhoto: json['coverPhoto'] ?? '',
+    );
+  }
 
   static List<AppUser> fromJsonArray(String jsonData) {
     final Iterable<dynamic> data = jsonDecode(jsonData);
     return data.map<AppUser>((dynamic d) => AppUser.fromJson(d)).toList();
   }
 
-  Map<String, dynamic> toJson(AppUser appUser) {
+  Map<String, dynamic> toJson(AppUser json) {
     return {
       'email': email,
       'uid': uid,
@@ -107,10 +104,9 @@ class AppUser {
       'isApproved': isApproved,
       'isOpen': isOpen,
       'desc': desc,
-      'proofOfLegitimacy':proofOfLegitimacy,
-      'profilePhoto':profilePhoto,
-      'coverPhoto' :coverPhoto
+      'proofOfLegitimacy': proofOfLegitimacy,
+      'profilePhoto': profilePhoto,
+      'coverPhoto': coverPhoto,
     };
   }
 }
-
