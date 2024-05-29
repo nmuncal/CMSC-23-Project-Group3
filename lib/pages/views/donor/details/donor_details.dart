@@ -1,6 +1,7 @@
 // ignore_for_file: must_be_immutable
 
 import 'package:cmsc_23_project_group3/models/user_model.dart';
+import 'package:cmsc_23_project_group3/pages/views/organization/details/contact_details.dart';
 import 'package:cmsc_23_project_group3/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:cmsc_23_project_group3/styles.dart';
@@ -18,8 +19,7 @@ class _DonorDetailsState extends State<DonorDetails> {
 
   AppUser? donor;
   
-  final icon = 'lib/assets/ico_app.png';
-  final cover = 'lib/assets/ico_splash.png';
+  bool isContactSectionVisible = false;
 
   @override
   void initState() {
@@ -46,8 +46,22 @@ class _DonorDetailsState extends State<DonorDetails> {
                   children: [
                     aboutSection(),
                     const SizedBox(height: 15),
-                    donor!.accountType == 2 ? 
-                    Container() :
+                    IconButton(
+                        onPressed: () {
+                          setState(() {
+                            isContactSectionVisible = !isContactSectionVisible;
+                          });
+                        },
+                        icon: Icon(isContactSectionVisible ? Icons.visibility_off_outlined : Icons.perm_contact_cal_rounded),
+                        tooltip: isContactSectionVisible ? 'Hide Contact Section' : 'Show Contact Section',
+                      ),
+                      Visibility(
+                        visible: isContactSectionVisible,
+                        child: Center(
+                          child: ContactDetails(user: donor),
+                        ),
+                      ),
+
                     donationsSection(),
                   ],
                 ),

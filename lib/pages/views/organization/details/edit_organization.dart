@@ -67,7 +67,7 @@ class _EditOrganizationState extends State<EditOrganization> {
                     ),
                     profilePhotoField(),
                     coverPhotoField(),
-                    isOpenSwitch(),
+                    org!.accountType == 1 ? isOpenSwitch() : Container(),
                     descriptionField(),
                     Divider(
                       height: 30,
@@ -285,6 +285,22 @@ class _EditOrganizationState extends State<EditOrganization> {
               child: Text(org!.email),
             ),
           ),
+        ]),
+        TableRow(children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Center(
+              child: Text("Account Type", style: TextStyle(color: Styles.mainBlue)),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Center(
+              child: Text(org!.accountType == 0 ? "Donor" : 
+              (org!.accountType == 1 ? "Organization" : "Admin")),
+            ),
+          ),
+          
         ]),
       ],
     );
