@@ -1,16 +1,17 @@
 import 'dart:async';
 
 import 'package:cmsc_23_project_group3/api/firebase_donation_api.dart';
+import 'package:cmsc_23_project_group3/models/donationDrive_model.dart';
 import 'package:flutter/material.dart';
 import '../models/donation_model.dart';
 
 class DonationProvider with ChangeNotifier {
   FirebaseDonationAPI firebaseService = FirebaseDonationAPI();
-  late Stream<List<Donation>> _donationStream = Stream.empty();
-  Donation? _donation;
+  late Stream<List<DonationDrive>> _driveStream = Stream.empty();
+  DonationDrive? _drive;
   StreamSubscription<Donation?>? _subscription;
-  Donation? get donation => _donation;
-  Stream<List<Donation>> get donationStream => _donationStream;
+  DonationDrive? get drive => _drive;
+  Stream<List<DonationDrive>> get driveStream => _driveStream;
 
    void setDonationId(String donationId) {
     _subscription?.cancel();
@@ -22,10 +23,9 @@ class DonationProvider with ChangeNotifier {
 
   
 
-  void fetchDonationsGiven(String? uid) {
+  void fetchDonationsGiven(String uid) {
     try {
-      _donationStream = Stream.empty();
-      if (uid != null) {_donationStream = firebaseService.fetchDonationsGiven(uid);};
+      _donationStream = firebaseService.fetchDonationsGiven(uid);
       notifyListeners();
     } catch (e) {
       print('Error fetching donations: $e');
@@ -72,6 +72,10 @@ class DonationProvider with ChangeNotifier {
     return message;
   }
   
-
+    Future<String?> updateDonationOther(String id, String status) async {
+    String? message = await firebaseService.updateDonationOther(id, status);
+    notifyListeners();
+    return message;
+  }
 
 }

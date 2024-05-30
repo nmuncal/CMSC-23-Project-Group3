@@ -3,15 +3,14 @@ import 'package:cmsc_23_project_group3/models/donation_model.dart';
 
 class DonationDrive {
   final String name;
-  final String organization;
+  final String organizationid;
   final String details;
   final bool status;
   final List<String> donations;
 
-
   DonationDrive({
     required this.name,
-    required this.organization,
+    required this.organizationid,
     required this.details,
     required this.status,
     required this.donations,
@@ -20,7 +19,7 @@ class DonationDrive {
   factory DonationDrive.fromJson(Map<String, dynamic> json) {
     return DonationDrive(
       name: json['name'],
-      organization: json['organization'],
+      organizationid: json['organizationid'],
       details: json['details'],
       status: json['status'],
       donations: List<String>.from(json['donations']),
@@ -35,11 +34,10 @@ class DonationDrive {
   Map<String, dynamic> toJson(Donation donation) {
     return {
       'name': name,
-      'organization': organization,
+      'organizationid': organizationid,
       'details': details,
       'status': status,
       'donations':donations
-     
     };
   }
 }

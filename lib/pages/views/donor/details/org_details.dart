@@ -117,8 +117,6 @@ class _ViewOrganizationState extends State<ViewOrganization> {
           ),
         );
       },
-
-      // SIGN IN LOGIC
     );
   }
 }

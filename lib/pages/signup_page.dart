@@ -272,6 +272,41 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
+  /*
+    Widget passwordField() {
+    return TextFormField(
+      obscureText: _obscureText,
+      decoration: Styles.textFieldStyle('Password').copyWith(
+        suffixIcon: IconButton(
+          icon: Icon(
+            _obscureText ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+            color: Styles.darkerGray,
+          ),
+          onPressed: () {
+            // Hiding and showing password
+            setState(() {
+              _obscureText = !_obscureText;
+            });
+            _autohideTimer();
+          },
+        ),
+      ),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Please enter your password';
+        }
+        if (!passwordRegExp.hasMatch(value)) {
+          return 'Password must be at least 6 characters long, contain at least 1 capital letter, 1 number, and 1 special character.';
+        }
+        return null;
+      },
+      onSaved: (value) {
+        password = value!;
+      },
+    );
+  }
+  */
+
   void _autohideTimer() {
     Timer(const Duration(seconds: 5), () {
       setState(() {
@@ -312,20 +347,25 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
-  Widget contactNoField() {
-    return TextFormField(
-      decoration: Styles.textFieldStyle('Contact No.'),
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'Please enter your contact number';
-        }
-        return null;
-      },
-      onSaved: (value) {
-        contactNo = value!;
-      },
-    );
-  }
+Widget contactNoField() {
+  return TextFormField(
+    decoration: Styles.textFieldStyle('Contact No.'),
+    keyboardType: TextInputType.phone,
+    validator: (value) {
+      if (value == null || value.isEmpty) {
+        return 'Please enter your contact number';
+      }
+      if (value.length != 11) {
+        return 'Contact number must be 11 characters long';
+      }
+      return null;
+    },
+    onSaved: (value) {
+      contactNo = value!;
+    },
+  );
+}
+
 
   Widget addressField() {
     return TextFormField(
