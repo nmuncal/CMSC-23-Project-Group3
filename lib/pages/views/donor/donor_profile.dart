@@ -1,4 +1,5 @@
 import 'package:cmsc_23_project_group3/pages/views/organization/details/edit_organization.dart';
+import 'package:cmsc_23_project_group3/providers/donation_provider.dart';
 import 'package:cmsc_23_project_group3/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'details/donor_details.dart';

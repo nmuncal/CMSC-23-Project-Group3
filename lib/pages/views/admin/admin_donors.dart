@@ -2,6 +2,7 @@ import 'package:cmsc_23_project_group3/providers/user_provider.dart';
 import 'package:cmsc_23_project_group3/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../../providers/donation_provider.dart';
 import '/models/user_model.dart';
 import 'details/donor_details.dart';
 
@@ -16,8 +17,9 @@ class _DonorHomeState extends State<AdminDonors> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<UserProvider>().getAccountInfo(null);
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      context.read<DonationProvider>().fetchDonationsGiven(null);
+      await context.read<UserProvider>().getAccountInfo(null);
     });
   }
 

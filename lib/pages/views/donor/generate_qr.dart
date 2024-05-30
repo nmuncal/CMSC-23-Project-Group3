@@ -1,4 +1,5 @@
 import 'package:cmsc_23_project_group3/providers/donation_provider.dart';
+import 'package:cmsc_23_project_group3/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -68,8 +69,9 @@ class _QRCodePageState extends State<QRCodePage> {
               version: QrVersions.auto,
               errorCorrectionLevel: QrErrorCorrectLevel.H,
               size: 250,
-              foregroundColor: Color(0xff405f7d),
-              embeddedImage: AssetImage('lib/assets/ico_logo.png'),
+              foregroundColor: Styles.mainBlue,
+              backgroundColor: Colors.white,
+              embeddedImage: AssetImage('lib/assets/qr_logo.png'),
               embeddedImageStyle: QrEmbeddedImageStyle(
                 size: Size(60, 60),
               ),

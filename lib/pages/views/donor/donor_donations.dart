@@ -23,7 +23,6 @@ class _DonorDonationsState extends State<DonorDonations> {
       final user = context.read<UserAuthProvider>().user;
       if (user != null) {
         Provider.of<DonationProvider>(context, listen: false).fetchDonationsGiven(user.uid);
-        print(user.uid);
       }
     });
   }

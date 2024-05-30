@@ -96,6 +96,11 @@ class UserProvider with ChangeNotifier {
     return _selectedUser;
   }
 
+  Future<AppUser?> fetchInfo(String id) async {
+    Future<AppUser?> user = fbService.getAccountInfo(id);
+    return user;
+  }
+
   Future<bool> isUsernameUnique(String username) async {
     unique = await fbService.isUsernameUnique(username);
     notifyListeners();

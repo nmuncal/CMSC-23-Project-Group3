@@ -22,9 +22,10 @@ class DonationProvider with ChangeNotifier {
 
   
 
-  void fetchDonationsGiven(String uid) {
+  void fetchDonationsGiven(String? uid) {
     try {
-      _donationStream = firebaseService.fetchDonationsGiven(uid);
+      _donationStream = Stream.empty();
+      if (uid != null) {_donationStream = firebaseService.fetchDonationsGiven(uid);};
       notifyListeners();
     } catch (e) {
       print('Error fetching donations: $e');

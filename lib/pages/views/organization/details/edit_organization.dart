@@ -387,12 +387,13 @@ class _EditOrganizationState extends State<EditOrganization> {
         );
 
         if (mounted){
-          await context.read<UserProvider>().updateUser(updatedUser);
+          await context.read<UserProvider>().updateUser(updatedUser).then((value) =>  Navigator.pop(context));
+
+          setState(() {
+            _submitPressed = false;
+          });
         }
         
-        setState(() {
-          _submitPressed = false;
-        });
       },
       child: Styles.gradientButtonBuilder('Submit', isPressed: _submitPressed),
     );
