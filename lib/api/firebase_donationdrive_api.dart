@@ -1,12 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cmsc_23_project_group3/models/donationDrive_model.dart';
-import 'package:cmsc_23_project_group3/models/donation_model.dart';
-
 
 class FirebaseDonationAPI {
   static final FirebaseFirestore db = FirebaseFirestore.instance;
 
-  Future<String> addDrive(Map<String, dynamic> drive) async {
+  Future<String> adddrive(Map<String, dynamic> drive) async {
     try {
       DocumentReference doc = await db.collection("donationdrive").add(drive);
 
@@ -16,7 +14,7 @@ class FirebaseDonationAPI {
     }
   }
 
-  Stream<List<DonationDrive>> fetchorgdrives(String userId) {
+  Stream<List<DonationDrive>> fetchdrives(String userId) {
     try {
       return db
           .collection("donationdrive")
@@ -65,14 +63,14 @@ class FirebaseDonationAPI {
     return null;
   }
 
-  Stream<Donation?> getDonationInfo(String donationId) {
+  Stream<DonationDrive?> getdriveinfo(String driveid) {
     return db
-        .collection('donations')
-        .doc(donationId)
+        .collection('donationdrive')
+        .doc(driveid)
         .snapshots()
         .map((snapshot) {
       if (snapshot.exists) {
-        return Donation.fromJson(snapshot.data() as Map<String, dynamic>);
+        return DonationDrive.fromJson(snapshot.data() as Map<String, dynamic>);
       }
       return null;
     });
