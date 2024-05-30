@@ -52,265 +52,292 @@ class _DonatePageState extends State<DonatePage> {
       _image != null;
 }
 
-bool _areRequiredFieldsFilled() {
-  if (donatedItems.isEmpty) {
-    return false;
-  }
-
-  if (pickUp) {
-    if (addresses.isEmpty || contactNumber.isEmpty) {
+  bool _areRequiredFieldsFilled() {
+    if (donatedItems.isEmpty) {
       return false;
     }
-  }
 
-  return weight.isNotEmpty && selectedDate != null && selectedTime != null;
-}
+    if (pickUp) {
+      if (addresses.isEmpty || contactNumber.isEmpty) {
+        return false;
+      }
+    }
+
+    return weight.isNotEmpty && selectedDate != null && selectedTime != null;
+  }
 
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:_buildAppBar(context, Text(
-        'tayo',
-        style: GoogleFonts.quicksand(
-          color: Styles.mainBlue,
-          fontWeight: FontWeight.bold,
-          fontSize: 30,
+      appBar: _buildAppBar(
+        context,
+        Text(
+          'tayo',
+          style: GoogleFonts.quicksand(
+            color: Styles.mainBlue,
+            fontWeight: FontWeight.bold,
+            fontSize: 30,
+          ),
         ),
-      ),),
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Center(child: Text('${widget.companyName} Donations'.toUpperCase() , style: GoogleFonts.quicksand(color: Styles.lightestBlue, fontSize: 20, fontWeight: FontWeight.bold))),
-              Divider(),
-              SizedBox(height: 20),
+              Center(
+                child: Text(
+                  '${widget.companyName} Donations'.toUpperCase(),
+                  style: GoogleFonts.quicksand(
+                    color: Styles.lightestBlue,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              const Divider(),
+              const SizedBox(height: 20),
               toggleSwitch(),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               donationCheckbox(),
-              SizedBox(height: 20),
- if (pickUp) ...[
-  Center(
-    child: Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: Text(
-            'Address',
-            style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
-          ),
-        ),
-        Column(
-          children: addresses.map((address) => Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4.0),
-            child: Text(
-              address,
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.black87,
-              ),
-            ),
-          )).toList(),
-        ),
-        SizedBox(height: 10),
-        ElevatedButton.icon(
-          onPressed: _addAddress,
-          icon: Icon(Icons.add, color: Styles.mainBlue),
-          label: Text('Add Address'),
-          style: ElevatedButton.styleFrom(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-          ),
-        ),
-        SizedBox(height: 10),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: Text(
-            'Contact Number',
-            style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: TextFormField(
-            onChanged: (value) {
-              setState(() {
-                contactNumber = value; // Update contactNumber when the value changes
-              });
-            },
-            keyboardType: TextInputType.phone,
-            decoration: InputDecoration(
-              hintText: 'Enter Contact Number',
-              contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.blue, width: 1.5),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.blue, width: 2.0),
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-          ),
-        ),
-      ],
-    ),
-  ),
-],
-
-            SizedBox(height: 20),
-        const Padding(
-          padding: EdgeInsets.symmetric(vertical: 8.0),
-          child: Text(
-            'Weight of Items (kg)',
-            style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
-          ),
-        ),
-Padding(
-  padding: const EdgeInsets.symmetric(vertical: 8.0),
-  child: TextFormField(
-    onChanged: (value) {
-      setState(() {
-        weight = value;
-      });
-    },
-    keyboardType: TextInputType.number,
-    decoration: InputDecoration(
-      hintText: 'Enter weight in kilograms',
-      contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: Colors.blue, width: 1.5),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: Colors.blue, width: 2.0),
-        borderRadius: BorderRadius.circular(12),
-      ),
-    ),
-  ),
-),
-SizedBox(height: 20),
-Center(child: 
-SingleChildScrollView(
-  scrollDirection: Axis.horizontal,
-  child: Row(
-    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-    children: [
-      Column(
-        children: [
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 8.0),
-            child: Text(
-              'Date',
-              style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
-            ),
-          ),
-          ElevatedButton(
-            onPressed: _selectDate,
-            child: Text(
-              selectedDate == null
-                  ? 'Select Date'
-                  : 'Selected Date: ${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}',
-            ),
-            style: ElevatedButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-          ),
-        ],
-      ),
-      SizedBox(width: 20), // Add spacing between date and time pickers
-      Column(
-        children: [
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 8.0),
-            child: Text(
-              'Time',
-              style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
-            ),
-          ),
-          ElevatedButton(
-            onPressed: _selectTime,
-            child: Text(
-              selectedTime == null
-                  ? 'Select Time'
-                  : 'Selected Time: ${selectedTime!.hour}:${selectedTime!.minute}',
-            ),
-            style: ElevatedButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-          ),
-        ],
-      ),
-    ],
-  ),
-), 
-),
-
-Center(child: 
-Column(children: [
-SizedBox(height: 20),
-ElevatedButton(
-  onPressed: _getImageFromGallery,
-  child: Text('Upload Photo'),
-  style: ElevatedButton.styleFrom(
-
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(12),
-    ),
-  ),
-),
-SizedBox(height: 20),
-ElevatedButton(
-  onPressed: _takePhoto,
-  child: Text('Take Photo'),
-  style: ElevatedButton.styleFrom(
-
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(12),
-    ),
-  ),
-),
-if (_image != null) ...[
-  SizedBox(height: 20),
-  Image.file(
-    _image!,
-    width: 200,
-    height: 200,
-  ),
-],
-SizedBox(height: 20),
-ElevatedButton(
-  onPressed: () async {
-    _handleSendDonation();
-  },
-  child: Text('Submit'),
-  style: ElevatedButton.styleFrom(
-
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(12),
-    ),
-  ),
-),],),),
-
+              const SizedBox(height: 20),
+              if (pickUp) ...[
+                _buildAddressSection(),
+              ],
+              const SizedBox(height: 20),
+              _buildWeightInput(),
+              const SizedBox(height: 20),
+              _buildDateTimePicker(),
+              const SizedBox(height: 20),
+              _buildPhotoUploadSection(),
+              const SizedBox(height: 20),
+              _buildSubmitButton(),
+              const SizedBox(height: 20),
             ],
           ),
         ),
       ),
     );
   }
+
+  Widget _buildAddressSection() {
+    return Center(
+      child: Column(
+        children: [
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 8.0),
+            child: Text(
+              'Address',
+              style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+            ),
+          ),
+          Column(
+            children: addresses
+                .map(
+                  (address) => Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4.0),
+                    child: Text(
+                      address,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Colors.black87,
+                      ),
+                    ),
+                  ),
+                )
+                .toList(),
+          ),
+          const SizedBox(height: 10),
+          ElevatedButton.icon(
+            onPressed: _addAddress,
+            icon: Icon(Icons.add, color: Styles.mainBlue),
+            label: const Text('Add Address'),
+            style: ElevatedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+          ),
+          const SizedBox(height: 10),
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 8.0),
+            child: Text(
+              'Contact Number',
+              style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: TextFormField(
+              onChanged: (value) {
+                setState(() {
+                  contactNumber = value; // Update contactNumber when the value changes
+                });
+              },
+              keyboardType: TextInputType.phone,
+              decoration: InputDecoration(
+                hintText: 'Enter Contact Number',
+                contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(color: Colors.blue, width: 1.5),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(color: Colors.blue, width: 2.0),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildWeightInput() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: TextFormField(
+        onChanged: (value) {
+          setState(() {
+            weight = value;
+          });
+        },
+        keyboardType: TextInputType.number,
+        decoration: InputDecoration(
+          hintText: 'Enter weight in kilograms',
+          contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderSide: const BorderSide(color: Colors.blue, width: 1.5),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: const BorderSide(color: Colors.blue, width: 2.0),
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDateTimePicker() {
+    return Center(
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Column(
+              children: [
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8.0),
+                  child: Text(
+                    'Date',
+                    style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: _selectDate,
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: Text(
+                    selectedDate == null
+                        ? 'Select Date'
+                        : 'Selected Date: ${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}',
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(width: 20), // Add spacing between date and time pickers
+            Column(
+              children: [
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8.0),
+                  child: Text(
+                    'Time',
+                    style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: _selectTime,
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: Text(
+                    selectedTime == null
+                        ? 'Select Time'
+                        : 'Selected Time: ${selectedTime!.hour}:${selectedTime!.minute}',
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPhotoUploadSection() {
+    return Center(
+      child: Column(
+        children: [
+          const SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: _getImageFromGallery,
+            style: ElevatedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            child: const Text('Upload Photo'),
+          ),
+          const SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: _takePhoto,
+            style: ElevatedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            child: const Text('Take Photo'),
+          ),
+          if (_image != null) ...[
+            const SizedBox(height: 20),
+            Image.file(
+              _image!,
+              width: 200,
+              height: 200,
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSubmitButton() {
+    return GestureDetector(
+      onTap: () async {
+        setState(() {
+          _handleSendDonation();
+        });
+      },
+      child: Styles.gradientButtonBuilder('Submit'),
+    );
+  }
+
 
   Future<void> _getImageFromGallery() async {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
@@ -363,22 +390,22 @@ void _addAddress() {
     builder: (BuildContext context) {
       String newAddress = '';
       return AlertDialog(
-        title: Text('Add Address'),
+        title: const Text('Add Address'),
         content: TextField(
           onChanged: (value) {
             newAddress = value.trim(); // Trim leading and trailing spaces
           },
-          decoration: InputDecoration(hintText: 'Enter address'),
+          decoration: const InputDecoration(hintText: 'Enter address'),
         ),
         actions: <Widget>[
           TextButton(
-            child: Text('Cancel'),
+            child: const Text('Cancel'),
             onPressed: () {
               Navigator.of(context).pop();
             },
           ),
           TextButton(
-            child: Text('Add'),
+            child: const Text('Add'),
             onPressed: () {
               if (newAddress.isNotEmpty) { // Check if the trimmed address is not empty
                 setState(() {
@@ -398,7 +425,7 @@ void _addAddress() {
 Future<void> _handleSendDonation() async {
   if (!_areRequiredFieldsFilled()) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
+      const SnackBar(
         content: Text('Please fill in all required fields.'),
       ),
     );
@@ -512,17 +539,17 @@ void _showExitConfirmationDialog() {
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Text('Are you sure?'),
-        content: Text('All inputs will be deleted if you exit this screen.'),
+        title: const Text('Are you sure?'),
+        content: const Text('All inputs will be deleted if you exit this screen.'),
         actions: <Widget>[
           TextButton(
-            child: Text('No'),
+            child: const Text('No'),
             onPressed: () {
               Navigator.of(context).pop();
             },
           ),
           TextButton(
-            child: Text('Yes'),
+            child: const Text('Yes'),
             onPressed: () {
               Navigator.of(context).pop(); // Close the dialog
               Navigator.of(context).pop(); // Go back
@@ -546,7 +573,7 @@ Widget donationCheckbox() {
         ),
       ),
       CheckboxListTile(
-        title: Row(
+        title: const Row(
           children: [
             Icon(Icons.fastfood), // Add leading icon
             SizedBox(width: 10),
@@ -565,7 +592,7 @@ Widget donationCheckbox() {
         },
       ),
       CheckboxListTile(
-        title: Row(
+        title: const Row(
           children: [
             Icon(Icons.shopping_bag), // Add leading icon
             SizedBox(width: 10),
@@ -584,7 +611,7 @@ Widget donationCheckbox() {
         },
       ),
       CheckboxListTile(
-        title: Row(
+        title: const Row(
           children: [
             Icon(Icons.attach_money), // Add leading icon
             SizedBox(width: 10),
@@ -603,7 +630,7 @@ Widget donationCheckbox() {
         },
       ),
       CheckboxListTile(
-        title: Row(
+        title: const Row(
           children: [
             Icon(Icons.shopping_cart), // Add leading icon
             SizedBox(width: 10),
@@ -624,8 +651,8 @@ Widget donationCheckbox() {
       CheckboxListTile(
         title: Row(
           children: [
-            Icon(Icons.more_horiz), // Add leading icon
-            SizedBox(width: 10),
+            const Icon(Icons.more_horiz), // Add leading icon
+            const SizedBox(width: 10),
             Expanded(
               child: TextFormField(
                 onChanged: (value) {
@@ -633,7 +660,7 @@ Widget donationCheckbox() {
                     others = value;
                   });
                 },
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   hintText: 'Other Donation',
                   border: OutlineInputBorder(),
                   contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0), // Adjust size here
@@ -714,7 +741,7 @@ Widget toggleSwitch() {
                 child: Text(
                   "Pick Up",
                   style: TextStyle(
-                    color: pickUp ? Colors.white : Colors.blue,
+                    color: pickUp ? Colors.white : Styles.mainBlue,
                   ),
                 ),
               ),
@@ -736,7 +763,7 @@ Widget toggleSwitch() {
                 child: Text(
                   "Drop Off",
                   style: TextStyle(
-                    color: pickUp ? Colors.blue : Colors.white,
+                    color: pickUp ? Styles.mainBlue : Colors.white,
                   ),
                 ),
               ),
