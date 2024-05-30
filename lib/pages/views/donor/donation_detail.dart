@@ -223,7 +223,7 @@ class _DonationDetailPageState extends State<DonationDetailPage> {
 if (donation.status == 'Pending')
   ElevatedButton(
     onPressed: () async {
-      String? message = await donationProvider.updateDonationStatusCancel(donation.id);
+      String? message = await donationProvider.updateDonationStatus(donation.id,"Cancelled");
       if (message != null) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(message)),

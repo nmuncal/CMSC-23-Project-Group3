@@ -41,16 +41,16 @@ class _DonatePageState extends State<DonatePage> {
   final picker = ImagePicker();
 
   bool _isFormFilled() {
-  return donatedItems.isNotEmpty ||
-      others.isNotEmpty ||
-      pickUp ||
-      weight.isNotEmpty ||
-      addresses.isNotEmpty ||
-      contactNumber.isNotEmpty ||
-      selectedDate != null ||
-      selectedTime != null ||
-      _image != null;
-}
+    return donatedItems.isNotEmpty ||
+        others.isNotEmpty ||
+        pickUp ||
+        weight.isNotEmpty ||
+        addresses.isNotEmpty ||
+        contactNumber.isNotEmpty ||
+        selectedDate != null ||
+        selectedTime != null ||
+        _image != null;
+  }
 
   bool _areRequiredFieldsFilled() {
     if (donatedItems.isEmpty) {
@@ -65,7 +65,6 @@ class _DonatePageState extends State<DonatePage> {
 
     return weight.isNotEmpty && selectedDate != null && selectedTime != null;
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -173,13 +172,15 @@ class _DonatePageState extends State<DonatePage> {
             child: TextFormField(
               onChanged: (value) {
                 setState(() {
-                  contactNumber = value; // Update contactNumber when the value changes
+                  contactNumber =
+                      value; // Update contactNumber when the value changes
                 });
               },
               keyboardType: TextInputType.phone,
               decoration: InputDecoration(
                 hintText: 'Enter Contact Number',
-                contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                contentPadding:
+                    const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -211,7 +212,8 @@ class _DonatePageState extends State<DonatePage> {
         keyboardType: TextInputType.number,
         decoration: InputDecoration(
           hintText: 'Enter weight in kilograms',
-          contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+          contentPadding:
+              const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
           ),
@@ -241,7 +243,8 @@ class _DonatePageState extends State<DonatePage> {
                   padding: EdgeInsets.symmetric(vertical: 8.0),
                   child: Text(
                     'Date',
-                    style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+                    style:
+                        TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
                   ),
                 ),
                 ElevatedButton(
@@ -259,14 +262,16 @@ class _DonatePageState extends State<DonatePage> {
                 ),
               ],
             ),
-            const SizedBox(width: 20), // Add spacing between date and time pickers
+            const SizedBox(
+                width: 20), // Add spacing between date and time pickers
             Column(
               children: [
                 const Padding(
                   padding: EdgeInsets.symmetric(vertical: 8.0),
                   child: Text(
                     'Time',
-                    style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+                    style:
+                        TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
                   ),
                 ),
                 ElevatedButton(
@@ -338,7 +343,6 @@ class _DonatePageState extends State<DonatePage> {
     );
   }
 
-
   Future<void> _getImageFromGallery() async {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
@@ -384,342 +388,351 @@ class _DonatePageState extends State<DonatePage> {
       });
     }
   }
-void _addAddress() {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      String newAddress = '';
-      return AlertDialog(
-        title: const Text('Add Address'),
-        content: TextField(
-          onChanged: (value) {
-            newAddress = value.trim(); // Trim leading and trailing spaces
-          },
-          decoration: const InputDecoration(hintText: 'Enter address'),
-        ),
-        actions: <Widget>[
-          TextButton(
-            child: const Text('Cancel'),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-          TextButton(
-            child: const Text('Add'),
-            onPressed: () {
-              if (newAddress.isNotEmpty) { // Check if the trimmed address is not empty
-                setState(() {
-                  addresses.add(newAddress);
-                });
-              }
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      );
-    },
-  );
-}
 
-
-Future<void> _handleSendDonation() async {
-  if (!_areRequiredFieldsFilled()) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Please fill in all required fields.'),
-      ),
+  void _addAddress() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        String newAddress = '';
+        return AlertDialog(
+          title: const Text('Add Address'),
+          content: TextField(
+            onChanged: (value) {
+              newAddress = value.trim(); // Trim leading and trailing spaces
+            },
+            decoration: const InputDecoration(hintText: 'Enter address'),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Add'),
+              onPressed: () {
+                if (newAddress.isNotEmpty) {
+                  // Check if the trimmed address is not empty
+                  setState(() {
+                    addresses.add(newAddress);
+                  });
+                }
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
-    return;
   }
 
-  try {
-    if (selectedDate != null && selectedTime != null) {
-      final selectedDateTime = DateTime(
-        selectedDate!.year,
-        selectedDate!.month,
-        selectedDate!.day,
-        selectedTime!.hour,
-        selectedTime!.minute,
+  Future<void> _handleSendDonation() async {
+    if (!_areRequiredFieldsFilled()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please fill in all required fields.'),
+        ),
       );
+      return;
+    }
 
-      final donationProvider = context.read<DonationProvider>();
-      final userStorageProvider = context.read<UserStorageProvider>();
-
-      if (others.isNotEmpty) {
-        donatedItems.add(others);
-      }
-
-      Donation temp;
-
-      if (pickUp) {
-        temp = Donation(
-          id: '',
-          donatedItems: donatedItems,
-          isPickup: pickUp,
-          weight: weight,
-          addressForPickup: addresses, // Include addresses for pickup
-          donorId: widget.userId,
-          recipientId: widget.companyId,
-          status: status,
-          contactNumber: contactNumber, // Include contact number
-          selectedDateandTime: Timestamp.fromDate(selectedDateTime),
+    try {
+      if (selectedDate != null && selectedTime != null) {
+        final selectedDateTime = DateTime(
+          selectedDate!.year,
+          selectedDate!.month,
+          selectedDate!.day,
+          selectedTime!.hour,
+          selectedTime!.minute,
         );
-      } else {
-        temp = Donation(
-          id: '',
-          donatedItems: donatedItems,
-          isPickup: pickUp,
-          weight: weight,
-          donorId: widget.userId,
-          recipientId: widget.companyId,
-          status: status,
-          selectedDateandTime: Timestamp.fromDate(selectedDateTime),
-        );
-      }
 
-      String donationId = await donationProvider.addDonation(temp);
-      print(donationId);
+        final donationProvider = context.read<DonationProvider>();
+        final userStorageProvider = context.read<UserStorageProvider>();
 
-      if (_image != null) {
-        String url = await userStorageProvider.uploadSingleFile(
-            _image!, "donations/$donationId");
+        if (others.isNotEmpty) {
+          donatedItems.add(others);
+        }
 
-        // Update url and donation id field
+        Donation temp;
 
-        Donation details = Donation(
-            id: donationId,
+        if (pickUp) {
+          temp = Donation(
+            id: '',
+            donatedItems: donatedItems,
+            isPickup: pickUp,
+            weight: weight,
+            addressForPickup: addresses, // Include addresses for pickup
+            donorId: widget.userId,
+            recipientId: widget.companyId,
+            status: status,
+            contactNumber: contactNumber, // Include contact number
+            selectedDateandTime: Timestamp.fromDate(selectedDateTime),
+          );
+        } else {
+          temp = Donation(
+            id: '',
             donatedItems: donatedItems,
             isPickup: pickUp,
             weight: weight,
             donorId: widget.userId,
             recipientId: widget.companyId,
             status: status,
-            contactNumber: contactNumber, // Include contact number
             selectedDateandTime: Timestamp.fromDate(selectedDateTime),
-            addressForPickup: addresses, // Include addresses for pickup
-            url: url);
-
-        await donationProvider.updateDonation(donationId, details).then((value) => Navigator.pop(context));
-      }
-    }
-  } catch (error) {
-    print("Error during donation sending: $error");
-  }
-}
-
-AppBar _buildAppBar(BuildContext context, Text titleText) {
-  return AppBar(
-    centerTitle: true,
-    title: titleText,
-    leading: IconButton(
-      icon: Container(
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: Styles.mainBlue.withOpacity(0.1), // Circle background with some transparency
-        ),
-        child: Icon(
-          Icons.arrow_back,
-          color: Styles.mainBlue,
-        ),
-      ),
-      onPressed: () {
-        if (_isFormFilled()) {
-          _showExitConfirmationDialog();
-        } else {
-          Navigator.of(context).pop();
+          );
         }
+
+        if (_image != null) {
+          String donationId = await donationProvider.addDonation(temp);
+          print(donationId);
+          String url = await userStorageProvider.uploadSingleFile(
+              _image!, "donations/$donationId");
+
+          // Update url and donation id field
+
+          Donation details = Donation(
+              id: donationId,
+              donatedItems: donatedItems,
+              isPickup: pickUp,
+              weight: weight,
+              donorId: widget.userId,
+              recipientId: widget.companyId,
+              status: status,
+              contactNumber: contactNumber, // Include contact number
+              selectedDateandTime: Timestamp.fromDate(selectedDateTime),
+              addressForPickup: addresses, // Include addresses for pickup
+              url: url);
+
+          await donationProvider
+              .updateDonation(donationId, details)
+              .then((value) => Navigator.pop(context));
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('An image is required.'),
+          ));
+        }
+      }
+    } catch (error) {
+      print("Error during donation sending: $error");
+    }
+  }
+
+  AppBar _buildAppBar(BuildContext context, Text titleText) {
+    return AppBar(
+      centerTitle: true,
+      title: titleText,
+      leading: IconButton(
+        icon: Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Styles.mainBlue
+                .withOpacity(0.1), // Circle background with some transparency
+          ),
+          child: Icon(
+            Icons.arrow_back,
+            color: Styles.mainBlue,
+          ),
+        ),
+        onPressed: () {
+          if (_isFormFilled()) {
+            _showExitConfirmationDialog();
+          } else {
+            Navigator.of(context).pop();
+          }
+        },
+      ),
+      automaticallyImplyLeading: false,
+    );
+  }
+
+  void _showExitConfirmationDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Are you sure?'),
+          content:
+              const Text('All inputs will be deleted if you exit this screen.'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('No'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Yes'),
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+                Navigator.of(context).pop(); // Go back
+              },
+            ),
+          ],
+        );
       },
-    ),
-    automaticallyImplyLeading: false,
-  );
-}
+    );
+  }
 
-void _showExitConfirmationDialog() {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: const Text('Are you sure?'),
-        content: const Text('All inputs will be deleted if you exit this screen.'),
-        actions: <Widget>[
-          TextButton(
-            child: const Text('No'),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
+  Widget donationCheckbox() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Padding(
+          padding: EdgeInsets.symmetric(vertical: 8.0),
+          child: Text(
+            'Select Donation Types:',
+            style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
           ),
-          TextButton(
-            child: const Text('Yes'),
-            onPressed: () {
-              Navigator.of(context).pop(); // Close the dialog
-              Navigator.of(context).pop(); // Go back
-            },
+        ),
+        CheckboxListTile(
+          title: const Row(
+            children: [
+              Icon(Icons.fastfood), // Add leading icon
+              SizedBox(width: 10),
+              Text('Food'),
+            ],
           ),
-        ],
-      );
-    },
-  );
-}
-
-Widget donationCheckbox() {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      const Padding(
-        padding: EdgeInsets.symmetric(vertical: 8.0),
-        child: Text(
-          'Select Donation Types:',
-          style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+          value: donatedItems.contains('Food'),
+          onChanged: (newValue) {
+            setState(() {
+              if (newValue == true) {
+                donatedItems.add('Food');
+              } else {
+                donatedItems.remove('Food');
+              }
+            });
+          },
         ),
-      ),
-      CheckboxListTile(
-        title: const Row(
-          children: [
-            Icon(Icons.fastfood), // Add leading icon
-            SizedBox(width: 10),
-            Text('Food'),
-          ],
+        CheckboxListTile(
+          title: const Row(
+            children: [
+              Icon(Icons.shopping_bag), // Add leading icon
+              SizedBox(width: 10),
+              Text('Clothes'),
+            ],
+          ),
+          value: donatedItems.contains('Clothes'),
+          onChanged: (newValue) {
+            setState(() {
+              if (newValue == true) {
+                donatedItems.add('Clothes');
+              } else {
+                donatedItems.remove('Clothes');
+              }
+            });
+          },
         ),
-        value: donatedItems.contains('Food'),
-        onChanged: (newValue) {
-          setState(() {
-            if (newValue == true) {
-              donatedItems.add('Food');
-            } else {
-              donatedItems.remove('Food');
-            }
-          });
-        },
-      ),
-      CheckboxListTile(
-        title: const Row(
-          children: [
-            Icon(Icons.shopping_bag), // Add leading icon
-            SizedBox(width: 10),
-            Text('Clothes'),
-          ],
+        CheckboxListTile(
+          title: const Row(
+            children: [
+              Icon(Icons.attach_money), // Add leading icon
+              SizedBox(width: 10),
+              Text('Cash'),
+            ],
+          ),
+          value: donatedItems.contains('Cash'),
+          onChanged: (newValue) {
+            setState(() {
+              if (newValue == true) {
+                donatedItems.add('Cash');
+              } else {
+                donatedItems.remove('Cash');
+              }
+            });
+          },
         ),
-        value: donatedItems.contains('Clothes'),
-        onChanged: (newValue) {
-          setState(() {
-            if (newValue == true) {
-              donatedItems.add('Clothes');
-            } else {
-              donatedItems.remove('Clothes');
-            }
-          });
-        },
-      ),
-      CheckboxListTile(
-        title: const Row(
-          children: [
-            Icon(Icons.attach_money), // Add leading icon
-            SizedBox(width: 10),
-            Text('Cash'),
-          ],
+        CheckboxListTile(
+          title: const Row(
+            children: [
+              Icon(Icons.shopping_cart), // Add leading icon
+              SizedBox(width: 10),
+              Text('Necessities'),
+            ],
+          ),
+          value: donatedItems.contains('Necessities'),
+          onChanged: (newValue) {
+            setState(() {
+              if (newValue == true) {
+                donatedItems.add('Necessities');
+              } else {
+                donatedItems.remove('Necessities');
+              }
+            });
+          },
         ),
-        value: donatedItems.contains('Cash'),
-        onChanged: (newValue) {
-          setState(() {
-            if (newValue == true) {
-              donatedItems.add('Cash');
-            } else {
-              donatedItems.remove('Cash');
-            }
-          });
-        },
-      ),
-      CheckboxListTile(
-        title: const Row(
-          children: [
-            Icon(Icons.shopping_cart), // Add leading icon
-            SizedBox(width: 10),
-            Text('Necessities'),
-          ],
-        ),
-        value: donatedItems.contains('Necessities'),
-        onChanged: (newValue) {
-          setState(() {
-            if (newValue == true) {
-              donatedItems.add('Necessities');
-            } else {
-              donatedItems.remove('Necessities');
-            }
-          });
-        },
-      ),
-      CheckboxListTile(
-        title: Row(
-          children: [
-            const Icon(Icons.more_horiz), // Add leading icon
-            const SizedBox(width: 10),
-            Expanded(
-              child: TextFormField(
-                onChanged: (value) {
-                  setState(() {
-                    others = value;
-                  });
-                },
-                decoration: const InputDecoration(
-                  hintText: 'Other Donation',
-                  border: OutlineInputBorder(),
-                  contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0), // Adjust size here
-                ),
-              ),
-            ),
-          ],
-        ),
-        value: others.isNotEmpty,
-        onChanged: (newValue) {
-          setState(() {
-            if (newValue == true) {
-              donatedItems.add(others);
-            } else {
-              donatedItems.remove(others);
-              others = '';
-            }
-          });
-        },
-      ),
-    ],
-  );
-}
-
-
-Widget toggleSwitch() {
-  return LayoutBuilder(
-    builder: (BuildContext context, BoxConstraints constraints) {
-      return Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          color: Styles.gray, // Background color for the unselected state
-        ),
-        child: Stack(
-          children: [
-            AnimatedPositioned(
-              duration: const Duration(milliseconds: 300), // Animation duration
-              width: constraints.maxWidth / 2,
-              top: 0,
-              bottom: 0,
-              left: pickUp ? 0 : constraints.maxWidth / 2,
-              child: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Styles.lightestBlue, Styles.mainBlue],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
+        CheckboxListTile(
+          title: Row(
+            children: [
+              const Icon(Icons.more_horiz), // Add leading icon
+              const SizedBox(width: 10),
+              Expanded(
+                child: TextFormField(
+                  onChanged: (value) {
+                    setState(() {
+                      others = value;
+                    });
+                  },
+                  decoration: const InputDecoration(
+                    hintText: 'Other Donation',
+                    border: OutlineInputBorder(),
+                    contentPadding: EdgeInsets.symmetric(
+                        vertical: 10.0, horizontal: 10.0), // Adjust size here
                   ),
-                  borderRadius: BorderRadius.circular(20),
                 ),
               ),
-            ),
-            toggleText()
-          ],
+            ],
+          ),
+          value: others.isNotEmpty,
+          onChanged: (newValue) {
+            setState(() {
+              if (newValue == true) {
+                donatedItems.add(others);
+              } else {
+                donatedItems.remove(others);
+                others = '';
+              }
+            });
+          },
         ),
-      );
-    },
-  );
-}
+      ],
+    );
+  }
+
+  Widget toggleSwitch() {
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        return Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            color: Styles.gray, // Background color for the unselected state
+          ),
+          child: Stack(
+            children: [
+              AnimatedPositioned(
+                duration:
+                    const Duration(milliseconds: 300), // Animation duration
+                width: constraints.maxWidth / 2,
+                top: 0,
+                bottom: 0,
+                left: pickUp ? 0 : constraints.maxWidth / 2,
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [Styles.lightestBlue, Styles.mainBlue],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+              ),
+              toggleText()
+            ],
+          ),
+        );
+      },
+    );
+  }
 
   Widget toggleText() {
     return Row(
@@ -773,5 +786,4 @@ Widget toggleSwitch() {
       ],
     );
   }
-
 }
