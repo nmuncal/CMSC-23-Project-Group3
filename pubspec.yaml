@@ -52,6 +52,10 @@ dependencies:
   qr_flutter: ^4.1.0
   qr_code_scanner: ^1.0.1
   cached_network_image: ^3.0.0
+  permission_handler: ^10.2.0
+  image_gallery_saver: ^2.0.3
+  intl: ^0.17.0
+
 
 
 dev_dependencies:
