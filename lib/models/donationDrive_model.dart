@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:cmsc_23_project_group3/models/donation_model.dart';
 
 class DonationDrive {
   final String name;
@@ -31,7 +30,7 @@ class DonationDrive {
     return data.map<DonationDrive>((dynamic d) => DonationDrive.fromJson(d)).toList();
   }
 
-  Map<String, dynamic> toJson(Donation donation) {
+  Map<String, dynamic> toJson(DonationDrive donationDrive) {
     return {
       'name': name,
       'organizationid': organizationid,

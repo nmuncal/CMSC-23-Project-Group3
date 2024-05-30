@@ -68,7 +68,7 @@ class _QRCodeScannerPageState extends State<QRCodeScannerPage> {
       BuildContext context, String scanDataCode) async {
     final donationProvider = context.read<DonationProvider>();
     await donationProvider
-        .updateDonationStatus(scanDataCode)
+        .updateDonationStatus(scanDataCode,"Completed")
         .then((value) => showDialog(
               context: context,
               builder: (context) => AlertDialog(

@@ -69,19 +69,13 @@ class DonationProvider with ChangeNotifier {
     return message;
   }
 
-  Future<String?> updateDonationStatus(String id) async {
-    String? message = await firebaseService.updateDonationStatus(id);
+  Future<String?> updateDonationStatus(String id,String status) async {
+    String? message = await firebaseService.updateDonationStatus(id,status);
     notifyListeners();
     return message;
 
   }
 
-  Future<String?> updateDonationStatusCancel(String id) async {
-    String? message = await firebaseService.updateDonationStatusCancel(id);
-    notifyListeners();
-    return message;
-  }
   
-
 
 }
