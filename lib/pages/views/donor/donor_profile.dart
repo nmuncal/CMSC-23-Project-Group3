@@ -24,6 +24,7 @@ class _DonorProfileState extends State<DonorProfile> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<UserProvider>().getAccountInfo(null);
+      Provider.of<DonationProvider>(context, listen: false).fetchDonationsGiven(null);
     });
   }
 

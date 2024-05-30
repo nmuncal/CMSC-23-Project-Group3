@@ -9,8 +9,13 @@ class DonationProvider with ChangeNotifier {
   late Stream<List<Donation>> _donationStream = Stream.empty();
   Donation? _donation;
   StreamSubscription<Donation?>? _subscription;
+
+
   Donation? get donation => _donation;
   Stream<List<Donation>> get donationStream => _donationStream;
+
+  late Stream<List<Donation>> _profileStream = Stream.empty();
+  Stream<List<Donation>> get profileStream => _profileStream;
 
    void setDonationId(String donationId) {
     _subscription?.cancel();
@@ -25,11 +30,16 @@ class DonationProvider with ChangeNotifier {
   void fetchDonationsGiven(String? uid) {
     try {
       _donationStream = Stream.empty();
-      if (uid != null) {_donationStream = firebaseService.fetchDonationsGiven(uid);};
+      _profileStream = Stream.empty();
+      if (uid != null) {
+        _donationStream = firebaseService.fetchDonationsGiven(uid);
+        _profileStream = firebaseService.fetchDonationsGiven(uid);
+      };
       notifyListeners();
     } catch (e) {
       print('Error fetching donations: $e');
       _donationStream = Stream.empty();
+      _profileStream = Stream.empty();
       notifyListeners();
     }
   }
