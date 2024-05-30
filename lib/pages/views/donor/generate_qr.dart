@@ -159,7 +159,7 @@ class _QRCodePageState extends State<QRCodePage> {
                 size: 250,
                 foregroundColor: Styles.mainBlue,
                 backgroundColor: Colors.white,
-                embeddedImage: AssetImage('lib/assets/ico_logo.png'),
+                embeddedImage: AssetImage('lib/assets/qr_logo.png'),
                 embeddedImageStyle: QrEmbeddedImageStyle(
                   size: Size(60, 60),
                 ),
