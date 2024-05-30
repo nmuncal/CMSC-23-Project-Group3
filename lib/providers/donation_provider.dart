@@ -65,6 +65,11 @@ class DonationProvider with ChangeNotifier {
 
   }
 
+  Future<String?> updateDonationStatusCancel(String id) async {
+    String? message = await firebaseService.updateDonationStatusCancel(id);
+    notifyListeners();
+    return message;
+  }
   
 
 

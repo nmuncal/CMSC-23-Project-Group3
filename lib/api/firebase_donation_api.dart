@@ -59,6 +59,27 @@ class FirebaseDonationAPI {
     }
   }
 
+    Future<String?> updateDonationStatusCancel(String id) async {
+    try {
+      await db.collection('donations').doc(id).update({'status': 'Cancelled'});
+      return 'Status updated successfully';
+    } catch (e) {
+      print('Error updating status for donation ID $id: $e');
+      return 'Error updating status';
+    }
+  }
+
+    Future<String?> updateDonationOther(String id, String status) async {
+    try {
+      await db.collection('donations').doc(id).update({'status': status});
+      return 'Status updated successfully';
+    } catch (e) {
+      print('Error updating status for donation ID $id: $e');
+      return 'Error updating status';
+    }
+  }
+
+
   Future<String?> updateDonation(
       String id, Map<String, dynamic> details) async {
     try {

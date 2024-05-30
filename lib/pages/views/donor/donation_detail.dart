@@ -8,7 +8,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cmsc_23_project_group3/styles.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-
 class DonationDetailPage extends StatefulWidget {
   final Donation? donation;
 
@@ -220,6 +219,23 @@ class _DonationDetailPageState extends State<DonationDetailPage> {
                     SizedBox(height: 20),
                     generateQrCode(donation.id),
                   ],
+                  SizedBox(height: 20),
+if (donation.status == 'Pending')
+  ElevatedButton(
+    onPressed: () async {
+      String? message = await donationProvider.updateDonationStatusCancel(donation.id);
+      if (message != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(message)),
+        );
+      }
+    },
+    child: Text('Cancel Donation'),
+    style: ElevatedButton.styleFrom(
+      // Add styling here if needed
+    ),
+  ),
+
                 ],
               )
                   : Center(child: CircularProgressIndicator()),
@@ -230,43 +246,41 @@ class _DonationDetailPageState extends State<DonationDetailPage> {
     );
   }
 
-Widget generateQrCode(String donationId) {
-  return Container(
-    width: double.infinity,
-    margin: EdgeInsets.symmetric(vertical: 20),
-    decoration: BoxDecoration(
-      gradient: LinearGradient(
-        colors: [Styles.mainBlue, Styles.darkerGray],
-        begin: Alignment.centerLeft,
-        end: Alignment.centerRight,
+  Widget generateQrCode(String donationId) {
+    return Container(
+      width: double.infinity,
+      margin: EdgeInsets.symmetric(vertical: 20),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Styles.mainBlue, Styles.darkerGray],
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
+        ),
+        borderRadius: BorderRadius.circular(30),
       ),
-      borderRadius: BorderRadius.circular(30),
-    ),
-    child: TextButton(
-      onPressed: () async {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => QRCodePage(qrData: donationId),
-          ),
-        );
-      },
-      child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 16),
-        child: Text(
-          'Generate QR Code',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
+      child: TextButton(
+        onPressed: () async {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => QRCodePage(qrData: donationId),
+            ),
+          );
+        },
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 16),
+          child: Text(
+            'Generate QR Code',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
       ),
-    ),
-  );
-}
-
-
+    );
+  }
 
   AppBar _buildAppBar(BuildContext context, Text titleText) {
     return AppBar(
