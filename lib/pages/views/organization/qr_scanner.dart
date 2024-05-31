@@ -1,4 +1,7 @@
+import 'package:cmsc_23_project_group3/providers/auth_provider.dart';
 import 'package:cmsc_23_project_group3/providers/donation_provider.dart';
+import 'package:cmsc_23_project_group3/providers/user_provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
@@ -26,6 +29,8 @@ class _QRCodeScannerPageState extends State<QRCodeScannerPage> {
       controller = qrController;
     });
 
+    User? user = context.read<UserAuthProvider>().user;
+
     controller?.scannedDataStream.listen((scanData) {
       if (!_isProcessing) {
         _isProcessing = true;
@@ -50,30 +55,58 @@ class _QRCodeScannerPageState extends State<QRCodeScannerPage> {
                   final donationProvider = context.read<DonationProvider>();
 
                   await donationProvider
-                      .fetchDonationStatus(scanData.code!)
-                      .then((value) {
-                    if (value != 'Completed') {
-                      _updateDonationStatus(context, scanData.code!).then((_) {
-                        Navigator.of(context).pop();
-                        controller?.resumeCamera();
-                        _isProcessing = false;
+                      .fetchDonationRecipient(scanData.code!)
+                      .then((recipientId) {
+                    if (recipientId == user!.uid) {
+                      donationProvider
+                          .fetchDonationStatus(scanData.code!)
+                          .then((donationStatus) {
+                        if (donationStatus != 'Completed') {
+                          _updateDonationStatus(context, scanData.code!)
+                              .then((_) {
+                            Navigator.of(context).pop();
+                            controller?.resumeCamera();
+                            _isProcessing = false;
+                          });
+                        } else {
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: Text('Donation Status'),
+                              content:
+                                  Text('Donation status is already completed.'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text('OK'),
+                                ),
+                              ],
+                            ),
+                          );
+                          Navigator.of(context).pop();
+                          controller?.resumeCamera();
+                          _isProcessing = false;
+                        }
                       });
                     } else {
                       showDialog(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                                title: Text('Donation Status'),
-                                content: Text(
-                                    'Donation status is already completed.'),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    child: const Text('OK'),
-                                  ),
-                                ],
-                              ));
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: Text('Donation Status'),
+                          content: Text(
+                              'Error: Not Found.'),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: const Text('OK'),
+                            ),
+                          ],
+                        ),
+                      );
                       Navigator.of(context).pop();
                       controller?.resumeCamera();
                       _isProcessing = false;
