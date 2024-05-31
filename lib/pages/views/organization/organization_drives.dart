@@ -1,4 +1,5 @@
 import 'package:cmsc_23_project_group3/models/donationDrive_model.dart';
+import 'package:cmsc_23_project_group3/pages/views/organization/add_drive.dart';
 import 'package:cmsc_23_project_group3/pages/views/organization/details/drive_details.dart';
 import 'package:cmsc_23_project_group3/providers/auth_provider.dart';
 import 'package:cmsc_23_project_group3/providers/donationdrive_provider.dart';
@@ -10,24 +11,24 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 class OrganizationDrives extends StatefulWidget {
-  const OrganizationDrives({super.key});
+  const OrganizationDrives({Key? key});
 
   @override
   State<OrganizationDrives> createState() => _OrganizationDrivesState();
 }
 
 class _OrganizationDrivesState extends State<OrganizationDrives> {
+  final ScrollController _scrollController = ScrollController();
 
-  final ScrollController _scrollController = ScrollController(); 
-
-   @override
+  @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
       context.read<UserProvider>().getAccountInfo(null);
       final user = context.read<UserAuthProvider>().user;
       if (user != null) {
-        Provider.of<DonationDriveProvider>(context, listen: false).fetchDrives(user.uid);
+        Provider.of<DonationDriveProvider>(context, listen: false)
+            .fetchDrives(user.uid);
       }
     });
   }
@@ -40,8 +41,8 @@ class _OrganizationDrivesState extends State<OrganizationDrives> {
 
   User? user;
 
+  @override
   Widget build(BuildContext context) {
-
     user = context.read<UserAuthProvider>().user;
 
     return Scaffold(
@@ -60,7 +61,8 @@ class _OrganizationDrivesState extends State<OrganizationDrives> {
               } else {
                 final drives = snapshot.data!;
                 return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 15, vertical: 5),
                   child: ListView.builder(
                     controller: _scrollController,
                     itemCount: drives.length,
@@ -75,13 +77,25 @@ class _OrganizationDrivesState extends State<OrganizationDrives> {
           );
         },
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+            Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const AddDrive(),
+      ),
+    );
+        },
+        tooltip: 'Add',
+        child: Icon(Icons.add),
+      ),
     );
   }
 
-Widget componentTiles(DonationDrive drive, int index) {
-  return GestureDetector(
-    onTap: () => {_navigateToDrive(context, drive)},
-    child: Card(
+  Widget componentTiles(DonationDrive drive, int index) {
+    return GestureDetector(
+      onTap: () => {_navigateToDrive(context, drive)},
+      child: Card(
         elevation: 2,
         color: Colors.white,
         shape: RoundedRectangleBorder(
@@ -100,41 +114,40 @@ Widget componentTiles(DonationDrive drive, int index) {
     );
   }
 
-Widget _buildCoverImage(DonationDrive drive, int index) {
-  return AnimatedBuilder(
-    animation: _scrollController,
-    builder: (context, child) {
-      double maxOffset = 75.0;
-      double offset = _scrollController.hasClients ? _scrollController.offset / 4 : 0;
-      offset = offset - (index * 20);
-      offset = offset.clamp(0, maxOffset);
+  Widget _buildCoverImage(DonationDrive drive, int index) {
+    return AnimatedBuilder(
+      animation: _scrollController,
+      builder: (context, child) {
+        double maxOffset = 75.0;
+        double offset =
+            _scrollController.hasClients ? _scrollController.offset / 4 : 0;
+        offset = offset - (index * 20);
+        offset = offset.clamp(0, maxOffset);
 
-      return Transform.translate(
-        offset: Offset(0.0, offset * 0.5),
-        child: Transform.scale(
-          scale: 1.4,
-          child: Stack(
-            children: [
-              Image.network(
-                drive.photo != '' ? drive.photo : Styles.defaultCover,
-                height: 200,
-                width: double.infinity,
-                fit: BoxFit.cover,
-              ),
-              Container(
-                height: 200,
-                width: double.infinity,
-                color: Colors.black.withOpacity(0.3), // Adjust opacity as needed
-              ),
-            ],
+        return Transform.translate(
+          offset: Offset(0.0, offset * 0.5),
+          child: Transform.scale(
+            scale: 1.4,
+            child: Stack(
+              children: [
+                Image.network(
+                  drive.photo != '' ? drive.photo : Styles.defaultCover,
+                  height: 200,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                ),
+                Container(
+                  height: 200,
+                  width: double.infinity,
+                  color: Colors.black.withOpacity(0.3), // Adjust opacity as needed
+                ),
+              ],
+            ),
           ),
-        ),
-      );
-    },
-  );
-}
-
-
+        );
+      },
+    );
+  }
 
   Widget _buildGradientOverlay(BuildContext context, drive) {
     return Positioned(
@@ -142,57 +155,63 @@ Widget _buildCoverImage(DonationDrive drive, int index) {
       left: 0,
       right: 0,
       child: Container(
-          padding: const EdgeInsets.all(10),
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Color.fromARGB(203, 0, 0, 0), Colors.black38, Color.fromARGB(115, 0, 0, 0), Colors.transparent],
-              begin: Alignment.bottomCenter,
-              end: Alignment.topCenter,
-            ),
+        padding: const EdgeInsets.all(10),
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Color.fromARGB(203, 0, 0, 0),
+              Colors.black38,
+              Color.fromARGB(115, 0, 0, 0),
+              Colors.transparent
+            ],
+            begin: Alignment.bottomCenter,
+            end: Alignment.topCenter,
           ),
-          child: _buildTextContent(drive),
         ),
-      );
+        child: _buildTextContent(drive),
+      ),
+    );
   }
 
-Widget _buildTextContent(DonationDrive drive) {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Row(
-        children: [
-          Text(
-            drive.name,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
+  Widget _buildTextContent(DonationDrive drive) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Text(
+              drive.name,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-          SizedBox(width: 10),
-          Container(
-            width: 10,
-            height: 10,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: drive.status == true ? Colors.green : Colors.red,
+            SizedBox(width: 10),
+            Container(
+              width: 10,
+              height: 10,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: drive.status == true ? Colors.green : Colors.red,
+              ),
             ),
-          ),
-        ],
-      ),
-      const SizedBox(height: 5),
-      Text(
-        drive.details.isNotEmpty ? drive.details : "This drive is still crafting its story!",
-        style: const TextStyle(color: Colors.white70),
-        maxLines: 2,
-        overflow: TextOverflow.ellipsis,
-      ),
-    ],
-  );
-}
-
+          ],
+        ),
+        const SizedBox(height: 5),
+        Text(
+          drive.details.isNotEmpty
+              ? drive.details
+              : "This drive is still crafting its story!",
+          style: const TextStyle(color: Colors.white70),
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ],
+    );
+  }
 
   void _navigateToDrive(BuildContext context, DonationDrive drive) {
     Navigator.push(
@@ -209,14 +228,12 @@ Widget _buildTextContent(DonationDrive drive) {
         child: Text(
           'tayo',
           style: GoogleFonts.quicksand(
-            color: Styles.mainBlue,
-            fontWeight: FontWeight.bold,
-            fontSize: 30
-          ),
+              color: Styles.mainBlue,
+              fontWeight: FontWeight.bold,
+              fontSize: 30),
         ),
       ),
       automaticallyImplyLeading: false,
     );
   }
-
 }
