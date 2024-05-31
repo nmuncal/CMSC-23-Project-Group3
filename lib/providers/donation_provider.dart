@@ -10,14 +10,16 @@ class DonationProvider with ChangeNotifier {
   Donation? _donation;
   StreamSubscription<Donation?>? _subscription;
 
-
   Donation? get donation => _donation;
   Stream<List<Donation>> get donationStream => _donationStream;
-  
+
   late Stream<List<Donation>> _profileStream = Stream.empty();
   Stream<List<Donation>> get profileStream => _profileStream;
 
-   void setDonationId(String donationId) {
+  late Stream<List<Donation>> _driveDonationsStream = Stream.empty();
+  Stream<List<Donation>> get driveDonationsStream => _driveDonationsStream;
+
+  void setDonationId(String donationId) {
     _subscription?.cancel();
     _subscription =
         firebaseService.getDonationInfo(donationId).listen((donation) {
@@ -26,8 +28,6 @@ class DonationProvider with ChangeNotifier {
     });
   }
 
-
-
   void fetchDonationsGiven(String? uid) {
     try {
       _donationStream = Stream.empty();
@@ -35,12 +35,29 @@ class DonationProvider with ChangeNotifier {
       if (uid != null) {
         _donationStream = firebaseService.fetchDonationsGiven(uid);
         _profileStream = firebaseService.fetchDonationsGiven(uid);
-      };
+      }
+      ;
       notifyListeners();
     } catch (e) {
       print('Error fetching donations: $e');
       _donationStream = Stream.empty();
       _profileStream = Stream.empty();
+      notifyListeners();
+    }
+  }
+
+  void fetchDonationsbyId(List<String>? ids) {
+    try {
+      _driveDonationsStream = Stream.empty();
+      if (ids != null) {
+        _driveDonationsStream = firebaseService.fetchDonationsByIds(ids);
+
+      }
+      notifyListeners();
+    } catch (e) {
+      print('Error fetching donations: $e');
+      _driveDonationsStream = Stream.empty();
+
       notifyListeners();
     }
   }
@@ -82,7 +99,7 @@ class DonationProvider with ChangeNotifier {
     return message;
   }
 
-   Future<String?> fetchDonationRecipient(String id) async {
+  Future<String?> fetchDonationRecipient(String id) async {
     String? message = await firebaseService.fetchDonationRecipient(id);
     notifyListeners();
     return message;
