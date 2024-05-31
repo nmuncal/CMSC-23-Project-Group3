@@ -63,6 +63,20 @@ class FirebaseDonationAPI {
     }
   }
 
+  Future<String?> fetchDonationRecipient(String id) async {
+    try {
+      DocumentSnapshot donationSnapshot =
+          await db.collection('donations').doc(id).get();
+      if (donationSnapshot.exists) {
+        return donationSnapshot['recipientId'];
+      } else {
+        return 'Error: Donation recipient not found for donation ID $id';
+      }
+    } catch (e) {
+      return 'Error fetching recipient id for donation ID $id: $e';
+    }
+  }
+
   Future<String?> updateDonationStatus(String id,String status) async {
     try {
       await db.collection('donations').doc(id).update({'status': status});

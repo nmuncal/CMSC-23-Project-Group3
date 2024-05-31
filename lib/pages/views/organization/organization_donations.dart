@@ -7,7 +7,9 @@ import 'package:cmsc_23_project_group3/pages/views/organization/details/donation
 import 'package:cmsc_23_project_group3/providers/auth_provider.dart';
 import 'package:cmsc_23_project_group3/providers/donation_provider.dart';
 import 'package:cmsc_23_project_group3/providers/user_provider.dart';
+import 'package:cmsc_23_project_group3/providers/user_provider.dart';
 import 'qr_scanner.dart';
+import 'package:cmsc_23_project_group3/styles.dart';
 import 'package:cmsc_23_project_group3/styles.dart';
 
 class OrganizationDonations extends StatefulWidget {

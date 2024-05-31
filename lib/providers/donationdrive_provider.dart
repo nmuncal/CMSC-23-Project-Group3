@@ -12,6 +12,10 @@ class DonationDriveProvider with ChangeNotifier {
   DonationDrive? get drive => _drive;
   Stream<List<DonationDrive>> get driveStream => _driveStream;
 
+  late Stream<List<DonationDrive>> _driveStreamCopy = Stream.empty();
+  Stream<List<DonationDrive>> get driveStreamCopy => _driveStreamCopy;
+
+
   void setDonationDriveId(String donationDriveId) {
     _subscription?.cancel();
     _subscription =
@@ -24,10 +28,12 @@ class DonationDriveProvider with ChangeNotifier {
   void fetchDrives(String uid) {
     try {
       _driveStream = firebaseService.fetchdrives(uid);
+      _driveStreamCopy = firebaseService.fetchdrives(uid);
       notifyListeners();
     } catch (e) {
       print('Error fetching donation drives: $e');
       _driveStream = Stream.empty();
+      _driveStreamCopy = Stream.empty();
       notifyListeners();
     }
   }
