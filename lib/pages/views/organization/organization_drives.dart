@@ -198,7 +198,7 @@ Widget _buildTextContent(DonationDrive drive) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => DriveDetailPage(driveId: drive.id),
+        builder: (context) => DriveDetailPage(driveId: drive.id, isOrg: true),
       ),
     );
   }
