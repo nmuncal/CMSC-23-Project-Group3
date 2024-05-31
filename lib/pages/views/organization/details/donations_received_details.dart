@@ -1,11 +1,11 @@
-import 'package:cmsc_23_project_group3/models/donation_model.dart';
-import 'package:cmsc_23_project_group3/providers/donation_provider.dart';
-import 'package:cmsc_23_project_group3/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:cmsc_23_project_group3/providers/donation_provider.dart';
+import 'package:cmsc_23_project_group3/providers/user_provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cmsc_23_project_group3/styles.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:cmsc_23_project_group3/models/donation_model.dart';
 
 class DonationDetailPage extends StatefulWidget {
   final Donation? donation;
@@ -17,9 +17,12 @@ class DonationDetailPage extends StatefulWidget {
 }
 
 class _DonationDetailPageState extends State<DonationDetailPage> {
+  String? _selectedStatus;
+
   @override
   void initState() {
     super.initState();
+    _selectedStatus = widget.donation?.status;
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       Provider.of<DonationProvider>(context, listen: false)
           .setDonationId(widget.donation!.id);
@@ -30,7 +33,7 @@ class _DonationDetailPageState extends State<DonationDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _buildAppBar(context, Text(
-        'tayo',
+        'Donation Details',
         style: GoogleFonts.quicksand(
           color: Styles.mainBlue,
           fontWeight: FontWeight.bold,
@@ -102,21 +105,26 @@ class _DonationDetailPageState extends State<DonationDetailPage> {
                     ],
                   ),
                   SizedBox(height: 20),
-                  SizedBox(
-                    width: double.infinity,
-                    child: Card(
-                      elevation: 4,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Text(
-                          donation.status ?? 'No Status',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
+                  GestureDetector(
+                    onTap: () {
+                      _showStatusOptions(context, donation);
+                    },
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: Card(
+                        elevation: 4,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Text(
+                            _selectedStatus ?? donation.status ?? 'No Status',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
                           ),
                         ),
                       ),
@@ -195,7 +203,7 @@ class _DonationDetailPageState extends State<DonationDetailPage> {
                       ),
                     ),
                     Text(
-                      donation.contactNumber,
+                      donation.contactNumber ?? 'N/A',
                       style: TextStyle(
                         fontSize: 16,
                       ),
@@ -210,30 +218,13 @@ class _DonationDetailPageState extends State<DonationDetailPage> {
                     ),
                     SizedBox(height: 5),
                     Text(
-                      donation.addressForPickup.join(', '),
+                      donation.addressForPickup.join(', ') ?? 'N/A',
                       style: TextStyle(
                         fontSize: 16,
                       ),
                     ),
                     SizedBox(height: 20),
                   ],
-                  SizedBox(height: 20),
-if (donation.status == 'Pending')
-  ElevatedButton(
-    onPressed: () async {
-      String? message = await donationProvider.updateDonationStatus(donation.id,"Cancelled");
-      if (message != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(message)),
-        );
-      }
-    },
-    child: Text('Cancel Donation'),
-    style: ElevatedButton.styleFrom(
-      // Add styling here if needed
-    ),
-  ),
-
                 ],
               )
                   : Center(child: CircularProgressIndicator()),
@@ -243,6 +234,114 @@ if (donation.status == 'Pending')
       ),
     );
   }
+
+void _showStatusOptions(BuildContext context, Donation donation) {
+  if (donation.status == 'Cancelled') {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Are you sure?'),
+        content: Text('This action cannot be undone. Are you sure you want to mark this donation as Cancelled?'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context); // Close the dialog
+              _markAsCancelled(context, donation);
+            },
+            child: Text('Yes'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context), // Close the dialog
+            child: Text('No'),
+          ),
+        ],
+      ),
+    );
+    return;
+  }
+
+  showModalBottomSheet(
+    context: context,
+    builder: (context) {
+      return Container(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _buildStatusOption('Pending', donation),
+            _buildStatusOption('Confirmed', donation),
+            if (donation.isPickup) _buildStatusOption('Scheduled for Pick-up', donation),
+            _buildStatusOption('Cancelled', donation),
+            _buildStatusOption('Complete', donation),
+          ],
+        ),
+      );
+    },
+  );
+}
+
+void _markAsCancelled(BuildContext context, Donation donation) {
+  // Update donation status
+  Provider.of<DonationProvider>(context, listen: false)
+      .updateDonationStatus(donation.id, 'Cancelled');
+}
+
+Widget _buildStatusOption(String status, Donation donation) {
+  return GestureDetector(
+    onTap: () {
+      if (status == 'Cancelled') {
+        _showCancellationConfirmation(context, donation);
+      } else {
+        setState(() {
+          _selectedStatus = status;
+          // Update donation status
+          Provider.of<DonationProvider>(context, listen: false)
+              .updateDonationStatus(donation.id, status);
+        });
+        Navigator.pop(context); // Close the bottom sheet
+      }
+    },
+    child: Container(
+      padding: EdgeInsets.symmetric(vertical: 16),
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: Colors.grey.shade300)),
+      ),
+      child: Text(
+        status,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontSize: 16,
+          color: _selectedStatus == status ? Theme.of(context).primaryColor : null,
+          fontWeight: _selectedStatus == status ? FontWeight.bold : null,
+        ),
+      ),
+    ),
+  );
+}
+
+void _showCancellationConfirmation(BuildContext context, Donation donation) {
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: Text('Are you sure?'),
+      content: Text('This action cannot be undone. Are you sure you want to mark this donation as Cancelled?'),
+      actions: <Widget>[
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context); // Close the dialog
+            _markAsCancelled(context, donation);
+          },
+          child: Text('Yes'),
+        ),
+        TextButton(
+          onPressed: () => Navigator.pop(context), // Close the dialog
+          child: Text('No'),
+        ),
+      ],
+    ),
+  );
+}
 
 
   AppBar _buildAppBar(BuildContext context, Text titleText) {
