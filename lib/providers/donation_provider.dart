@@ -26,6 +26,8 @@ class DonationProvider with ChangeNotifier {
     });
   }
 
+
+
   void fetchDonationsGiven(String? uid) {
     try {
       _donationStream = Stream.empty();
@@ -76,6 +78,12 @@ class DonationProvider with ChangeNotifier {
 
   Future<String?> fetchDonationStatus(String id) async {
     String? message = await firebaseService.fetchDonationStatus(id);
+    notifyListeners();
+    return message;
+  }
+
+   Future<String?> fetchDonationRecipient(String id) async {
+    String? message = await firebaseService.fetchDonationRecipient(id);
     notifyListeners();
     return message;
   }
