@@ -15,6 +15,8 @@ class DonorDonations extends StatefulWidget {
 }
 
 class _DonorDonationsState extends State<DonorDonations> {
+  bool _showCancelled = true;
+
   @override
   void initState() {
     super.initState();
@@ -44,6 +46,10 @@ class _DonorDonationsState extends State<DonorDonations> {
                 return const Center(child: Text('No donations found'));
               } else {
                 final donations = snapshot.data!;
+                donations.sort((a, b) => b.selectedDateandTime.compareTo(a.selectedDateandTime));
+                final filteredDonations = _showCancelled
+                    ? donations
+                    : donations.where((donation) => donation.status?.toLowerCase() != 'cancelled').toList();
                 return Column(
                   children: [
                     Padding(
@@ -51,7 +57,7 @@ class _DonorDonationsState extends State<DonorDonations> {
                       child: Column(
                         children: [
                           Text(
-                            '${donations.length}',
+                            '${filteredDonations.length}',
                             style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
                           ),
                           Text(
@@ -63,9 +69,9 @@ class _DonorDonationsState extends State<DonorDonations> {
                     ),
                     Expanded(
                       child: ListView.builder(
-                        itemCount: donations.length,
+                        itemCount: filteredDonations.length,
                         itemBuilder: (context, index) {
-                          final donation = donations[index];
+                          final donation = filteredDonations[index];
                           return FutureBuilder<String?>(
                             future: context.read<UserProvider>().getUsernameByUid(donation.recipientId!),
                             builder: (context, snapshot) {
@@ -82,32 +88,42 @@ class _DonorDonationsState extends State<DonorDonations> {
                               } else {
                                 final username = snapshot.data ?? 'UNKNOWN';
                                 final pickUpOrDropOff = donation.isPickup ? 'Pick up' : 'Drop off';
+                                // Determine the color and icon based on the status
+                                final color = (donation.status?.toLowerCase() == 'cancelled')
+                                    ? Colors.red[100]
+                                    : Colors.white;
+                                final icon = (donation.status?.toLowerCase() == 'cancelled')
+                                    ? Icons.close
+                                    : Icons.favorite;
                                 return Card(
                                   margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                                   elevation: 2,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10),
                                   ),
-                                  child: ListTile(
-                                    contentPadding: const EdgeInsets.all(16),
-                                    leading: Icon(Icons.favorite, color: Theme.of(context).primaryColor),
-                                    title: Text(
-                                      '$username ($pickUpOrDropOff)'.toUpperCase(),
-                                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                                  child: Container(
+                                    color: color, 
+                                    child: ListTile(
+                                      contentPadding: const EdgeInsets.all(16),
+                                      leading: Icon(icon, color: Theme.of(context).primaryColor),
+                                      title: Text(
+                                        '$username ($pickUpOrDropOff)'.toUpperCase(),
+                                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                                      ),
+                                      subtitle: Text(
+                                        donation.status ?? 'No Status',
+                                        style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                                      ),
+                                      trailing: Icon(Icons.arrow_forward_ios, size: 16),
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => DonationDetailPage(donation: donation),
+                                          ),
+                                        );
+                                      },
                                     ),
-                                    subtitle: Text(
-                                      donation.status ?? 'No Status',
-                                      style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-                                    ),
-                                    trailing: Icon(Icons.arrow_forward_ios, size: 16),
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => DonationDetailPage(donation: donation),
-                                        ),
-                                      );
-                                    },
                                   ),
                                 );
                               }
@@ -129,19 +145,29 @@ class _DonorDonationsState extends State<DonorDonations> {
   AppBar _buildAppBar(BuildContext context) {
     return AppBar(
       title: Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(
-          'My Donations',
-          style: TextStyle(
-            color: Styles.mainBlue,
-            fontWeight: FontWeight.bold,
-            fontSize: 30,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Text(
+            'My Donations',
+            style: TextStyle(
+              color: Styles.mainBlue,
+              fontWeight: FontWeight.bold,
+              fontSize: 30,
+            ),
           ),
+        ],
+      ),
+      actions: [
+        IconButton(
+          icon: Icon(_showCancelled ? Icons.visibility : Icons.visibility_off),
+          onPressed: () {
+            setState(() {
+              _showCancelled = !_showCancelled;
+            });
+          },
         ),
       ],
-    ),
-        automaticallyImplyLeading: false,
+      automaticallyImplyLeading: false,
     );
   }
 }
