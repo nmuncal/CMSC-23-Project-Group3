@@ -1,4 +1,5 @@
 import 'package:cmsc_23_project_group3/providers/donation_provider.dart';
+import 'package:cmsc_23_project_group3/providers/donationdrive_provider.dart';
 import 'package:cmsc_23_project_group3/providers/storage_provider.dart';
 import 'package:cmsc_23_project_group3/styles.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -25,6 +26,7 @@ Future<void> main() async {
         ChangeNotifierProvider(create: ((context) => UserStorageProvider())),
         ChangeNotifierProvider(create: (_) => UserProvider()),
         ChangeNotifierProvider(create: ((context) => DonationProvider())),
+        ChangeNotifierProvider(create: (_) => DonationDriveProvider()),
 
       ],
       child: const MyApp(),

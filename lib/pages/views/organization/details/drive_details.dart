@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 
 class DriveDetailPage extends StatelessWidget {
-  final String driveName;
+  final String driveId;
 
-  const DriveDetailPage({super.key, required this.driveName});
+  const DriveDetailPage({super.key, required this.driveId});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(driveName),
+        title: Text(driveId),
       ),
       body: Center(
-        child: Text('Details about $driveName'),
+        child: Text('Details about $driveId'),
       ),
     );
   }
