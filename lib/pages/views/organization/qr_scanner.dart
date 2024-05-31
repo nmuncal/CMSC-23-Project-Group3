@@ -40,7 +40,7 @@ class _QRCodeScannerPageState extends State<QRCodeScannerPage> {
           builder: (context) => AlertDialog(
             title: const Text('Change Donation Status'),
             content: const Text(
-                'Do you want to change the status of this donation to \'completed\'?'),
+                'Do you want to change the status of this donation to \'Completed\'?'),
             actions: [
               TextButton(
                 onPressed: () {
@@ -56,20 +56,20 @@ class _QRCodeScannerPageState extends State<QRCodeScannerPage> {
 
                   await donationProvider
                       .fetchDonationRecipient(scanData.code!)
-                      .then((recipientId) {
+                      .then((recipientId) async {
                     if (recipientId == user!.uid) {
-                      donationProvider
+                      await donationProvider
                           .fetchDonationStatus(scanData.code!)
-                          .then((donationStatus) {
+                          .then((donationStatus) async {
                         if (donationStatus != 'Completed') {
-                          _updateDonationStatus(context, scanData.code!)
+                          await _updateDonationStatus(context, scanData.code!)
                               .then((_) {
                             Navigator.of(context).pop();
                             controller?.resumeCamera();
                             _isProcessing = false;
                           });
                         } else {
-                          showDialog(
+                          await showDialog(
                             context: context,
                             builder: (context) => AlertDialog(
                               title: Text('Donation Status'),
@@ -84,19 +84,19 @@ class _QRCodeScannerPageState extends State<QRCodeScannerPage> {
                                 ),
                               ],
                             ),
-                          );
-                          Navigator.of(context).pop();
-                          controller?.resumeCamera();
-                          _isProcessing = false;
+                          ).then((_) {
+                            Navigator.of(context).pop();
+                            controller?.resumeCamera();
+                            _isProcessing = false;
+                          });
                         }
                       });
                     } else {
-                      showDialog(
+                      await showDialog(
                         context: context,
                         builder: (context) => AlertDialog(
                           title: Text('Donation Status'),
-                          content: Text(
-                              'Error: Not Found.'),
+                          content: Text('Error: Not Found.'),
                           actions: [
                             TextButton(
                               onPressed: () {
@@ -106,11 +106,32 @@ class _QRCodeScannerPageState extends State<QRCodeScannerPage> {
                             ),
                           ],
                         ),
-                      );
-                      Navigator.of(context).pop();
+                      ).then((_) {
+                        Navigator.of(context).pop();
+                        controller?.resumeCamera();
+                        _isProcessing = false;
+                      });
+                    }
+                  }).catchError((error) {
+                    // Handle any errors that might occur
+                    showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: Text('Error'),
+                        content: Text('An error occurred: $error'),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: const Text('OK'),
+                          ),
+                        ],
+                      ),
+                    ).then((_) {
                       controller?.resumeCamera();
                       _isProcessing = false;
-                    }
+                    });
                   });
                 },
                 child: const Text('Confirm'),
