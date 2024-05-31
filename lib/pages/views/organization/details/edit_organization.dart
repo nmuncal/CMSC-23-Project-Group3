@@ -13,7 +13,7 @@ class EditOrganization extends StatefulWidget {
   
   final String orgId;
 
-  const EditOrganization({Key? key, required this.orgId}) : super(key: key);
+  const EditOrganization({super.key, required this.orgId});
 
   @override
   _EditOrganizationState createState() => _EditOrganizationState();

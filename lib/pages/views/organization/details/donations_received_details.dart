@@ -23,7 +23,7 @@ class _DonationDetailPageState extends State<DonationDetailPage> {
   void initState() {
     super.initState();
     _selectedStatus = widget.donation?.status;
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<DonationProvider>(context, listen: false)
           .setDonationId(widget.donation!.id);
     });
@@ -53,26 +53,26 @@ class _DonationDetailPageState extends State<DonationDetailPage> {
                   Center(
                     child: Text(
                       donation.id,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       Column(
                         children: [
-                          Icon(Icons.person, size: 30),
+                          const Icon(Icons.person, size: 30),
                           FutureBuilder<String?>(
-                            future: userProvider.getUsernameByUid(donation.donorId!),
+                            future: userProvider.getUsernameByUid(donation.donorId),
                             builder: (context, snapshot) {
                               if (snapshot.connectionState == ConnectionState.waiting) {
-                                return Text('Loading...');
+                                return const Text('Loading...');
                               } else if (snapshot.hasError) {
-                                return Text('Error loading username');
+                                return const Text('Error loading username');
                               } else {
                                 return Text(snapshot.data ?? 'Unknown');
                               }
@@ -80,21 +80,21 @@ class _DonationDetailPageState extends State<DonationDetailPage> {
                           ),
                         ],
                       ),
-                      Column(
+                      const Column(
                         children: [
                           Icon(Icons.arrow_forward, size: 30),
                         ],
                       ),
                       Column(
                         children: [
-                          Icon(Icons.person, size: 30),
+                          const Icon(Icons.person, size: 30),
                           FutureBuilder<String?>(
-                            future: userProvider.getUsernameByUid(donation.recipientId!),
+                            future: userProvider.getUsernameByUid(donation.recipientId),
                             builder: (context, snapshot) {
                               if (snapshot.connectionState == ConnectionState.waiting) {
-                                return Text('Loading...');
+                                return const Text('Loading...');
                               } else if (snapshot.hasError) {
-                                return Text('Error loading username');
+                                return const Text('Error loading username');
                               } else {
                                 return Text(snapshot.data ?? 'Unknown');
                               }
@@ -119,7 +119,7 @@ class _DonationDetailPageState extends State<DonationDetailPage> {
                         child: Padding(
                           padding: const EdgeInsets.all(16),
                           child: Text(
-                            _selectedStatus ?? donation.status ?? 'No Status',
+                            _selectedStatus ?? donation.status,
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
@@ -187,7 +187,7 @@ class _DonationDetailPageState extends State<DonationDetailPage> {
                   SizedBox(height: 20),
                   Text(
                     'Weight: ${donation.weight} KG',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
@@ -203,7 +203,7 @@ class _DonationDetailPageState extends State<DonationDetailPage> {
                       ),
                     ),
                     Text(
-                      donation.contactNumber ?? 'N/A',
+                      donation.contactNumber,
                       style: TextStyle(
                         fontSize: 16,
                       ),
@@ -218,7 +218,7 @@ class _DonationDetailPageState extends State<DonationDetailPage> {
                     ),
                     SizedBox(height: 5),
                     Text(
-                      donation.addressForPickup.join(', ') ?? 'N/A',
+                      donation.addressForPickup.join(', '),
                       style: TextStyle(
                         fontSize: 16,
                       ),

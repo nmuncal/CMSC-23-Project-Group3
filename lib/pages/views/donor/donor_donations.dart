@@ -49,7 +49,7 @@ class _DonorDonationsState extends State<DonorDonations> {
                 donations.sort((a, b) => b.selectedDateandTime.compareTo(a.selectedDateandTime));
                 final filteredDonations = _showCancelled
                     ? donations
-                    : donations.where((donation) => donation.status?.toLowerCase() != 'cancelled').toList();
+                    : donations.where((donation) => donation.status.toLowerCase() != 'cancelled').toList();
                 return Column(
                   children: [
                     Padding(
@@ -73,26 +73,26 @@ class _DonorDonationsState extends State<DonorDonations> {
                         itemBuilder: (context, index) {
                           final donation = filteredDonations[index];
                           return FutureBuilder<String?>(
-                            future: context.read<UserProvider>().getUsernameByUid(donation.recipientId!),
+                            future: context.read<UserProvider>().getUsernameByUid(donation.recipientId),
                             builder: (context, snapshot) {
                               if (snapshot.connectionState == ConnectionState.waiting) {
                                 return ListTile(
                                   title: Text('Loading...'),
-                                  subtitle: Text(donation.status ?? 'No Status'),
+                                  subtitle: Text(donation.status),
                                 );
                               } else if (snapshot.hasError) {
                                 return ListTile(
                                   title: Text('Error loading username'),
-                                  subtitle: Text(donation.status ?? 'No Status'),
+                                  subtitle: Text(donation.status),
                                 );
                               } else {
                                 final username = snapshot.data ?? 'UNKNOWN';
                                 final pickUpOrDropOff = donation.isPickup ? 'Pick up' : 'Drop off';
                                 // Determine the color and icon based on the status
-                                final color = (donation.status?.toLowerCase() == 'cancelled')
+                                final color = (donation.status.toLowerCase() == 'cancelled')
                                     ? Colors.red[100]
                                     : Colors.white;
-                                final icon = (donation.status?.toLowerCase() == 'cancelled')
+                                final icon = (donation.status.toLowerCase() == 'cancelled')
                                     ? Icons.close
                                     : Icons.favorite;
                                 return Card(
@@ -111,7 +111,7 @@ class _DonorDonationsState extends State<DonorDonations> {
                                         style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
                                       ),
                                       subtitle: Text(
-                                        donation.status ?? 'No Status',
+                                        donation.status,
                                         style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                                       ),
                                       trailing: Icon(Icons.arrow_forward_ios, size: 16),
