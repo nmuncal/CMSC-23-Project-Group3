@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cmsc_23_project_group3/api/firebase_donationdrive_api.dart';
 import 'package:cmsc_23_project_group3/models/donationDrive_model.dart';
+import 'package:cmsc_23_project_group3/pages/views/organization/add_drive.dart';
 import 'package:flutter/material.dart';
 
 class DonationDriveProvider with ChangeNotifier {
@@ -56,4 +57,19 @@ class DonationDriveProvider with ChangeNotifier {
     notifyListeners();
     return message;
   }
+
+    Future<String> addDrive(DonationDrive drive) async {
+    String message =
+        await firebaseService.adddrive(drive.toJson(drive));
+    notifyListeners();
+    return message;
+  }
+
+   Future<String?> updateDrive(String id, DonationDrive details) async {
+    String? message =
+        await firebaseService.updateDriveDetails(id, details.toJson(details));
+    notifyListeners();
+    return message;
+  }
+
 }
