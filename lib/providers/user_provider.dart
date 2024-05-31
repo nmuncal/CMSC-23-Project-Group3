@@ -116,6 +116,12 @@ class UserProvider with ChangeNotifier {
     return message;
   }
 
+  Future<String?> addUser(String docId,AppUser details) async {
+    String? message = await fbService.addUser(docId, details.toJson(details));
+    notifyListeners();
+    return message;
+  }
+
   Future<String?> getUsernameByUid(String uid) async {
     try {
       AppUser? user = await fbService.getAccountInfo(uid);

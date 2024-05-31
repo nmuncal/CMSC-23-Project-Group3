@@ -1,12 +1,16 @@
-// ignore_for_file: use_build_context_synchronously
 
+// ignore_for_file: use_build_context_synchronously
 import 'dart:async';
+import 'package:cmsc_23_project_group3/models/user_model.dart';
+import 'package:cmsc_23_project_group3/pages/google_signup_page.dart';
 import 'package:cmsc_23_project_group3/pages/signup_page.dart';
 import 'package:cmsc_23_project_group3/providers/auth_provider.dart';
+import 'package:cmsc_23_project_group3/providers/user_provider.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:cmsc_23_project_group3/styles.dart';
-import 'package:provider/provider.dart'; // Uses the styles class to make reusable widgets/components
+import 'package:cmsc_23_project_group3/styles.dart'; // Uses the styles class to make reusable widgets/components
+import 'package:provider/provider.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
@@ -26,6 +30,7 @@ class _SignInPageState extends State<SignInPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
+        // Places them in a stack so that the white container sits on top of the background image
         children: [
           bgImg,
           Align(
@@ -106,8 +111,8 @@ class _SignInPageState extends State<SignInPage> {
             const SizedBox(height: 15),
 
             // Google SignIn area, and Sign Up
-            //googleSignInButton(),
-            //const SizedBox(height: 15),
+            googleSignInButton(),
+            const SizedBox(height: 15),
 
             textToSignUp()
           ],
@@ -122,7 +127,7 @@ class _SignInPageState extends State<SignInPage> {
       },
       validator: (value) {
         if (value == null || value.isEmpty) {
-          return "Please enter your email or username";
+          return "Please enter your email";
         }
         return null;
       }, // Use the builder from styles.dart
@@ -201,12 +206,12 @@ class _SignInPageState extends State<SignInPage> {
             email = context.read<UserAuthProvider>().email;
           }
 
-          String? message = (email == null) ? 
-              "User Not Found!" :
-              await context
-              .read<UserAuthProvider>()
-              .authService
-              .signIn(email!, password!);
+          String? message = (email == null)
+              ? "User Not Found!"
+              : await context
+                  .read<UserAuthProvider>()
+                  .authService
+                  .signIn(email!, password!);
 
           if (message != "Successful!") {
             setState(() {
@@ -225,18 +230,18 @@ class _SignInPageState extends State<SignInPage> {
 
   Widget googleSignInButton() {
     return GestureDetector(
-        child: Styles.iconButtonBuilder(
-            'lib/assets/ico_google.png', null, Styles.mainBlue, null,
-            isPressed: _googleSignInPressed),
-        onTap: () {
-          setState(() {
-            _signInPressed =
-                false; // After pressing, google button shows a circular loading indicator
-            _googleSignInPressed = true;
-          });
-
-          // Google SIGN IN LOGIC
+      child: Styles.iconButtonBuilder(
+          'lib/assets/ico_google.png', null, Styles.mainBlue, null,
+          isPressed: _googleSignInPressed),
+      onTap: () {
+        setState(() {
+          _signInPressed = false;
+          _googleSignInPressed = true;
         });
+
+        handleGoogleSignin();
+      },
+    );
   }
 
   Widget textToSignUp() {
@@ -252,5 +257,54 @@ class _SignInPageState extends State<SignInPage> {
             MaterialPageRoute(builder: (context) => const SignUpPage()));
       },
     );
+  }
+
+  void handleGoogleSignin() async {
+    try {
+      UserAuthProvider authProvider = context.read<UserAuthProvider>();
+
+      // Sign in with Google
+      String? message = await authProvider.signInWithGoogle();
+
+      // Get the current user
+      User? user = authProvider.user;
+
+      // Check if the user is signed in successfully
+      if (user != null) {
+
+        //Check if user exists in the flutter cloud fire store
+          UserProvider userProvider = context.read<UserProvider>();
+
+          AppUser? appUser = await userProvider.getAccountInfo(user.uid);
+
+        if (appUser == null) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => GoogleSignupPage(
+                email: user.email!,
+                name: user.displayName!,
+                uid: user.uid,
+              ),
+            ),
+          );
+        }
+      } else {
+        // Show error message if login failed
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(message!)),
+        );
+      }
+    } catch (e) {
+      // Handle any additional errors here
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Sign in failed: $e')),
+      );
+    } finally {
+      // Reset the loading state for the Google sign-in button
+      setState(() {
+        _googleSignInPressed = false;
+      });
+    }
   }
 }

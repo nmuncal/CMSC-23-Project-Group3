@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cmsc_23_project_group3/models/user_model.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class FirebaseAuthAPI {
@@ -143,6 +144,25 @@ class FirebaseAuthAPI {
 
   Future<void> signOut() async {
     await auth.signOut();
+  }
+
+   Future<String?> signInWithGoogle() async {
+    try {
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+      final GoogleSignInAuthentication? googleAuth =
+          await googleUser?.authentication;
+
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth?.accessToken,
+        idToken: googleAuth?.idToken,
+      );
+
+      UserCredential account = await auth.signInWithCredential(credential);
+      return account.user!.email;
+    } on Exception catch (e) {
+      return 'exception->$e';
+    }
   }
 
 }

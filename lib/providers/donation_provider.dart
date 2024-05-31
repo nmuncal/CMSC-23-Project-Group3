@@ -12,20 +12,22 @@ class DonationProvider with ChangeNotifier {
   Donation? get donation => _donation;
   Stream<List<Donation>> get donationStream => _donationStream;
 
-   void setDonationId(String donationId) {
+  void setDonationId(String donationId) {
     _subscription?.cancel();
-    _subscription = firebaseService.getDonationInfo(donationId).listen((donation) {
+    _subscription =
+        firebaseService.getDonationInfo(donationId).listen((donation) {
       _donation = donation;
       notifyListeners();
     });
   }
 
-  
-
   void fetchDonationsGiven(String? uid) {
     try {
       _donationStream = Stream.empty();
-      if (uid != null) {_donationStream = firebaseService.fetchDonationsGiven(uid);};
+      if (uid != null) {
+        _donationStream = firebaseService.fetchDonationsGiven(uid);
+      }
+      ;
       notifyListeners();
     } catch (e) {
       print('Error fetching donations: $e');
@@ -52,20 +54,22 @@ class DonationProvider with ChangeNotifier {
     return message;
   }
 
-
   Future<String?> updateDonation(String id, Donation details) async {
-    String? message = await firebaseService.updateDonation(id, details.toJson(details));
+    String? message =
+        await firebaseService.updateDonation(id, details.toJson(details));
     notifyListeners();
     return message;
   }
 
-  Future<String?> updateDonationStatus(String id,String status) async {
-    String? message = await firebaseService.updateDonationStatus(id,status);
+  Future<String?> updateDonationStatus(String id, String status) async {
+    String? message = await firebaseService.updateDonationStatus(id, status);
     notifyListeners();
     return message;
-
   }
 
-  
-
+  Future<String?> fetchDonationStatus(String id) async {
+    String? message = await firebaseService.fetchDonationStatus(id);
+    notifyListeners();
+    return message;
+  }
 }
