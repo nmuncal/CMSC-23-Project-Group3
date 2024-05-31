@@ -23,7 +23,7 @@ class _QRCodeScannerPageState extends State<QRCodeScannerPage> {
 
   void _onQRViewCreated(QRViewController qrController) {
     setState(() {
-      this.controller = qrController;
+      controller = qrController;
     });
 
     controller?.scannedDataStream.listen((scanData) {
@@ -47,11 +47,37 @@ class _QRCodeScannerPageState extends State<QRCodeScannerPage> {
               ),
               TextButton(
                 onPressed: () async {
-                  await _updateDonationStatus(context, scanData.code!).then((_) {
+                  final donationProvider = context.read<DonationProvider>();
 
-                    Navigator.of(context).pop();
-                    controller?.resumeCamera();
-                    _isProcessing = false;
+                  await donationProvider
+                      .fetchDonationStatus(scanData.code!)
+                      .then((value) {
+                    if (value != 'Completed') {
+                      _updateDonationStatus(context, scanData.code!).then((_) {
+                        Navigator.of(context).pop();
+                        controller?.resumeCamera();
+                        _isProcessing = false;
+                      });
+                    } else {
+                      showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                                title: Text('Donation Status'),
+                                content: Text(
+                                    'Donation status is already completed.'),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: const Text('OK'),
+                                  ),
+                                ],
+                              ));
+                      Navigator.of(context).pop();
+                      controller?.resumeCamera();
+                      _isProcessing = false;
+                    }
                   });
                 },
                 child: const Text('Confirm'),
@@ -60,15 +86,14 @@ class _QRCodeScannerPageState extends State<QRCodeScannerPage> {
           ),
         );
       }
-      
     });
   }
 
-    Future<void> _updateDonationStatus(
+  Future<void> _updateDonationStatus(
       BuildContext context, String scanDataCode) async {
     final donationProvider = context.read<DonationProvider>();
     await donationProvider
-        .updateDonationStatus(scanDataCode,"Completed")
+        .updateDonationStatus(scanDataCode, "Completed")
         .then((value) => showDialog(
               context: context,
               builder: (context) => AlertDialog(

@@ -8,10 +8,7 @@ class FirebaseUserAPI {
 
   Stream<List<AppUser>> fetchUsers() {
     try {
-      return db
-          .collection('users')
-          .snapshots()
-          .map((querySnapshot) {
+      return db.collection('users').snapshots().map((querySnapshot) {
         return querySnapshot.docs.map((doc) {
           return AppUser.fromJson(doc.data());
         }).toList();
@@ -61,26 +58,26 @@ class FirebaseUserAPI {
     }
   }
 
- Future<bool> isUsernameUnique(String username) async {
-  try {
-    QuerySnapshot querySnapshot = await db
-        .collection('users')
-        .where('username', isEqualTo: username)
-        .get();
+  Future<bool> isUsernameUnique(String username) async {
+    try {
+      QuerySnapshot querySnapshot = await db
+          .collection('users')
+          .where('username', isEqualTo: username)
+          .get();
 
-    // Logging the size of the query result
-    print('Query size: ${querySnapshot.size}');
+      // Logging the size of the query result
+      print('Query size: ${querySnapshot.size}');
 
-    if (querySnapshot.size == 0) {
-      return true;
+      if (querySnapshot.size == 0) {
+        return true;
+      }
+      return false;
+    } catch (e) {
+      // Logging the error
+      print('Error in isUsernameUnique: $e');
+      return false;
     }
-    return false;
-  } catch (e) {
-    // Logging the error
-    print('Error in isUsernameUnique: $e');
-    return false;
   }
-}
 
   Future<AppUser?> getAccountInfo(String id) async {
     try {
@@ -98,5 +95,14 @@ class FirebaseUserAPI {
       print("Unexpected error: $e");
       return null;
     }
+  }
+
+  Future<String?> addUser(String docId, Map<String, dynamic> details) async {
+    try {
+      await db.collection("users").doc(docId).set(details);
+    } catch (e) {
+      return null;
+    }
+    return "User added successfully!";
   }
 }

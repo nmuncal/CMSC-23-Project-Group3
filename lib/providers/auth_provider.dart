@@ -95,6 +95,15 @@ class UserAuthProvider with ChangeNotifier {
     return unique;
   }
 
+  Future<String?> signInWithGoogle() async {
+    String? message = await authService.signInWithGoogle();
+    notifyListeners();
+    return message;
+  }
+
+  
+
+
   Future<void> signOut() async {
     await authService.signOut();
     _accountInfo = null;
