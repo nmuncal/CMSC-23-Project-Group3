@@ -131,4 +131,14 @@ class UserProvider with ChangeNotifier {
       return null;
     }
   }
+
+    Future<String?> getNameByUid(String uid) async {
+    try {
+      AppUser? user = await fbService.getAccountInfo(uid);
+      return user?.name;
+    } catch (e) {
+      print('Error fetching username: $e');
+      return null;
+    }
+  }
 }

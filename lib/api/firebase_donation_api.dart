@@ -49,7 +49,7 @@ class FirebaseDonationAPI {
     }
   }
 
-   Future<String?> fetchDonationStatus(String id) async {
+  Future<String?> fetchDonationStatus(String id) async {
     try {
       DocumentSnapshot donationSnapshot =
           await db.collection('donations').doc(id).get();
