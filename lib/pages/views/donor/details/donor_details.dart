@@ -1,36 +1,32 @@
-// ignore_for_file: must_be_immutable
-
 import 'package:cmsc_23_project_group3/models/user_model.dart';
 import 'package:cmsc_23_project_group3/pages/views/donor/donation_detail.dart';
-import 'package:cmsc_23_project_group3/pages/views/organization/details/contact_details.dart';
-import 'package:cmsc_23_project_group3/providers/user_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:cmsc_23_project_group3/styles.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-
 import '../../../../models/donation_model.dart';
 import '../../../../providers/donation_provider.dart';
-import 'package:intl/intl.dart';
+import '../../../../providers/user_provider.dart';
+import '../../../../styles.dart';
+import '../../organization/details/contact_details.dart';
 
 class DonorDetails extends StatefulWidget {
-  late String? uid;
-  DonorDetails({super.key, required this.uid});
+  final String? uid;
+
+  const DonorDetails({Key? key, required this.uid}) : super(key: key);
 
   @override
   State<DonorDetails> createState() => _DonorDetailsState();
 }
 
 class _DonorDetailsState extends State<DonorDetails> {
-
-  AppUser? donor;
-  
+  late AppUser? donor;
   bool isContactSectionVisible = false;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<UserProvider>().getAccountInfo(widget.uid!);
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      context.read<UserProvider>().getAccountInfo(widget.uid);
       Provider.of<DonationProvider>(context, listen: false).fetchDonationsGiven(widget.uid);
     });
   }
@@ -40,19 +36,19 @@ class _DonorDetailsState extends State<DonorDetails> {
     donor = context.watch<UserProvider>().selectedUser;
 
     return donor == null
-      ? const Center(child: CircularProgressIndicator())
-      : SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              imageSection(),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 30),
-                child: Column(
-                  children: [
-                    aboutSection(),
-                    const SizedBox(height: 15),
-                    IconButton(
+        ? const Center(child: CircularProgressIndicator())
+        : SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                _buildImageSection(),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 30),
+                  child: Column(
+                    children: [
+                      _buildAboutSection(),
+                      const SizedBox(height: 15),
+                      IconButton(
                         onPressed: () {
                           setState(() {
                             isContactSectionVisible = !isContactSectionVisible;
@@ -64,84 +60,63 @@ class _DonorDetailsState extends State<DonorDetails> {
                       Visibility(
                         visible: isContactSectionVisible,
                         child: Center(
-                          child: ContactDetails(user: donor),
+                          child: ContactDetails(user: donor!),
                         ),
                       ),
-
-                    donationsSection(),
-                  ],
+                      const SizedBox(height: 15),
+                      Text(
+                        "Donations",
+                        style: TextStyle(
+                          color: Styles.mainBlue,
+                        ),
+                      ),
+                      const SizedBox(height: 5),
+                      _buildDonationsSection(),
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          ),
-        );
+              ],
+            ),
+          );
   }
 
-  Widget donationsSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        const SizedBox(height: 15),
-          Text(
-            "Donations",
-            style: TextStyle(
-              color: Styles.mainBlue,
-    
-            ),
-          ),
-          const SizedBox(height: 5),
-
-        Consumer<DonationProvider>(
-          builder: (context, donationProvider, child) {
-            return StreamBuilder<List<Donation>>(
-              stream: donationProvider.donationStream,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return Center(child: Text('No donations found', style: TextStyle(color: Styles.darkerGray)));
-                } else {
-                  final donations = snapshot.data!;
-                  return FutureBuilder<List<Widget>>(
-                    future: _buildDonationTiles(donations),
+  Widget _buildDonationsSection() {
+    return Consumer<DonationProvider>(
+      builder: (context, donationProvider, child) {
+        final donationStream = donationProvider.profileStream;
+        return StreamBuilder<List<Donation>>(
+          stream: donationStream,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return Center(child: Text('No donations found', style: TextStyle(color: Styles.darkerGray)));
+            } else {
+              final donations = snapshot.data!;
+              return ListView.builder(
+                padding: EdgeInsets.all(0),
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: donations.length,
+                itemBuilder: (context, index) {
+                  return FutureBuilder<Widget>(
+                    future: _buildDonationTile(donations[index]),
                     builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(child: CircularProgressIndicator());
-                      } else if (snapshot.hasError) {
-                        return Center(child: Text('Error: ${snapshot.error}'));
-                      } else {
-                        final donationTiles = snapshot.data!;
-                        return ListView(
-                          shrinkWrap: true,
-                          padding: EdgeInsets.zero,
-                          physics: const NeverScrollableScrollPhysics(),
-                          children: donationTiles,
-                        );
-                      }
+                      return snapshot.hasData ? snapshot.data! : Container();
                     },
                   );
-                }
-              },
-            );
+                },
+              );
+            }
           },
-        ),
-
-      ],
+        );
+      },
     );
   }
 
-  Future<List<Widget>> _buildDonationTiles(List<Donation> donations) async {
-  final List<Widget> tiles = [];
-  for (final donation in donations) {
-    final tile = await buildDonationTile(donation);
-    tiles.add(tile);
-  }
-  return tiles;
-}
-
-  Future<Widget> buildDonationTile(Donation donation) async {
+  Future<Widget> _buildDonationTile(Donation donation) async {
     final userProvider = context.read<UserProvider>();
     final recipient = await userProvider.fetchInfo(donation.recipientId);
 
@@ -241,48 +216,42 @@ class _DonorDetailsState extends State<DonorDetails> {
     );
   }
 
-
-
-
-
-
-  Widget aboutSection(){
-    return Column(children: [
-      Text(donor!.name, 
-        style: TextStyle(
-          color: Styles.mainBlue, 
-          fontSize: 24, 
-          fontWeight: FontWeight.bold
-        )
-      ),
-    
-      Text(
-        "@${donor!.username}",
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          color: Styles.darkerGray, 
-          fontSize: 14,
+  Widget _buildAboutSection() {
+    return Column(
+      children: [
+        Text(
+          donor!.name,
+          style: TextStyle(
+            color: Styles.mainBlue,
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+          ),
         ),
-      ),
-
-  
-      const SizedBox(height: 10),
-    
-      Text(
-        donor!.desc != "" ? 
-        donor!.desc : 
-        (donor!.accountType == 2 ? "This user is an admin." : "It's empty here!"),
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          color: Styles.darkerGray, 
-          fontSize: 14,
+        Text(
+          "@${donor!.username}",
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Styles.darkerGray,
+            fontSize: 14,
+          ),
         ),
-      ),
-    ]);
+        const SizedBox(height: 10),
+        Text(
+          donor!.desc.isNotEmpty
+              ? donor!.desc
+              : (donor!.accountType == 2 ? "This user is an admin." : "It's empty here!"),
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Styles.darkerGray,
+            fontSize: 14,
+          ),
+        ),
+      ],
+    );
   }
 
-   Widget imageSection(){
-   return Stack(
+  Widget _buildImageSection() {
+    return Stack(
       children: [
         const SizedBox(
           height: 225,
@@ -292,18 +261,16 @@ class _DonorDetailsState extends State<DonorDetails> {
           height: 200,
           width: double.infinity,
           child: Image.network(
-            donor!.coverPhoto != '' ?
-            donor!.coverPhoto:
-            Styles.defaultCover, // Profile cover image
+            donor!.coverPhoto.isNotEmpty ? donor!.coverPhoto : Styles.defaultCover,
             fit: BoxFit.cover,
           ),
         ),
         Positioned(
-          bottom: 0, // Adjust the position to place it lower than the cover
-          left: (MediaQuery.of(context).size.width / 2) - 75, // Center the circle
+          bottom: 0,
+          left: (MediaQuery.of(context).size.width / 2) - 75,
           child: Container(
-            width: 150, // Increase the width to prevent cropping
-            height: 150, // Increase the height to prevent cropping
+            width: 150,
+            height: 150,
             padding: const EdgeInsets.all(5),
             decoration: const BoxDecoration(
               color: Colors.white,
@@ -311,17 +278,12 @@ class _DonorDetailsState extends State<DonorDetails> {
             ),
             child: ClipOval(
               child: Image.network(
-                donor!.profilePhoto != '' ?
-                donor!.profilePhoto:
-                Styles.defaultProfile
-                , // Circular image
+                donor!.profilePhoto.isNotEmpty ? donor!.profilePhoto : Styles.defaultProfile,
                 fit: BoxFit.cover,
               ),
             ),
           ),
         ),
-
-
       ],
     );
   }

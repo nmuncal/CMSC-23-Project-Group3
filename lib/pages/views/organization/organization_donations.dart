@@ -22,10 +22,17 @@ class _OrganizationDonationsState extends State<OrganizationDonations> {
         final user = context.read<UserAuthProvider>().user;
         if (user != null) {
           Provider.of<DonationProvider>(context, listen: false)
-              .fetchDonationsReceived(user.uid);
+              .fetchDonationsGiven(user.uid);
         }
       }
     });
+  }
+
+  @override
+  void dispose() {
+    // Cancel the subscription to DonationProvider
+    context.read<DonationProvider>().dispose();
+    super.dispose();
   }
 
   @override
