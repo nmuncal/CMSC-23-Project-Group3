@@ -56,7 +56,7 @@ dependencies:
   image_gallery_saver: ^2.0.3
   intl: ^0.17.0
   google_sign_in: ^5.4.1 
-
+  telephony: ^0.1.0
 
 
 dev_dependencies:

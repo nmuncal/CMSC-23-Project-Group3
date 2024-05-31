@@ -1,4 +1,3 @@
-import 'package:url_launcher/url_launcher.dart';
 
 import 'package:cmsc_23_project_group3/models/user_model.dart';
 import 'package:cmsc_23_project_group3/providers/user_provider.dart';

@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 
 class OrganizationDetails extends StatefulWidget {
   late String? uid;
-  OrganizationDetails({Key? key, required this.uid}) : super(key: key);
+  OrganizationDetails({super.key, required this.uid});
 
   @override
   State<OrganizationDetails> createState() => _OrganizationDetailsState();
@@ -20,7 +20,7 @@ class _OrganizationDetailsState extends State<OrganizationDetails> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<UserProvider>().getAccountInfo(widget.uid!);
     });
   }

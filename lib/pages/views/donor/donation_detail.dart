@@ -11,7 +11,7 @@ import 'package:google_fonts/google_fonts.dart';
 class DonationDetailPage extends StatefulWidget {
   final Donation? donation;
 
-  const DonationDetailPage({Key? key, this.donation}) : super(key: key);
+  const DonationDetailPage({this.donation});
 
   @override
   _DonationDetailPageState createState() => _DonationDetailPageState();
@@ -21,7 +21,7 @@ class _DonationDetailPageState extends State<DonationDetailPage> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<DonationProvider>(context, listen: false)
           .setDonationId(widget.donation!.id);
     });
@@ -65,7 +65,7 @@ class _DonationDetailPageState extends State<DonationDetailPage> {
                         children: [
                           Icon(Icons.person, size: 30),
                           FutureBuilder<String?>(
-                            future: userProvider.getUsernameByUid(donation.donorId!),
+                            future: userProvider.getUsernameByUid(donation.donorId),
                             builder: (context, snapshot) {
                               if (snapshot.connectionState == ConnectionState.waiting) {
                                 return Text('Loading...');
@@ -87,7 +87,7 @@ class _DonationDetailPageState extends State<DonationDetailPage> {
                         children: [
                           Icon(Icons.person, size: 30),
                           FutureBuilder<String?>(
-                            future: userProvider.getUsernameByUid(donation.recipientId!),
+                            future: userProvider.getUsernameByUid(donation.recipientId),
                             builder: (context, snapshot) {
                               if (snapshot.connectionState == ConnectionState.waiting) {
                                 return Text('Loading...');
@@ -113,7 +113,7 @@ class _DonationDetailPageState extends State<DonationDetailPage> {
                       child: Padding(
                         padding: const EdgeInsets.all(16),
                         child: Text(
-                          donation.status ?? 'No Status',
+                          donation.status,
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
