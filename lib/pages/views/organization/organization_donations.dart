@@ -13,7 +13,7 @@ import 'package:cmsc_23_project_group3/styles.dart';
 import 'package:cmsc_23_project_group3/styles.dart';
 
 class OrganizationDonations extends StatefulWidget {
-  const OrganizationDonations({Key? key}) : super(key: key);
+  const OrganizationDonations({super.key});
 
   @override
   State<OrganizationDonations> createState() => _OrganizationDonationsState();
@@ -30,7 +30,7 @@ class _OrganizationDonationsState extends State<OrganizationDonations> {
   void initState() {
     super.initState();
     _searchController = TextEditingController();
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       final user = context.read<UserAuthProvider>().user;
       if (user != null) {
         Provider.of<DonationProvider>(context, listen: false)
@@ -285,7 +285,7 @@ Widget _buildSearchBar() {
 
   List<Donation> _filterDonations(String query) {
     return _filteredDonations.where((donation) {
-      final donorName = context.read<UserProvider>().getNameByUid(donation.donorId) ?? '';
+      final donorName = context.read<UserProvider>().getNameByUid(donation.donorId);
       return '${donorName}'.toLowerCase().contains(query.toLowerCase());
     }).toList();
   }

@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cmsc_23_project_group3/models/donation_model.dart';
 
-
 class FirebaseDonationAPI {
   static final FirebaseFirestore db = FirebaseFirestore.instance;
 
@@ -12,6 +11,23 @@ class FirebaseDonationAPI {
       return doc.id;
     } on FirebaseException catch (e) {
       return "Error in ${e.code}: ${e.message}";
+    }
+  }
+
+  Stream<List<Donation>> fetchDonationsByIds(List<String> donationIds) {
+    try {
+      return db
+          .collection("donations")
+          .where(FieldPath.documentId, whereIn: donationIds)
+          .snapshots()
+          .map((querySnapshot) {
+        return querySnapshot.docs.map((doc) {
+          return Donation.fromJson(doc.data() as Map<String, dynamic>);
+        }).toList();
+      });
+    } catch (e) {
+      print("Error getting donations: $e");
+      return Stream.error("Error getting donations: $e");
     }
   }
 
@@ -77,7 +93,7 @@ class FirebaseDonationAPI {
     }
   }
 
-  Future<String?> updateDonationStatus(String id,String status) async {
+  Future<String?> updateDonationStatus(String id, String status) async {
     try {
       await db.collection('donations').doc(id).update({'status': status});
       return 'Status updated successfully';
@@ -86,7 +102,6 @@ class FirebaseDonationAPI {
       return 'Error updating status';
     }
   }
-
 
   Future<String?> updateDonation(
       String id, Map<String, dynamic> details) async {

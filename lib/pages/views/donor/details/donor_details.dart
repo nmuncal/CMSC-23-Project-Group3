@@ -12,7 +12,7 @@ import '../../organization/details/contact_details.dart';
 class DonorDetails extends StatefulWidget {
   final String? uid;
 
-  const DonorDetails({Key? key, required this.uid}) : super(key: key);
+  const DonorDetails({required this.uid});
 
   @override
   State<DonorDetails> createState() => _DonorDetailsState();
@@ -25,7 +25,7 @@ class _DonorDetailsState extends State<DonorDetails> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<UserProvider>().getAccountInfo(widget.uid);
       Provider.of<DonationProvider>(context, listen: false).fetchDonationsGiven(widget.uid);
     });
